@@ -1,0 +1,22 @@
+{
+  "name": "resume-assistant",
+  "version": "1.0.0",
+  "description": "Given a resume and a job description, highlights parts of the resume which are not a good match.",
+  "main": "index.js",
+  "scripts": {
+    "test": "echo \"Error: no test specified\" && exit 1"
+  },
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/navjotts/resume-assistant.git"
+  },
+  "author": "Navjot",
+  "license": "UNLICENSED",
+  "bugs": {
+    "url": "https://github.com/navjotts/resume-assistant/issues"
+  },
+  "homepage": "https://github.com/navjotts/resume-assistant#readme",
+  "dependencies": {
+    "pdf-to-text": "0.0.7"
+  }
+}
