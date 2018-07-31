@@ -16,7 +16,7 @@ async function generateTextCorpus() {
       try {
         resumeText = await pdfToText(path.join(__dirname, 'data', 'resumes-pdf', fileName));
         if (resumeText) {
-          fs.writeFileSync(path.join(__dirname, 'data', 'resumes-txt', fileName.split('.')[0] + '.txt'), resumeText);
+          fs.writeFileSync(path.join(__dirname, 'data', 'resumes-txt', 'corpus-' + i + '.txt'), resumeText);
         }
       }
       catch (e) {
