@@ -12,7 +12,9 @@ The problem statement then, can be broken down into 2 steps:<br/>
 
 
 ## Step1
-We need labelled data for Step1, once we collect the required data, we need a framework to label the data – and need to construct it such that the underlying structure can be used to automate testing also (cross validation & generalization)
+We need labelled data for Step1 (supervised approach).
+
+Once we collect the resume and job description data, we need a framework to label the data – and need to construct it such that the underlying structure can be used to automate testing also (cross validation & generalization).
 
 * We can start with parsing resumes and job descriptions as a list of sentences (we might need to go more granular later on)
 * Each sentence will be labelled as 1 of the parts decided in the Approach section
