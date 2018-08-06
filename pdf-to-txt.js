@@ -14,9 +14,9 @@ async function generateTextCorpus() {
       console.log('Parsing #' + i + ' - ' + fileName);
 
       try {
-        resumeText = await pdfToText(path.join(__dirname, 'data', 'resumes-pdf', fileName));
-        if (resumeText) {
-          fs.writeFileSync(path.join(__dirname, 'data', 'resumes-txt', 'resume-' + i + '.txt'), resumeText);
+        text = await pdfToText(path.join(__dirname, 'data', 'resumes-pdf', fileName));
+        if (text) {
+          fs.writeFileSync(path.join(__dirname, 'data', 'resumes-txt', 'resume-' + i + '.txt'), text);
         }
       }
       catch (e) {
