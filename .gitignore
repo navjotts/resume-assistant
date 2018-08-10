@@ -1,6 +1,7 @@
 **/node_modules/*
 **/npm-debug.log
-**/data/resumes-pdf/*.pdf
-**/data/resumes-txt/*.txt
-**/data/jobs-csv/*.csv
-**/data/jobs-txt/**/*.txt
+**/data/**/**/*.pdf
+**/data/**/**/*.csv
+**/data/**/**/*.txt
+**/data/**/**/*.json
+*.pyc

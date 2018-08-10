@@ -1,0 +1,15 @@
+html
+    head
+        title=title
+        link(rel='stylesheet', href='https://stackpath.bootstrapcdn.com/bootstrap/4.1.0/css/bootstrap.min.css')
+        link(rel='stylesheet', href='/stylesheets/style.css')
+        script(src='http://code.jquery.com/jquery-3.1.1.min.js')
+        script(src='/js/Client.js')
+    body
+        div(class='container-fluid')
+            div(class='center')
+                div(class='title')
+                    p=title
+                div(class='navigation')
+                    button(type='button', class='padding', onclick='uploadResume()')='Upload Resume'
+                    button(type='button', class='padding', onclick='uploadJob()')='Upload Job Desc'

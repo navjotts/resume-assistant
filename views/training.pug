@@ -1,0 +1,16 @@
+html
+    head
+        title=title
+        link(rel='stylesheet', href='https://stackpath.bootstrapcdn.com/bootstrap/4.1.0/css/bootstrap.min.css')
+        link(rel='stylesheet', href='/stylesheets/style.css')
+        script(src='http://code.jquery.com/jquery-3.1.1.min.js')
+        script(src='/js/Client.js')
+    body
+        div(class='container-fluid')
+            div(class='center')
+                div(class='title')
+                    p='Training'
+            div
+                a(class='link', href='#', onclick='fetchResumes()')='Resumes'
+                a(class='link', href='#', onclick='fetchJobs()')='Jobs'
+            div(class='left', id='list')
