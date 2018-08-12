@@ -5,8 +5,6 @@ const pdfParser = require('pdf-to-text');
 const util = require('util');
 const pdfToText = util.promisify(pdfParser.pdfToText);
 
-const PythonConnector = require('./PythonConnector.js');
-
 async function convertPdfToTxt(srcFolder, destFolder, filePrefix) {
     var files = fs.readdirSync(path.join(__dirname, 'data', srcFolder));
     for (var i = 0; i < files.length; i++) {

@@ -6,9 +6,9 @@ const assign = require('object-assign');
 
 var app = express();
 
-app.use(express.static(path.join(__dirname, 'public')));
+app.use(express.static(path.join(__dirname, '..', 'client', 'public')));
 
-app.set('views', path.join(__dirname, 'views'));
+app.set('views', path.join(__dirname, '..', 'client', 'views'));
 app.set('view engine', 'pug');
 
 app.use(bodyParser.json());
