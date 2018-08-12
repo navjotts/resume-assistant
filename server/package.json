@@ -17,11 +17,11 @@
   },
   "homepage": "https://github.com/navjotts/resume-assistant#readme",
   "dependencies": {
+    "body-parser": "^1.18.3",
+    "express": "^4.16.3",
+    "object-assign": "^4.1.1",
     "pdf-to-text": "0.0.7",
-    "zerorpc": "^0.9.7",
-    "body-parser": "^1.0.2",
-    "express": "^4.1.1",
-    "object-assign": "^0.3.1",
-    "pug": "^2.0.0-rc.1"
+    "pug": "^2.0.3",
+    "zerorpc": "^0.9.7"
   }
 }
