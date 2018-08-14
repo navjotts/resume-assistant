@@ -6,10 +6,9 @@ const assign = require('object-assign');
 
 var app = express();
 
-app.use(express.static(path.join(__dirname, '..', 'client', 'public')));
-
 app.set('views', path.join(__dirname, '..', 'client', 'views'));
 app.set('view engine', 'pug');
+app.use(express.static(path.join(__dirname, '..', 'client', 'public')));
 
 app.use(bodyParser.json());
 app.use(bodyParser.urlencoded({extended: true}));
@@ -33,25 +32,21 @@ app.get('/training', function(req, res) {
 });
 
 app.get('/training/resumes', function(req, res, next) {
+    console.log(req.url);
     var resumes = [];
     var dbDir = path.join(__dirname, 'data', 'DB', 'resumes');
     var files = fs.readdirSync(dbDir);
-    for (var i = 0; i < files.length; i++) {
-        resumes.push(files[i].split('.')[0]);
-    }
-
-	console.log(req.url);
+    files.forEach((fileName) => resumes.push(fileName.split('.')[0]));
 	res.json(resumes);
 });
 
 app.get('/training/resumes/:id', function(req, res, next) {
+    console.log(req.url);
     var resumeId = req.params.id;
     var dbDir = path.join(__dirname, 'data', 'DB', 'resumes');
     var files = fs.readdirSync(dbDir);
     var fileName = files[resumeId];
     var data = JSON.parse(fs.readFileSync(path.join(dbDir, fileName)));
-
-	console.log(req.url);
     res.render('document', {title: 'Resume Assistant', data: data});
 });
 
