@@ -15,14 +15,30 @@ function fetchResume(id) {
 }
 
 function fetchJobs() {
-    console.log('Fetch jobs from DB...');
-    alert('not implemented yet!');
+    console.log('Fetching jobs from DB...');
+    alert('fetchJobs() not implemented yet!');
+}
+
+function updateLabel(option, resumeId, sentenceId) {
+    console.log(`Updating label ${option.value} for ${sentenceId} for resumeId ${resumeId}...`);
+    $.ajax({
+        url: `http://localhost:3000/training/resumes/${resumeId}/sentences/${sentenceId}/edit`,
+        type: 'POST',
+        contentType: 'application/json',
+        data: JSON.stringify({
+            label:option.value
+        }),
+        dataType: 'json',
+        success: function(response) {
+            fetchResume(resumeId);
+        }
+    });
 }
 
 function uploadResume() {
-    alert('not implemented yet!');
+    alert('uploadResume() not implemented yet!');
 }
 
 function uploadJob() {
-    alert('not implemented yet!');
+    alert('uploadJob() not implemented yet!');
 }

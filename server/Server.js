@@ -46,8 +46,25 @@ app.get('/training/resumes/:id', function(req, res, next) {
     var dbDir = path.join(__dirname, 'data', 'DB', 'resumes');
     var files = fs.readdirSync(dbDir);
     var fileName = files[resumeId];
-    var data = JSON.parse(fs.readFileSync(path.join(dbDir, fileName)));
-    res.render('document', {title: 'Resume Assistant', data: data});
+    var resumeData = JSON.parse(fs.readFileSync(path.join(dbDir, fileName)));
+    res.render('document', {id: resumeId, data: resumeData, title: fileName.split('.')[0]});
+});
+
+// TODO error handling inside these
+app.post('/training/resumes/:resumeId/sentences/:sentenceId/edit', function(req, res, next) {
+    console.log(req.url);
+    var resumeId = req.params.resumeId;
+    var sentenceId = req.params.sentenceId;
+    var label = req.body.label;
+    console.log('label', label);
+
+    var dbDir = path.join(__dirname, 'data', 'DB', 'resumes');
+    var files = fs.readdirSync(dbDir);
+    var fileName = files[resumeId];
+    var resumeData = JSON.parse(fs.readFileSync(path.join(dbDir, fileName)));
+    resumeData[sentenceId].label = label;
+    fs.writeFileSync(path.join(dbDir, fileName), JSON.stringify(resumeData));
+    res.json(resumeData[sentenceId]);
 });
 
 app.get('*', function(req, res, next) {
