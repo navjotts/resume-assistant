@@ -14,7 +14,8 @@ async function generateDB(srcFolder, destFolder) {
 
     var srcDir = path.join(__dirname, 'data', srcFolder);
     var files = fs.readdirSync(srcDir);
-    files.forEach((fileName) => {
+    for (var i = 0; i < files.length; i++) {
+        var fileName = files[i];
         if (fileName.split('.').pop() === 'txt') {
             console.log(`#${i} Persisting data for: ${fileName}`);
 
@@ -29,7 +30,7 @@ async function generateDB(srcFolder, destFolder) {
                 console.log('Error in parsing:', fileName, e);
             }
         }
-    });
+    }
 }
 
 generateDB('resumes-txt', 'resumes');

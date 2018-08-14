@@ -7,7 +7,8 @@ const pdfToText = util.promisify(pdfParser.pdfToText);
 
 async function convertPdfToTxt(srcFolder, destFolder, filePrefix) {
     var files = fs.readdirSync(path.join(__dirname, 'data', srcFolder));
-    files.forEach((fileName) => {
+    for (var i = 0; i < files.length; i++) {
+        var fileName = files[i];
         if (fileName.split('.').pop() === 'pdf') {
             console.log(`#${i} Parsing: ${fileName}`);
 
@@ -21,7 +22,7 @@ async function convertPdfToTxt(srcFolder, destFolder, filePrefix) {
                 console.log('Error in parsing -', fileName);
             }
         }
-    });
+    }
 }
 
 convertPdfToTxt('resumes-pdf', 'resumes-txt', 'resume-');
