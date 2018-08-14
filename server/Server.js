@@ -23,10 +23,12 @@ app.use(function(req, res, next) {
 });
 
 app.get('/', function(req, res) {
+    console.log(req.url);
     res.render('index', {title: 'Resume Assistant'});
 });
 
 app.get('/training', function(req, res) {
+    console.log(req.url);
     res.render('training', {title: 'Resume Assistant'});
 });
 
@@ -53,8 +55,6 @@ app.get('/training/resumes/:id', function(req, res, next) {
     res.render('document', {title: 'Resume Assistant', data: data});
 });
 
-
-// error handling
 app.get('*', function(req, res, next) {
     var err = new Error();
     err.status = 404;
@@ -62,7 +62,6 @@ app.get('*', function(req, res, next) {
 });
 
 app.use(function(err, req, res, next) {
-    console.error(err.status);
     if (err.status !== 404) {
         return next(err);
     }
