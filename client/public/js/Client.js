@@ -51,3 +51,10 @@ function uploadResume() {
 function uploadJob() {
     alert('uploadJob() not implemented yet!');
 }
+
+// TODO proper way to do this kind of stuff
+$(document).ready(function () {
+  if (document.title === 'Training') {
+      fetchResumes();
+  }
+});
