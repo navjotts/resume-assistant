@@ -5,17 +5,18 @@ const pdfParser = require('pdf-to-text');
 const util = require('util');
 const pdfToText = util.promisify(pdfParser.pdfToText);
 
-async function convertPdfToTxt(srcFolder, destFolder, filePrefix) {
+async function convertPdfToTxt(srcFolder, destFolder) {
     var files = fs.readdirSync(path.join(__dirname, 'data', srcFolder));
     for (var i = 0; i < files.length; i++) {
         var fileName = files[i];
-        if (fileName.split('.').pop() === 'pdf') {
+        var fileNameSplit = fileName.split('.');
+        if (fileNameSplit.pop() === 'pdf') {
             console.log(`#${i} Parsing: ${fileName}`);
 
             try {
                 text = await pdfToText(path.join(__dirname, 'data', srcFolder, fileName));
                 if (text) {
-                    fs.writeFileSync(path.join(__dirname, 'data', destFolder, filePrefix + i + '.txt'), text);
+                    fs.writeFileSync(path.join(__dirname, 'data', destFolder, fileNameSplit[0] + '.txt'), text);
                 }
             }
             catch (e) {
@@ -25,4 +26,4 @@ async function convertPdfToTxt(srcFolder, destFolder, filePrefix) {
     }
 }
 
-convertPdfToTxt('resumes-pdf', 'resumes-txt', 'resume-');
+convertPdfToTxt('resumes-pdf', 'resumes-txt');

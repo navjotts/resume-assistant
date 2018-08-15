@@ -4,11 +4,12 @@ const jszip = require('jszip');
 
 const DocxParser = require('./DocxParser.js');
 
-async function convertDocxToTxt(srcFolder, destFolder, filePrefix) {
+async function convertDocxToTxt(srcFolder, destFolder) {
     var files = fs.readdirSync(path.join(__dirname, 'data', srcFolder));
     for (var i = 0; i < files.length; i++) {
         var fileName = files[i];
-        if (fileName.split('.').pop() === 'docx') {
+        var fileNameSplit = fileName.split('.');
+        if (fileNameSplit.pop() === 'docx') {
             console.log(`#${i} Parsing: ${fileName}`);
 
             try {
@@ -17,7 +18,7 @@ async function convertDocxToTxt(srcFolder, destFolder, filePrefix) {
                 var text = '';
                 doc.forEach(para => text = text + (text.length ? '\n' : '') + para.text);
                 if (text) {
-                    fs.writeFileSync(path.join(__dirname, 'data', destFolder, filePrefix + i + '.txt'), text);
+                    fs.writeFileSync(path.join(__dirname, 'data', destFolder, fileNameSplit[0] + '.txt'), text);
                 }
             }
             catch (e) {
@@ -27,4 +28,4 @@ async function convertDocxToTxt(srcFolder, destFolder, filePrefix) {
     }
 }
 
-convertDocxToTxt('resumes-docx', 'resumes-txt', 'resume-');
+convertDocxToTxt('resumes-docx', 'resumes-txt');
