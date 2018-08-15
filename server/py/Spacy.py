@@ -13,8 +13,9 @@ class Spacy(object):
             return 'X'*len(t.text)
         return t.text
 
+    # todo need a has_phone_number instead
     def is_phone_number(self, text):
-        phone_regex = re.compile('(\d{3}[-\.\s]??\d{3}[-\.\s]??\d{4}|\(\d{3}\)\s*\d{3}[-\.\s]??\d{4}|\d{3}[-\.\s]??\d{4})') # todo cover international
+        phone_regex = re.compile('(?:(?:\+?1\s*(?:[.-]\s*)?)?(?:(\s*([2-9]1[02-9]|[2-9][02-8]1|[2-9][02-8][02-9])\s*)|([2-9]1[02-9]|[2-9][02-8]1|[2-9][02-8][02-9]))\s*(?:[.-]\s*)?)([2-9]1[02-9]|[2-9][02-9]1|[2-9][02-9]{2})\s*(?:[.-]\s*)?([0-9]{4})')
         return phone_regex.match(text)
 
     def sentences(self, text, drop_stop_words):
