@@ -13,11 +13,11 @@ html
             div(class='left')
                 each sent, index in data
                     - var sentence = sent.sentence.join(' ')
-                    - var labels = ['...', 'EDUCATION', 'WORK EXPERIENCE', 'SKILLS', 'OTHERS']
+                    - var labels = ['', 'EDUCATION', 'WORK EXPERIENCE', 'SKILLS', 'OTHERS']
                     div(class='parent')
                         div(class='left-child')=sentence
                         div(class='right-child')
-                            select(onchange='updateLabel(this, ' + id + ',' + index + ')')
+                            select(onchange='updateLabel(this, "' + parentId + '", "' + id + '", "' + index + '")')
                                 each item in labels
                                     - var selected = true ? sent.label == item : false
                                     option(value=item, selected=selected)=item

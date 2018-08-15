@@ -6,7 +6,7 @@ class PythonServer(object):
     def sentences(self, text):
         return Spacy.sentences(self, text, True)
 
-    def sentences_from_file(self, filepath):
+    def sentences_from_file_lines(self, filepath):
         sents = []
         with open(filepath, encoding = 'utf8') as f:
             for line in f:

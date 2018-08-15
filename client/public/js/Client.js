@@ -9,20 +9,31 @@ function fetchResumes() {
     });
 }
 
+function fetchJobs() {
+    console.log('Fetching jobs from DB...');
+    $.get("http://localhost:3000/training/jobs", function(response) {
+        var output = "";
+        for (var i = 0; i < response.length; i++) {
+            output += "<div id=" + i + " ><a href=\"#\" onclick=\"fetchJob(" + i + ")\">" +  response[i] + "</a></div>";
+        }
+        $("#list").html(output);
+    });
+}
+
 function fetchResume(id) {
     console.log(`Fetching resumeId ${id} from DB...`);
     $(location).attr('href', `http://localhost:3000/training/resumes/${id}`);
 }
 
-function fetchJobs() {
-    console.log('Fetching jobs from DB...');
-    alert('fetchJobs() not implemented yet!');
+function fetchJob(id) {
+    console.log(`Fetching resumeId ${id} from DB...`);
+    $(location).attr('href', `http://localhost:3000/training/jobs/${id}`);
 }
 
-function updateLabel(option, resumeId, sentenceId) {
-    console.log(`Updating label ${option.value} for ${sentenceId} for resumeId ${resumeId}...`);
+function updateLabel(option, parentId, docId, sentenceId) {
+    console.log(`Updating label ${option.value} for ${sentenceId} for docId ${docId} in ${parentId}...`);
     $.ajax({
-        url: `http://localhost:3000/training/resumes/${resumeId}/sentences/${sentenceId}/edit`,
+        url: `http://localhost:3000/training/${parentId}/${docId}/sentences/${sentenceId}/edit`,
         type: 'POST',
         contentType: 'application/json',
         data: JSON.stringify({
