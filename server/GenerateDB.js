@@ -17,7 +17,15 @@ async function generateDB(srcFolder, destFolder, method) {
         if (fileNameSplit.pop() === 'txt') {
             console.log(`#${i} Persisting data for: ${fileName} in: ${destFolder}`);
 
-            var destFilePath = path.join(dbDir, fileNameSplit[0] + '.json');
+            var destFileName;
+            try {
+                destFileName = await PythonConnector.invoke('hash_file_name', fileNameSplit[0]);
+            }
+            catch (e) {
+                destFileName = fileNameSplit[0]
+            }
+
+            var destFilePath = path.join(dbDir, destFileName + '.json');
             if (fs.existsSync(destFilePath)) {
                 console.log('Already exists in DB');
             }
@@ -32,9 +40,9 @@ async function generateDB(srcFolder, destFolder, method) {
                         sentences = await PythonConnector.invoke('sentences', text);
                     }
 
-                    var data = [];
-                    sentences.forEach((sent) => data.push({sentence: sent, label: ''}));
-                    fs.writeFileSync(destFilePath, JSON.stringify(data));
+                    var content = [];
+                    sentences.forEach((sent) => content.push({sentence: sent, label: ''}));
+                    fs.writeFileSync(destFilePath, JSON.stringify({source: fileName, content: content}));
                 }
                 catch (e) {
                     console.log('Error in parsing:', fileName, e);
@@ -44,5 +52,9 @@ async function generateDB(srcFolder, destFolder, method) {
     }
 }
 
-generateDB('resumes-txt', 'resumes', 'sentences_from_file_lines');
-generateDB('jobs-txt', 'jobs', 'sentences');
+async function generate() {
+    await generateDB('resumes-txt', 'resumes', 'sentences_from_file_lines');
+    await generateDB('jobs-txt', 'jobs', 'sentences');
+}
+
+generate();

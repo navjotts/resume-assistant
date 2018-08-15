@@ -11,7 +11,7 @@ html
                 div(class='title')
                     p=title
             div(class='left')
-                each sent, index in data
+                each sent, index in sents
                     - var sentence = sent.sentence.join(' ')
                     - var labels = ['', 'EDUCATION', 'WORK EXPERIENCE', 'SKILLS', 'OTHERS']
                     div(class='parent')

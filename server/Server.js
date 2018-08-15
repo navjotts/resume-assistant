@@ -60,7 +60,7 @@ app.get('/training/resumes/:id', function(req, res, next) {
     res.render('document', {
         parentId: parent,
         id: resumeId,
-        data: resumeData,
+        sents: resumeData.content,
         title: fileName.split('.')[0]
     });
 });
@@ -76,7 +76,7 @@ app.get('/training/jobs/:id', function(req, res, next) {
     res.render('document', {
         parentId: parent,
         id: jobId,
-        data: jobData,
+        sents: jobData.content,
         title: fileName.split('.')[0]
     });
 });
@@ -94,9 +94,9 @@ app.post('/training/:parent/:docId/sentences/:sentenceId/edit', function(req, re
     var files = fs.readdirSync(dbDir);
     var fileName = files[docId];
     var docData = JSON.parse(fs.readFileSync(path.join(dbDir, fileName)));
-    docData[sentenceId].label = label;
+    docData.content[sentenceId].label = label;
     fs.writeFileSync(path.join(dbDir, fileName), JSON.stringify(docData));
-    res.json(docData[sentenceId]);
+    res.json(docData.content[sentenceId]);
 });
 
 app.get('*', function(req, res, next) {

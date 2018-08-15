@@ -1,8 +1,12 @@
+from hashlib import sha256
 import zerorpc
 
 from py.Spacy import Spacy
 
 class PythonServer(object):
+    def hash_file_name(self, filename):
+        return sha256(str(filename).encode('utf-8')).hexdigest()
+
     def sentences(self, text):
         return Spacy.sentences(self, text, True)
 
