@@ -20,8 +20,7 @@ async function generateDB(srcFolder, destFolder) {
             console.log(`#${i} Persisting data for: ${fileName}`);
 
             try {
-                var text = fs.readFileSync(path.join(srcDir, fileName)).toString();
-                var sentences = await PythonConnector.invoke('sentences', text);
+                var sentences = await PythonConnector.invoke('sentences_from_file', path.join(srcDir, fileName));
                 var data = [];
                 sentences.forEach((sent) => data.push({sentence: sent, label: ''}));
                 fs.writeFileSync(path.join(dbDir, fileName.split('.')[0] + '.json'), JSON.stringify(data));

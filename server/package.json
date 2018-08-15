@@ -22,6 +22,8 @@
     "object-assign": "^4.1.1",
     "pdf-to-text": "0.0.7",
     "pug": "^2.0.3",
-    "zerorpc": "^0.9.7"
+    "zerorpc": "^0.9.7",
+    "xmldom": "^0.1.22",
+    "jszip": "^3.0.0"
   }
 }

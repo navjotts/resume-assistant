@@ -1,6 +1,7 @@
 **/node_modules/*
 **/npm-debug.log
 **/data/**/**/*.pdf
+**/data/**/**/*.docx
 **/data/**/**/*.csv
 **/data/**/**/*.txt
 **/data/**/**/*.json
