@@ -29,9 +29,7 @@ function updateLabel(option, resumeId, sentenceId) {
             label:option.value
         }),
         dataType: 'json',
-        success: function(response) {
-            fetchResume(resumeId);
-        }
+        success: function(response) {}
     });
 }
 
