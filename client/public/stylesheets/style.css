@@ -58,14 +58,21 @@
     vertical-align: middle;
 }
 
-.top-left {
+.prev-button {
     position: absolute;
     top: 44px;
     left: 44px;
 }
 
-.top-right {
+.next-button {
     position: absolute;
     top: 44px;
     right: 44px;
+}
+
+.home-button {
+    position: absolute;
+    top: 10px;
+    left: 44px;
+    font-size: 12px;
 }

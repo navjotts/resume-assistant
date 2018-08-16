@@ -1,3 +1,7 @@
+function loadTraining() {
+    $(location).attr('href', `http://localhost:3000/training`);
+}
+
 function fetchResumes() {
     $.get("http://localhost:3000/training/resumes", function(response) {
         var output = "";
