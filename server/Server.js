@@ -61,7 +61,7 @@ app.get('/training/resumes/:id', function(req, res, next) {
         parentId: parent,
         id: resumeId,
         sents: resumeData.content,
-        title: fileName.split('.')[0]
+        title: 'Resume#' + resumeId
     });
 });
 
@@ -77,7 +77,7 @@ app.get('/training/jobs/:id', function(req, res, next) {
         parentId: parent,
         id: jobId,
         sents: jobData.content,
-        title: fileName.split('.')[0]
+        title: 'Job#' + jobId
     });
 });
 

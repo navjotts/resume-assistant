@@ -17,15 +17,7 @@ async function generateDB(srcFolder, destFolder, method) {
         if (fileNameSplit.pop() === 'txt') {
             console.log(`#${i} Persisting data for: ${fileName} in: ${destFolder}`);
 
-            var destFileName;
-            try {
-                destFileName = await PythonConnector.invoke('hash_file_name', fileNameSplit[0]);
-            }
-            catch (e) {
-                destFileName = fileNameSplit[0]
-            }
-
-            var destFilePath = path.join(dbDir, destFileName + '.json');
+            var destFilePath = path.join(dbDir, fileNameSplit[0] + '.json');
             if (fs.existsSync(destFilePath)) {
                 console.log('Already exists in DB');
             }
