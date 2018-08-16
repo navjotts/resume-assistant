@@ -8,12 +8,13 @@ class PythonServer(object):
         return sha256(str(filename).encode('utf-8')).hexdigest()
 
     def sentences(self, text):
-        return Spacy.sentences(self, text, True)
+        return Spacy.sentences(self, text, False)
 
     def sentences_from_file_lines(self, filepath):
         sents = []
         with open(filepath, encoding = 'utf8') as f:
             for line in f:
+                # todo we are assuming incorrectly that each paragraph can be treated as a single sentence
                 sentence = Spacy.tokenize(self, line, False)
                 if sentence:
                     sents.append(sentence)

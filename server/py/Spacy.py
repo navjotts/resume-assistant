@@ -29,6 +29,8 @@ class Spacy(object):
             if not t.is_space and not (drop_stop_words and t.is_stop):
                 sentence.append(Spacy.anonymize(self, t))
 
+        if len(sents) == 0 and len(sentence) > 0:
+            sents.append(sentence)
         return sents
 
     def tokenize(self, text, drop_stop_words):
