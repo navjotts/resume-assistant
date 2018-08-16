@@ -55,14 +55,21 @@ app.get('/training/resumes/:id', function(req, res, next) {
     var resumeId = req.params.id;
     var dbDir = path.join(__dirname, 'data', 'DB', parent);
     var files = fs.readdirSync(dbDir);
-    var fileName = files[resumeId];
-    var resumeData = JSON.parse(fs.readFileSync(path.join(dbDir, fileName)));
-    res.render('document', {
-        parentId: parent,
-        id: resumeId,
-        sents: resumeData.content,
-        title: 'Resume#' + resumeId
-    });
+
+    if (resumeId < 0 || resumeId >= files.length) {
+        console.log('resumeId doesn\'t exist', resumeId);
+        res.send(404);
+    }
+    else {
+        var fileName = files[resumeId];
+        var resumeData = JSON.parse(fs.readFileSync(path.join(dbDir, fileName)));
+        res.render('document', {
+            parentId: parent,
+            id: resumeId,
+            sents: resumeData.content,
+            title: 'Resume#' + resumeId
+        });
+    }
 });
 
 app.get('/training/jobs/:id', function(req, res, next) {
@@ -71,14 +78,21 @@ app.get('/training/jobs/:id', function(req, res, next) {
     var jobId = req.params.id;
     var dbDir = path.join(__dirname, 'data', 'DB', parent);
     var files = fs.readdirSync(dbDir);
-    var fileName = files[jobId];
-    var jobData = JSON.parse(fs.readFileSync(path.join(dbDir, fileName)));
-    res.render('document', {
-        parentId: parent,
-        id: jobId,
-        sents: jobData.content,
-        title: 'Job#' + jobId
-    });
+
+    if (jobId < 0 || jobId >= files.length) {
+        console.log('jobId doesn\'t exist', jobId);
+        res.send(404);
+    }
+    else {
+        var fileName = files[jobId];
+        var jobData = JSON.parse(fs.readFileSync(path.join(dbDir, fileName)));
+        res.render('document', {
+            parentId: parent,
+            id: jobId,
+            sents: jobData.content,
+            title: 'Job#' + jobId
+        });
+    }
 });
 
 
