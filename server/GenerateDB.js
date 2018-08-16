@@ -28,8 +28,7 @@ async function generateDB(srcFolder, destFolder, method) {
                         sentences = await PythonConnector.invoke(method, path.join(srcDir, fileName));
                     }
                     else if (method === 'sentences') {
-                        var text = fs.readFileSync(path.join(srcDir, fileName)).toString();
-                        sentences = await PythonConnector.invoke('sentences', text);
+                        sentences = await PythonConnector.invoke(method, fs.readFileSync(path.join(srcDir, fileName)).toString());
                     }
 
                     var content = [];
