@@ -53,10 +53,10 @@ function sampleJobs(fileName) {
     }
 
     if (fileName.includes('dice')) {
-        return Math.floor((Math.random() * 20) + 1) === 20 ? true : false;
+        return Math.floor((Math.random() * 100) + 1) === 100 ? true : false;
     }
 
-    return Math.floor((Math.random() * 5) + 1) === 5 ? true : false;
+    return Math.floor((Math.random() * 100) + 1) === 100 ? true : false;
 }
 
 async function generate() {
