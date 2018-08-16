@@ -13,7 +13,7 @@ html
             div(class='left')
                 each sent, index in sents
                     - var sentence = sent.sentence.join(' ')
-                    - var labels = ['', 'EDUCATION', 'WORK EXPERIENCE', 'SKILLS', 'OTHERS']
+                    - var labels = ['', 'EDUCATION', 'WORK EXPERIENCE', 'PROJECT/SKILL', 'OTHERS']
                     div(class='parent')
                         div(class='left-child')=sentence
                         div(class='right-child')
