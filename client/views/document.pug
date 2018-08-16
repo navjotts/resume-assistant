@@ -7,6 +7,8 @@ html
         script(src='/js/Client.js')
     body
         div(class='container-fluid')
+            a(class='top-left', href='#', onclick='fetchDoc("' + parentId + '", "' + (Number(id) - 1) + '")')='< prev'
+            a(class='top-right', href='#', onclick='fetchDoc("' + parentId + '", "' + (Number(id) + 1) + '")')='next >'
             div(class='center')
                 div(class='title')
                     p=title

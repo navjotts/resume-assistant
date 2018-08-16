@@ -26,6 +26,21 @@ function fetchJob(id) {
     $(location).attr('href', `http://localhost:3000/training/jobs/${id}`);
 }
 
+function fetchDoc(parentId, id) {
+    switch (parentId) {
+        case 'resumes':
+            fetchResume(id);
+            break;
+
+        case 'jobs':
+            fetchJob(id);
+            break;
+
+        default:
+            break;
+    }
+}
+
 function updateLabel(option, parentId, docId, sentenceId) {
     $.ajax({
         url: `http://localhost:3000/training/${parentId}/${docId}/sentences/${sentenceId}/edit`,

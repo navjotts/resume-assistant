@@ -58,8 +58,14 @@
     vertical-align: middle;
 }
 
-.back-button {
+.top-left {
     position: absolute;
     top: 44px;
     left: 44px;
+}
+
+.top-right {
+    position: absolute;
+    top: 44px;
+    right: 44px;
 }
