@@ -15,6 +15,10 @@ async function generateDB(srcFolder, destFolder, method) {
         var fileName = files[i];
         var fileNameSplit = fileName.split('.');
         if (fileNameSplit.pop() === 'txt') {
+            if (!sampleJobs(fileName)) {
+                continue;
+            }
+
             console.log(`#${i} Persisting data for: ${fileName} in: ${destFolder}`);
 
             var destFilePath = path.join(dbDir, fileNameSplit[0] + '.json');
@@ -41,6 +45,18 @@ async function generateDB(srcFolder, destFolder, method) {
             }
         }
     }
+}
+
+function sampleJobs(fileName) {
+    if (fileName.includes('google')) {
+        return true;
+    }
+
+    if (fileName.includes('dice')) {
+        return Math.floor((Math.random() * 20) + 1) === 20 ? true : false;
+    }
+
+    return Math.floor((Math.random() * 5) + 1) === 5 ? true : false;
 }
 
 async function generate() {
