@@ -17,7 +17,8 @@ class SentenceClassifier(object):
             SentenceClassifier.models[name] = model
             print('Training ended ...')
 
-            #model.quantize()
+            print("Quantizing ...")
+            model.quantize()
 
             result = model.test(labelPath)
             result = {'precision': result[1],  'recall': result[2], 'examples': result[0]}
