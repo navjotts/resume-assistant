@@ -2,6 +2,7 @@ from hashlib import sha256
 import zerorpc
 
 from py.Spacy import Spacy
+from py.SentenceClassifier import SentenceClassifier
 
 class PythonServer(object):
     def hash_file_name(self, filename):
@@ -19,6 +20,12 @@ class PythonServer(object):
                 if sentence:
                     sents.append(sentence)
         return sents
+
+    def train_sentence_classifier(self, name, path, samples, labels):
+        return SentenceClassifier.train(self, name, path, samples, labels)
+
+    def test_sentence_classifier(self, name, path, samples, labels):
+        SentenceClassifier.test(self, name, path, samples, labels)
 
 
 try:

@@ -12,17 +12,23 @@ async function convertDocxToTxt(srcFolder, destFolder) {
         if (fileNameSplit.pop() === 'docx') {
             console.log(`#${i} Parsing: ${fileName}`);
 
-            try {
-                var file = fs.readFileSync(path.join(__dirname, 'data', srcFolder, fileName));
-                var doc = await DocxParser.parseAsync(file);
-                var text = '';
-                doc.forEach(para => text = text + (text.length ? '\n' : '') + para.text);
-                if (text) {
-                    fs.writeFileSync(path.join(__dirname, 'data', destFolder, fileNameSplit[0] + '.txt'), text);
-                }
+            var destFilePath = path.join(__dirname, 'data', destFolder, fileNameSplit[0] + '.txt');
+            if (fs.existsSync(destFilePath)) {
+                console.log('Already exists in DB');
             }
-            catch (e) {
-                console.log('Error in parsing -', fileName, e);
+            else {
+                try {
+                    var file = fs.readFileSync(path.join(__dirname, 'data', srcFolder, fileName));
+                    var doc = await DocxParser.parseAsync(file);
+                    var text = '';
+                    doc.forEach(para => text = text + (text.length ? '\n' : '') + para.text);
+                    if (text) {
+                        fs.writeFileSync(destFilePath, text);
+                    }
+                }
+                catch (e) {
+                    console.log('Error in parsing -', fileName, e);
+                }
             }
         }
     }

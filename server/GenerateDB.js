@@ -15,7 +15,7 @@ async function generateDB(srcFolder, destFolder, method) {
         var fileName = files[i];
         var fileNameSplit = fileName.split('.');
         if (fileNameSplit.pop() === 'txt') {
-            if (!sampleJobs(fileName)) {
+            if (!sampleSet(destFolder, fileName)) {
                 continue;
             }
 
@@ -47,16 +47,20 @@ async function generateDB(srcFolder, destFolder, method) {
     }
 }
 
-function sampleJobs(fileName) {
-    if (fileName.includes('google')) {
-        return true;
-    }
+function sampleSet(destFolder, fileName) {
+    if (destFolder === 'jobs') {
+        if (fileName.includes('google')) {
+            return true;
+        }
 
-    if (fileName.includes('dice')) {
+        if (fileName.includes('dice')) {
+            return Math.floor((Math.random() * 100) + 1) === 100 ? true : false;
+        }
+
         return Math.floor((Math.random() * 100) + 1) === 100 ? true : false;
     }
 
-    return Math.floor((Math.random() * 100) + 1) === 100 ? true : false;
+    return true;
 }
 
 async function generate() {

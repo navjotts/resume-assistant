@@ -35,8 +35,8 @@ app.get('/training/resumes', function(req, res, next) {
     console.log(req.url);
     var resumes = [];
     var dbDir = path.join(__dirname, 'data', 'DB', 'resumes');
-    var files = fs.readdirSync(dbDir);
-    files.forEach((fileName) => resumes.push(fileName.split('.')[0]));
+    var files = fs.readdirSync(dbDir).filter(fileName => fileName.split('.').pop() === 'json');
+    files.forEach(fileName => resumes.push(fileName.split('.')[0]));
 	res.json(resumes);
 });
 
@@ -44,8 +44,8 @@ app.get('/training/jobs', function(req, res, next) {
     console.log(req.url);
     var jobs = [];
     var dbDir = path.join(__dirname, 'data', 'DB', 'jobs');
-    var files = fs.readdirSync(dbDir);
-    files.forEach((fileName) => jobs.push(fileName.split('.')[0]));
+    var files = fs.readdirSync(dbDir).filter(fileName => fileName.split('.').pop() === 'json');
+    files.forEach(fileName => jobs.push(fileName.split('.')[0]));
 	res.json(jobs);
 });
 
@@ -54,7 +54,7 @@ app.get('/training/resumes/:id', function(req, res, next) {
     var parent = 'resumes';
     var resumeId = req.params.id;
     var dbDir = path.join(__dirname, 'data', 'DB', parent);
-    var files = fs.readdirSync(dbDir);
+    var files = fs.readdirSync(dbDir).filter(fileName => fileName.split('.').pop() === 'json');
 
     if (resumeId < 0 || resumeId >= files.length) {
         console.log('resumeId doesn\'t exist', resumeId);
@@ -77,7 +77,7 @@ app.get('/training/jobs/:id', function(req, res, next) {
     var parent = 'jobs';
     var jobId = req.params.id;
     var dbDir = path.join(__dirname, 'data', 'DB', parent);
-    var files = fs.readdirSync(dbDir);
+    var files = fs.readdirSync(dbDir).filter(fileName => fileName.split('.').pop() === 'json');
 
     if (jobId < 0 || jobId >= files.length) {
         console.log('jobId doesn\'t exist', jobId);
@@ -105,7 +105,7 @@ app.post('/training/:parent/:docId/sentences/:sentenceId/edit', function(req, re
     var label = req.body.label;
 
     var dbDir = path.join(__dirname, 'data', 'DB', parent);
-    var files = fs.readdirSync(dbDir);
+    var files = fs.readdirSync(dbDir).filter(fileName => fileName.split('.').pop() === 'json');
     var fileName = files[docId];
     var docData = JSON.parse(fs.readFileSync(path.join(dbDir, fileName)));
     docData.content[sentenceId].label = label;
