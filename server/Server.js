@@ -162,7 +162,15 @@ app.get('/analyze/:resumeFile/:jobFile', async function(req, res, next) {
         sentences.forEach(sent => samples.push(sent.join(' ')));
         var resumeModelPath = path.join(__dirname, 'data', 'models', 'resumes');
         var labelsPredicted = await PythonConnector.invoke('classify_sentences', 'resumes', resumeModelPath, samples);
-        res.json(labelsPredicted);
+
+        console.assert(labelsPredicted.length == samples.length);
+        var data = []
+        samples.forEach((sent, index) => data.push({
+            sentence: sent,
+            label: labelsPredicted[index][0],
+            confidence: labelsPredicted[index][1]
+        }));
+        res.json(data);
     }
     catch (e) {
         console.log('error in /analyze', e);

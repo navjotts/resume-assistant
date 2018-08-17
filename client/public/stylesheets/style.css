@@ -124,3 +124,11 @@
   font-size: 13px;
   color: #3a7cc9;
 }
+
+.document {
+    margin: auto;
+    margin: 50px;
+    margin-top: 100px;
+    text-align: center;
+    font-size: 14px;
+}

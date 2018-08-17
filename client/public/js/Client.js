@@ -45,7 +45,11 @@ function analyzeFiles() {
         if (resumeFileName && jobFileName) {
             var files = {resume: resumeFileName, job: jobFileName};
             $.get(`http://localhost:3000/analyze/${resumeFileName}/${jobFileName}`, function(response) {
-                console.log(response);
+                var output = "";
+                for (var i = 0; i < response.length; i++) {
+                    output += "<div class=\"sentence\" ><div class=\"left-child\" >" + response[i].sentence + "</div><div class=\"right-child\" >" + response[i].label + "(" + response[i].confidence + "%)" + "</div></div>";
+                }
+                $("#document").html(output);
             });
         }
     }
