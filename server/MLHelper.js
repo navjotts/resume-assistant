@@ -69,8 +69,8 @@ async function classifyResume(name) {
         var samples = [];
         sentences.forEach(sent => samples.push(sent.join(' ')));
 
-        var modelPath = path.join(__dirname, 'data', 'models', name);
-        var labelsPredicted = await PythonConnector.invoke('classify_sentences', name, modelPath, samples);
+        var modelPath = path.join(__dirname, 'data', 'models', 'resumes');
+        var labelsPredicted = await PythonConnector.invoke('classify_sentences', 'resumes', modelPath, samples);
         console.log(labelsPredicted);
     }
     catch (e) {
@@ -85,8 +85,8 @@ async function classifyResume(name) {
 async function start() {
     //await train('resumes');
     //await train('jobs');
-    await test('resumes');
-    //await classifyResume('resumes')
+    //await test('resumes');
+    //await classifyResume()
 }
 
 start();
