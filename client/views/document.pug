@@ -17,7 +17,7 @@ html
                 each sent, index in sents
                     - var sentence = sent.sentence.join(' ')
                     - var labels = ['', 'EDUCATION', 'WORK EXPERIENCE', 'PROJECT/SKILL', 'OTHERS']
-                    div(class='parent')
+                    div(class='sentence')
                         div(class='left-child')=sentence
                         div(class='right-child')
                             select(onchange='updateLabel(this, "' + parentId + '", "' + id + '", "' + index + '")')

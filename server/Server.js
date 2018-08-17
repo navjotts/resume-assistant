@@ -3,6 +3,17 @@ const path = require('path');
 const express = require('express');
 const bodyParser = require('body-parser');
 const assign = require('object-assign');
+const multer = require('multer');
+
+var storage = multer.diskStorage({
+    destination: function(req, file, callback) {
+        callback(null, path.join(__dirname, 'uploads'));
+    },
+    filename: function(req, file, callback) {
+        callback(null, file.originalname);
+    }
+});
+var upload = multer({storage: storage}, {limits: {files: 1}}).single('userFile');
 
 var app = express();
 
@@ -111,6 +122,20 @@ app.post('/training/:parent/:docId/sentences/:sentenceId/edit', function(req, re
     docData.content[sentenceId].label = label;
     fs.writeFileSync(path.join(dbDir, fileName), JSON.stringify(docData));
     res.json(docData.content[sentenceId]);
+});
+
+
+// TODO need error handling
+app.post('/upload', function(req, res, next) {
+    console.log(req.url);
+    upload(req, res, function(err) {
+        if (err) {
+            res.end("Error uploading file");
+        }
+        else {
+            res.end("File upload success");
+        }
+    });
 });
 
 app.get('*', function(req, res, next) {

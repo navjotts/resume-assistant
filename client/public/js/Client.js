@@ -39,10 +39,37 @@ function updateLabel(option, parentId, docId, sentenceId) {
     });
 }
 
-function uploadResume() {
-    alert('uploadResume() not implemented yet!');
-}
+function uploadFiles() {
+    var resumeFiles = $("#resume-file")[0].files;
+    var jobFiles = $("#job-file")[0].files;
+    if (resumeFiles.length !== 1 || jobFiles.length !== 1) {
+        alert('Please select 1 resume and 1 job description to analyze!');
+        return;
+    }
 
-function uploadJob() {
-    alert('uploadJob() not implemented yet!');
+    var resumeFileData = new FormData();
+    resumeFileData.append('userFile', resumeFiles[0]);
+    $.ajax({
+        url: "http://localhost:3000/upload",
+        type: 'POST',
+        data: resumeFileData,
+        processData: false,
+        contentType: false,
+        success: function(response) {
+            console.log("uploadFiles()", response)
+        }
+    });
+
+    var jobFileData = new FormData();
+    jobFileData.append('userFile', jobFiles[0]);
+    $.ajax({
+        url: "http://localhost:3000/upload",
+        type: 'POST',
+        data: jobFileData,
+        processData: false,
+        contentType: false,
+        success: function(response) {
+            console.log("uploadFiles()", response)
+        }
+    });
 }

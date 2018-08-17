@@ -36,12 +36,32 @@
     color: #000;
 }
 
-.parent {
+.sentence {
     display: flex;
     justify-content: space-between;
     padding-bottom: 0.5rem;
     padding-top: 0.5rem;
     border-bottom: 1px dashed #F0F0F0;
+}
+
+.upload {
+    display: flex;
+    justify-content: space-between;
+    padding-bottom: 0.5rem;
+    padding-top: 0.5rem;
+    text-align: center;
+}
+
+.upload-resume {
+    flex: 1;
+    width: 0;
+    vertical-align: middle;
+}
+
+.upload-job {
+    flex: 1;
+    width: 0;
+    vertical-align: middle;
 }
 
 .left-child {
@@ -75,4 +95,10 @@
     top: 10px;
     left: 44px;
     font-size: 12px;
+}
+
+.file-heading {
+    font-size: 20px;
+    /* font-weight: bold; */
+    vertical-align: middle;
 }
