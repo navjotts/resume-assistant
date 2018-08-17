@@ -50,6 +50,7 @@ function analyzeFiles() {
                     output += "<div class=\"sentence\" ><div class=\"left-child\" >" + response[i].sentence + "</div><div class=\"right-child\" >" + response[i].label + " (" + response[i].confidence + "%)" + "</div></div>";
                 }
                 $("#document").html(output);
+                $("#analyze_button").text('START ANALYZING');
             });
         }
     }
@@ -61,6 +62,7 @@ function analyzeFiles() {
         return;
     }
 
+    $("#analyze_button").text('ANALYZING...');
     var resumeFileData = new FormData();
     resumeFileData.append('userFile', resumeFiles[0]);
     $.ajax({
