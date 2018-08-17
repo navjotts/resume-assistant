@@ -106,16 +106,15 @@
     vertical-align: middle;
 }
 
-.button_start_analyzing {
+button.button_start_analyzing {
     width: 219px;
     height: 40px;
     border-radius: 2px;
     background-color: #4a90e2;
-    /* font-weight: bold; */
     color: #ffffff;
 }
 
-.button_choose_file {
+button.button_choose_file {
   width: 283px;
   height: 40px;
   border-radius: 2px;
@@ -124,6 +123,8 @@
   font-size: 13px;
   color: #3a7cc9;
 }
+
+button:focus {outline:0;}
 
 .document {
     margin: auto;
