@@ -40,8 +40,8 @@ class SentenceClassifier(object):
         model = SentenceClassifier.models[name]
         print('Testing using model', model)
 
-        pred = model.predict(list(samples))
-        labels_pred = [each[0][len('__label__'):] for each in pred[0]]
+        pred, prob = model.predict(list(samples))
+        labels_pred = [each[0][len('__label__'):] for each in pred]
         error = np.array([int(labels_pred[i] != label) for i, label in enumerate(labels)])
         print("Number of misclassifications: %d (out of %d)" % (sum(error != 0), len(error)))
         print("Error: ", sum(error != 0)/len(error))
