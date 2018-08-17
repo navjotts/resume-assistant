@@ -1,9 +1,8 @@
-# Aug1, 2018
 ## Approach
 Both a resume and a job description can be treated as a structured document consisting of a given number of parts, let's say:<br/>
 * Education
 * Work Experience
-* Expertise
+* Skills/Projects
 * Others
 
 The problem statement then, can be broken down into 2 steps:<br/>
