@@ -15,7 +15,7 @@ function collectData(parent, name) {
             var docData = JSON.parse(fs.readFileSync(path.join(dbDir, fileName)));
             docData.content.forEach(each => {
                 samples.push(each.sentence.join(' '));
-                labels.push(each.label);
+                labels.push(each.label === "WORK EXPERIENCE" ? "EXPERIENCE" : each.label); // TODO https://github.com/navjotts/resume-assistant/issues/5
             });
         }
     }
@@ -83,8 +83,8 @@ async function classifyResume(name) {
 }
 
 async function start() {
-    //await train('resumes');
     //await train('jobs');
+    //await train('resumes');
     //await test('resumes');
     //await classifyResume()
 }

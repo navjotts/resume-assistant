@@ -49,8 +49,8 @@ body {
 .sentence {
     display: flex;
     justify-content: space-between;
-    padding-bottom: 0.5rem;
-    padding-top: 0.5rem;
+    padding: 10px;
+    padding-left: 20px;
     border-bottom: 1px dashed #F0F0F0;
 }
 
@@ -143,4 +143,6 @@ button:focus {outline:0;}
     margin-top: 100px;
     text-align: center;
     font-size: 14px;
+    background-color: #fbfbfb;
+    border-radius: 2px;
 }
