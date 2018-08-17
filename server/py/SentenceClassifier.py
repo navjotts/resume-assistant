@@ -34,18 +34,10 @@ class SentenceClassifier(object):
         return result
 
     def test(self, name, path, samples, labels):
-        model = None
         if name not in SentenceClassifier.models:
-            try:
-                model = fastText.load_model(path + '.bin')
-            except:
-                pass
+            SentenceClassifier.load(self, name, path)
 
-            if not model:
-                print('Unable to locate model', name)
-                return
-
-        SentenceClassifier.models[name] = model
+        model = SentenceClassifier.models[name]
         print('Testing using model', model)
 
         pred = model.predict(list(samples))
@@ -53,6 +45,16 @@ class SentenceClassifier(object):
         error = np.array([int(labels_pred[i] != label) for i, label in enumerate(labels)])
         print("Number of misclassifications: %d (out of %d)" % (sum(error != 0), len(error)))
         print("Error: ", sum(error != 0)/len(error))
+
+    def load(self, name, path):
+        model = None
+        if name not in SentenceClassifier.models:
+            try:
+                model = fastText.load_model(path + '.bin')
+            except:
+                print('Unable to locate model', name)
+
+        SentenceClassifier.models[name] = model
 
     def generate_data_file(self, file, samples, labels):
         text = ''
