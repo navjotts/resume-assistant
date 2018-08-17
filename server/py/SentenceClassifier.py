@@ -1,7 +1,7 @@
 import os
 import tempfile
 import fastText
-from sklearn.metrics import precision_recall_fscore_support
+import numpy as np
 
 class SentenceClassifier(object):
     models = {}
@@ -50,7 +50,9 @@ class SentenceClassifier(object):
 
         pred = model.predict(list(samples))
         labels_pred = [each[0][len('__label__'):] for each in pred[0]]
-        print(list(zip(labels, labels_pred)))
+        error = np.array([int(labels_pred[i] != label) for i, label in enumerate(labels)])
+        print("Number of misclassifications: %d (out of %d)" % (sum(error != 0), len(error)))
+        print("Error: ", sum(error != 0)/len(error))
 
     def generate_data_file(self, file, samples, labels):
         text = ''
