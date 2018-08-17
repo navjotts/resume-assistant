@@ -42,9 +42,9 @@ class SentenceClassifier(object):
 
         pred, prob = model.predict(list(samples))
         labels_pred = [each[0][len('__label__'):] for each in pred]
-        error = np.array([int(labels_pred[i] != label) for i, label in enumerate(labels)])
-        print("Number of misclassifications: %d (out of %d)" % (sum(error != 0), len(error)))
-        print("Error: ", sum(error != 0)/len(error))
+        accuracy = np.array([int(labels_pred[i] == label) for i, label in enumerate(labels)])
+        print("Number of misclassifications: %d (out of %d)" % (sum(accuracy == 0), len(accuracy)))
+        print("Accuracy:", sum(accuracy != 0)/len(accuracy))
 
     def predict(self, name, path, samples):
         if name not in SentenceClassifier.models:
