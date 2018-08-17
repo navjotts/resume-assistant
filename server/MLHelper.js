@@ -50,7 +50,7 @@ async function test(name) {
     }
 }
 
-async function predictResume(name) {
+async function classifyResume(name) {
     var srcDir = path.join(__dirname, 'data', 'resumes-docx')
     var files = fs.readdirSync(srcDir);
     var randomFileId = Math.floor(Math.random() * files.length);
@@ -70,11 +70,11 @@ async function predictResume(name) {
         sentences.forEach(sent => samples.push(sent.join(' ')));
 
         var modelPath = path.join(__dirname, 'data', 'models', name);
-        var labelsPredicted = await PythonConnector.invoke('predict_sentence_classifier', name, modelPath, samples);
+        var labelsPredicted = await PythonConnector.invoke('classify_sentences', name, modelPath, samples);
         console.log(labelsPredicted);
     }
     catch (e) {
-        console.log('Error in predictResume -', fileName, e);
+        console.log('Error in classifyResume -', fileName, e);
     }
 
     if (fs.existsSync(tempFilePath)) {
@@ -85,8 +85,8 @@ async function predictResume(name) {
 async function start() {
     //await train('resumes');
     //await train('jobs');
-    //await test('resumes');
-    await predictResume('resumes')
+    await test('resumes');
+    //await classifyResume('resumes')
 }
 
 start();

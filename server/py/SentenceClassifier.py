@@ -46,7 +46,7 @@ class SentenceClassifier(object):
         print("Number of misclassifications: %d (out of %d)" % (sum(accuracy == 0), len(accuracy)))
         print("Accuracy:", sum(accuracy != 0)/len(accuracy))
 
-    def predict(self, name, path, samples):
+    def classify(self, name, path, samples):
         if name not in SentenceClassifier.models:
             SentenceClassifier.load(self, name, path)
 

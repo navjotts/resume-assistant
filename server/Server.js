@@ -161,7 +161,7 @@ app.get('/analyze/:resumeFile/:jobFile', async function(req, res, next) {
         var samples = [];
         sentences.forEach(sent => samples.push(sent.join(' ')));
         var resumeModelPath = path.join(__dirname, 'data', 'models', 'resumes');
-        var labelsPredicted = await PythonConnector.invoke('predict_sentence_classifier', 'resumes', resumeModelPath, samples);
+        var labelsPredicted = await PythonConnector.invoke('classify_sentences', 'resumes', resumeModelPath, samples);
         res.json(labelsPredicted);
     }
     catch (e) {
