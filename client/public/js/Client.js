@@ -47,7 +47,7 @@ function analyzeFiles() {
             $.get(`http://localhost:3000/analyze/${resumeFileName}/${jobFileName}`, function(response) {
                 var output = "";
                 for (var i = 0; i < response.length; i++) {
-                    output += "<div class=\"sentence\" ><div class=\"left-child\" >" + response[i].sentence + "</div><div class=\"right-child\" >" + response[i].label + "(" + response[i].confidence + "%)" + "</div></div>";
+                    output += "<div class=\"sentence\" ><div class=\"left-child\" >" + response[i].sentence + "</div><div class=\"right-child\" >" + response[i].label + " (" + response[i].confidence + "%)" + "</div></div>";
                 }
                 $("#document").html(output);
             });
