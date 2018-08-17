@@ -14,12 +14,16 @@ html
                     div(class='upload')
                         div(class='upload-resume')
                             div(class='no-display')
-                                input(id='resume-file', class='no-display', type='file', accept='application/vnd.openxmlformats-officedocument.wordprocessingml.document', name='userFile')
+                                input(id='resume-file', class='no-display', type='file', accept='application/vnd.openxmlformats-officedocument.wordprocessingml.document', name='userFile', onchange='filePicked("' + 'resume-file' + '","' + 'resume-label' + '")')
                             button(class='button_choose_file', type='button', onclick='showFilePickerForInput("' + 'resume-file' + '")')='Choose Resume'
+                            div()
+                                label(id='resume-label', class='upload-label')='.docx only'
                         div(class='upload-job')
                             div(class='no-display')
-                                input(id='job-file', class='no-display', type='file', accept='text/plain', name='userFile')
+                                input(id='job-file', class='no-display', type='file', accept='text/plain', name='userFile', onchange='filePicked("' + 'job-file' + '","' + 'job-label' + '")')
                             button(class='button_choose_file', type='button', onclick='showFilePickerForInput("' + 'job-file' + '")')='Choose Job'
+                            div()
+                                label(id='job-label', class='upload-label')='.txt only'
                     div()
                         button(class='button_start_analyzing', type='button', onclick='analyzeFiles()')='START ANALYZING'
                     div(id='document', class='document')
