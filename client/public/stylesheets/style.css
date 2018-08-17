@@ -170,6 +170,7 @@ body {
 button.button_start_analyzing {
     width: 219px;
     height: 40px;
+    border: solid 1px #4a90e2;
     border-radius: 2px;
     background-color: #4a90e2;
     color: #ffffff;
