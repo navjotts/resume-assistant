@@ -46,6 +46,19 @@ class SentenceClassifier(object):
         print("Number of misclassifications: %d (out of %d)" % (sum(error != 0), len(error)))
         print("Error: ", sum(error != 0)/len(error))
 
+    def predict(self, name, path, samples):
+        if name not in SentenceClassifier.models:
+            SentenceClassifier.load(self, name, path)
+
+        model = SentenceClassifier.models[name]
+        print('Predicting using model', model)
+
+        pred, prob = model.predict(list(samples))
+        labels_pred = [each[0][len('__label__'):] for each in pred]
+        prob_pred = [each[0] for each in prob]
+
+        return list(zip(labels_pred, prob_pred))
+
     def load(self, name, path):
         model = None
         if name not in SentenceClassifier.models:

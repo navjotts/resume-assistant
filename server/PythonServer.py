@@ -27,6 +27,8 @@ class PythonServer(object):
     def test_sentence_classifier(self, name, path, samples, labels):
         SentenceClassifier.test(self, name, path, samples, labels)
 
+    def predict_sentence_classifier(self, name, path, samples):
+        return SentenceClassifier.predict(self, name, path, samples)
 
 try:
     s = zerorpc.Server(PythonServer())
