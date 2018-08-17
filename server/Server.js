@@ -5,6 +5,9 @@ const bodyParser = require('body-parser');
 const assign = require('object-assign');
 const multer = require('multer');
 
+const PythonConnector = require('./PythonConnector.js');
+const DocxParser = require('./DocxParser.js');
+
 var storage = multer.diskStorage({
     destination: function(req, file, callback) {
         callback(null, path.join(__dirname, 'uploads'));
@@ -134,6 +137,42 @@ app.post('/upload', function(req, res, next) {
         }
         else {
             res.end("File upload success");
+        }
+    });
+});
+
+app.get('/analyze/:resumeFile/:jobFile', async function(req, res, next) {
+    console.log(req.url);
+    var resumeFileName = req.params.resumeFile;
+    var resumeFilePath = path.join(__dirname, 'uploads', resumeFileName);
+    var jobFileName = req.params.jobFile;
+    var jobFilePath = path.join(__dirname, 'uploads', jobFileName);
+
+    try {
+        var resumeFile = fs.readFileSync(resumeFilePath);
+        var resumeDoc = await DocxParser.parseAsync(resumeFile);
+        var text = '';
+        resumeDoc.forEach(para => text = text + (text.length ? '\n' : '') + para.text);
+
+        var tempFilePath = path.join(__dirname, 'uploads', resumeFileName.split('.')[0] + '.txt');
+        fs.writeFileSync(tempFilePath, text);
+        var sentences = await PythonConnector.invoke('sentences_from_file_lines', tempFilePath);
+
+        var samples = [];
+        sentences.forEach(sent => samples.push(sent.join(' ')));
+        var resumeModelPath = path.join(__dirname, 'data', 'models', 'resumes');
+        var labelsPredicted = await PythonConnector.invoke('predict_sentence_classifier', 'resumes', resumeModelPath, samples);
+        res.json(labelsPredicted);
+    }
+    catch (e) {
+        console.log('error in /analyze', e);
+        res.send(404);
+    }
+
+    // don't keep the uploaded files around (think about it later)
+    [resumeFilePath, jobFilePath, tempFilePath].forEach(each => {
+        if (fs.existsSync(each)) {
+            fs.unlinkSync(each);
         }
     });
 });

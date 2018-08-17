@@ -39,7 +39,17 @@ function updateLabel(option, parentId, docId, sentenceId) {
     });
 }
 
-function uploadFiles() {
+function analyzeFiles() {
+    var resumeFileName, jobFileName;
+    function analyzeIfReady() {
+        if (resumeFileName && jobFileName) {
+            var files = {resume: resumeFileName, job: jobFileName};
+            $.get(`http://localhost:3000/analyze/${resumeFileName}/${jobFileName}`, function(response) {
+                console.log(response);
+            });
+        }
+    }
+
     var resumeFiles = $("#resume-file")[0].files;
     var jobFiles = $("#job-file")[0].files;
     if (resumeFiles.length !== 1 || jobFiles.length !== 1) {
@@ -56,7 +66,10 @@ function uploadFiles() {
         processData: false,
         contentType: false,
         success: function(response) {
-            console.log("uploadFiles()", response)
+            // TODO need error handling here
+            console.log("analyzeFiles()", response);
+            resumeFileName = resumeFiles[0].name;
+            analyzeIfReady();
         }
     });
 
@@ -69,7 +82,10 @@ function uploadFiles() {
         processData: false,
         contentType: false,
         success: function(response) {
-            console.log("uploadFiles()", response)
+            // TODO need error handling here
+            console.log("analyzeFiles()", response);
+            jobFileName = jobFiles[0].name;
+            analyzeIfReady();
         }
     });
 }
