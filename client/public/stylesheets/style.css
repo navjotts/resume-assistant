@@ -101,3 +101,12 @@
     font-size: 20px;
     vertical-align: middle;
 }
+
+.button_start_analyzing {
+    width: 219px;
+    height: 40px;
+    border-radius: 2px;
+    background-color: #4a90e2;
+    font-weight: bold;
+    color: #ffffff;
+}
