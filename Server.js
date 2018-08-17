@@ -20,9 +20,9 @@ var upload = multer({storage: storage}, {limits: {files: 1}}).single('userFile')
 
 var app = express();
 
-app.set('views', path.join(__dirname, '..', 'client', 'views'));
+app.set('views', path.join(__dirname, 'client', 'views'));
 app.set('view engine', 'pug');
-app.use(express.static(path.join(__dirname, '..', 'client', 'public')));
+app.use(express.static(path.join(__dirname, 'client', 'public')));
 
 app.use(bodyParser.json());
 app.use(bodyParser.urlencoded({extended: true}));
