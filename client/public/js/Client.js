@@ -6,9 +6,9 @@ function fetchResumes() {
     $.get("http://localhost:3000/training/resumes", function(response) {
         var output = "";
         for (var i = 0; i < response.length; i++) {
-            output += "<div id=" + i + " ><a href=\"#\" onclick=\"fetchDoc('resumes', " + i + ")\">" +  "Resume#" + i + "</a></div>";
+            output += "<div id=" + i + " ><a class=\"file-link\" href=\"#\" onclick=\"fetchDoc('resumes', " + i + ")\">" +  "Resume#" + i + "</a></div>";
         }
-        $("#training-list").html(output);
+        $("#resumes-list").html(output);
     });
 }
 
@@ -16,9 +16,9 @@ function fetchJobs() {
     $.get("http://localhost:3000/training/jobs", function(response) {
         var output = "";
         for (var i = 0; i < response.length; i++) {
-            output += "<div id=" + i + " ><a href=\"#\" onclick=\"fetchDoc('jobs', " + i + ")\">" +  "Job#" + i + "</a></div>";
+            output += "<div id=" + i + " ><a class=\"file-link\" href=\"#\" onclick=\"fetchDoc('jobs', " + i + ")\">" +  "Job#" + i + "</a></div>";
         }
-        $("#training-list").html(output);
+        $("#jobs-list").html(output);
     });
 }
 

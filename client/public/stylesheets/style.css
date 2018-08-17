@@ -19,6 +19,8 @@ body {
     text-align: left;
     font-size: 14px;
     padding: 10px 10px 10px 10px;
+    padding-left:20px;
+    padding-right:20px;
     margin: 10px 10px 10px 10px;
 }
 
@@ -39,11 +41,53 @@ body {
     margin: 10px 10px 10px 10px;
 }
 
-.link {
-    padding: 10px 10px 10px 10px;
-    margin: 10px 10px 10px 10px;
+.training-header {
+    display: flex;
+    justify-content: space-between;
+    text-align: center;
+}
+
+.left-link {
+    flex: 1;
+    width: 0;
+    text-align: left;
+    margin-left: 50px;
     text-decoration: underline;
     color: #000;
+}
+
+.right-link {
+    flex: 1;
+    width: 0;
+    text-align: right;
+    margin-right: 50px;
+    text-decoration: underline;
+    color: #000;
+}
+
+.training-list {
+    display: flex;
+    justify-content: space-between;
+    text-align: center;
+    margin-top: 20px;
+    margin-left: 50px;
+    margin-right: 50px;
+}
+
+.training-list-left {
+    flex: 1;
+    width: 0;
+    text-align: left;
+}
+
+.training-list-right {
+    flex: 1;
+    width: 0;
+    text-align: right;
+}
+
+.file-link {
+    color: #4a90e2;
 }
 
 .sentence {
@@ -92,20 +136,25 @@ body {
 .prev-button {
     position: absolute;
     top: 44px;
-    left: 44px;
+    right: 150px;
+    color: #3a7cc9;
+    font-size: 13px;
 }
 
 .next-button {
     position: absolute;
     top: 44px;
-    right: 44px;
+    right: 60px;
+    color: #3a7cc9;
+    font-size: 13px;
 }
 
 .home-button {
     position: absolute;
-    top: 10px;
-    left: 44px;
-    font-size: 12px;
+    top: 40px;
+    left: 60px;
+    color: #3a7cc9;
+    font-size: 13px;
 }
 
 .file-heading {
