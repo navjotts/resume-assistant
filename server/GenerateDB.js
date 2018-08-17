@@ -36,7 +36,7 @@ async function generateDB(srcFolder, destFolder, method) {
                     }
 
                     var content = [];
-                    sentences.forEach((sent) => content.push({sentence: sent, label: ''}));
+                    sentences.forEach(sent => content.push({sentence: sent, label: ''}));
                     fs.writeFileSync(destFilePath, JSON.stringify({source: fileName, content: content}));
                 }
                 catch (e) {

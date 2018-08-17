@@ -22,9 +22,7 @@ async function convertDocxToTxt(srcFolder, destFolder) {
                     var doc = await DocxParser.parseAsync(file);
                     var text = '';
                     doc.forEach(para => text = text + (text.length ? '\n' : '') + para.text);
-                    if (text) {
-                        fs.writeFileSync(destFilePath, text);
-                    }
+                    fs.writeFileSync(destFilePath, text);
                 }
                 catch (e) {
                     console.log('Error in parsing -', fileName, e);

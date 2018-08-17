@@ -15,9 +15,7 @@ async function convertPdfToTxt(srcFolder, destFolder) {
 
             try {
                 text = await pdfToText(path.join(__dirname, 'data', srcFolder, fileName));
-                if (text) {
-                    fs.writeFileSync(path.join(__dirname, 'data', destFolder, fileNameSplit[0] + '.txt'), text);
-                }
+                fs.writeFileSync(path.join(__dirname, 'data', destFolder, fileNameSplit[0] + '.txt'), text);
             }
             catch (e) {
                 console.log('Error in parsing -', fileName);
