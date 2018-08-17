@@ -38,7 +38,6 @@ class SentenceClassifier(object):
             SentenceClassifier.load(self, name, path)
 
         model = SentenceClassifier.models[name]
-        print('Testing using model', model)
 
         pred, prob = model.predict(list(samples))
         labels_pred = [each[0][len('__label__'):] for each in pred]
@@ -51,7 +50,6 @@ class SentenceClassifier(object):
             SentenceClassifier.load(self, name, path)
 
         model = SentenceClassifier.models[name]
-        print('Predicting using model', model)
 
         pred, prob = model.predict(list(samples))
         labels_pred = [each[0][len('__label__'):] for each in pred]
