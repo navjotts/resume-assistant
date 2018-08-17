@@ -49,8 +49,8 @@ class SentenceClassifier(object):
         print('Testing using model', model)
 
         pred = model.predict(list(samples))
-        pred_labels = [each[0][len('__label__'):] for each in pred[0]]
-        print(list(zip(labels, pred_labels)))
+        labels_pred = [each[0][len('__label__'):] for each in pred[0]]
+        print(list(zip(labels, labels_pred)))
 
     def generate_data_file(self, file, samples, labels):
         text = ''
