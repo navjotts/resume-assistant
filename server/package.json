@@ -4,7 +4,8 @@
   "description": "Given a resume and a job description, highlights parts of the resume which are not a good match.",
   "main": "Server.js",
   "scripts": {
-    "test": "echo \"Error: no test specified\" && exit 1"
+    "start": "node Server.js",
+    "test": "node Server.js"
   },
   "repository": {
     "type": "git",
