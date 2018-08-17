@@ -89,3 +89,7 @@ function analyzeFiles() {
         }
     });
 }
+
+function showFilePickerForInput(id) {
+    $(`#${id}`).click();
+}

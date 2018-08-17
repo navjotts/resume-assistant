@@ -1,3 +1,7 @@
+.no-display {
+    display: none;
+}
+
 .center {
     margin: auto;
     padding: 10px;
@@ -16,7 +20,7 @@
     font-size: 24px;
     margin-top: 1em;
     margin-bottom: 1em;
-    border-bottom: 1px solid #20B9EB;
+    border-bottom: 1px solid #4a90e2;
 }
 
 .navigation {
@@ -47,8 +51,8 @@
 .upload {
     display: flex;
     justify-content: space-between;
-    padding-bottom: 0.5rem;
-    padding-top: 0.5rem;
+    padding-top: 2rem;
+    padding-bottom: 2rem;
     text-align: center;
 }
 
@@ -107,6 +111,16 @@
     height: 40px;
     border-radius: 2px;
     background-color: #4a90e2;
-    font-weight: bold;
+    /* font-weight: bold; */
     color: #ffffff;
+}
+
+.button_choose_file {
+  width: 283px;
+  height: 40px;
+  border-radius: 2px;
+  background-color: #ffffff;
+  border: solid 1px #4a90e2;
+  font-size: 13px;
+  color: #3a7cc9;
 }
