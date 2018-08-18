@@ -20,7 +20,7 @@ html
                                     accept='application/vnd.openxmlformats-officedocument.wordprocessingml.document',
                                     name='userFile',
                                     onchange='showFilePicked("' + 'resume-file' + '","' + 'resume-label' + '")')
-                            button(class='button_choose_file',
+                            button(class='choose_file_button',
                                 type='button',
                                 onclick='showFilePicker("' + 'resume-file' + '")')='Choose Resume'
                             div()
@@ -33,14 +33,14 @@ html
                                     accept='text/plain',
                                     name='userFile',
                                     onchange='showFilePicked("' + 'job-file' + '","' + 'job-label' + '")')
-                            button(class='button_choose_file',
+                            button(class='choose_file_button',
                                 type='button',
                                 onclick='showFilePicker("' + 'job-file' + '")')='Choose Job'
                             div()
                                 label(id='job-label', class='upload-label')='.txt only'
                     div()
                         button(id='analyze_button'
-                            class='button_start_analyzing',
+                            class='analyze_button',
                             type='button',
                             onclick='analyzeFiles()')='START ANALYZING'
                     div(id='document', class='document')

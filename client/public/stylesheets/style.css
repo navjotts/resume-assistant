@@ -167,7 +167,7 @@ body {
     font-size: 12px;
 }
 
-button.button_start_analyzing {
+button.analyze_button {
     width: 219px;
     height: 40px;
     border: solid 1px #4a90e2;
@@ -176,7 +176,7 @@ button.button_start_analyzing {
     color: #ffffff;
 }
 
-button.button_choose_file {
+button.choose_file_button {
   width: 283px;
   height: 40px;
   border-radius: 2px;
