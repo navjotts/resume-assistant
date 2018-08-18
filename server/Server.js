@@ -167,7 +167,7 @@ app.get('/analyze/:resumeFile/:jobFile', async function(req, res, next) {
         var data = []
         samples.forEach((sent, index) => data.push({
             sentence: sent,
-            label: labelsPredicted[index][0],
+            label: labelsPredicted[index][0] === 'EXPERIENCE' ? 'WORK EXPERIENCE' : labelsPredicted[index][0],
             confidence: Math.round(labelsPredicted[index][1]*1000)/10
         }));
         res.json(data);
