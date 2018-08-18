@@ -96,11 +96,11 @@ function analyzeFiles() {
     });
 }
 
-function showFilePickerForInput(id) {
-    $(`#${id}`).click();
+function showFilePicker(inputId) {
+    $(`#${inputId}`).click();
 }
 
-function filePicked(inputId, labelId) {
+function showFilePicked(inputId, labelId) {
     var files = $(`#${inputId}`)[0].files;
     if (files.length == 1) {
         $(`#${labelId}`).text(files[0].name);
