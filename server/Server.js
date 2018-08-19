@@ -2,7 +2,6 @@ const fs = require('fs');
 const path = require('path');
 const express = require('express');
 const bodyParser = require('body-parser');
-const assign = require('object-assign');
 const multer = require('multer');
 
 const PythonConnector = require('./PythonConnector.js');
