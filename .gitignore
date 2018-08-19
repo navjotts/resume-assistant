@@ -8,3 +8,4 @@
 **/uploads/*.docx
 **/uploads/*.txt
 *.pyc
+*.env
