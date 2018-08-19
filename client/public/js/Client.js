@@ -43,6 +43,7 @@ function analyzeFiles() {
     var resumeFileName, jobFileName;
     function analyzeIfReady() {
         if (resumeFileName && jobFileName) {
+            $('#analyze_button').text('ANALYZING...');
             var files = {resume: resumeFileName, job: jobFileName};
             $.get(`http://localhost:3000/analyze/${resumeFileName}/${jobFileName}`, function(response) {
                 var output = "<div class=\"document-header\"><label class=\"document-header-label-left\">SENTENCE / PHRASE</label><label class=\"document-header-label-right\">PREDICTION (Confidence%)</label></div>";
@@ -62,7 +63,7 @@ function analyzeFiles() {
         return;
     }
 
-    $('#analyze_button').text('ANALYZING...');
+    $('#analyze_button').text('UPLOADING...');
     var resumeFileData = new FormData();
     resumeFileData.append('userFile', resumeFiles[0]);
     $.ajax({
