@@ -1,9 +1,9 @@
 function loadTraining() {
-    $(location).attr('href', `http://localhost:3000/training`);
+    $(location).attr('href', `https://resume-assistant.herokuapp.com/training`);
 }
 
 function fetchResumes() {
-    $.get(`http://localhost:3000/training/resumes`, function(response) {
+    $.get(`https://resume-assistant.herokuapp.com/training/resumes`, function(response) {
         var output = "";
         for (var i = 0; i < response.length; i++) {
             output += "<div id=" + i + " ><a class=\"file-link\" href=\"#\" onclick=\"fetchDoc('resumes', " + i + ")\">" +  "Resume#" + i + "</a></div>";
@@ -13,7 +13,7 @@ function fetchResumes() {
 }
 
 function fetchJobs() {
-    $.get(`http://localhost:3000/training/jobs`, function(response) {
+    $.get(`https://resume-assistant.herokuapp.com/training/jobs`, function(response) {
         var output = "";
         for (var i = 0; i < response.length; i++) {
             output += "<div id=" + i + " ><a class=\"file-link\" href=\"#\" onclick=\"fetchDoc('jobs', " + i + ")\">" +  "Job#" + i + "</a></div>";
@@ -23,12 +23,12 @@ function fetchJobs() {
 }
 
 function fetchDoc(parentId, id) {
-    $(location).attr('href', `http://localhost:3000/training/${parentId}/${id}`);
+    $(location).attr('href', `https://resume-assistant.herokuapp.com/training/${parentId}/${id}`);
 }
 
 function updateLabel(option, parentId, docId, sentenceId) {
     $.ajax({
-        url: `http://localhost:3000/training/${parentId}/${docId}/sentences/${sentenceId}/edit`,
+        url: `https://resume-assistant.herokuapp.com/training/${parentId}/${docId}/sentences/${sentenceId}/edit`,
         type: 'POST',
         contentType: 'application/json',
         data: JSON.stringify({
@@ -44,7 +44,7 @@ function analyzeFiles() {
     function analyzeIfReady() {
         if (resumeFileName && jobFileName) {
             var files = {resume: resumeFileName, job: jobFileName};
-            $.get(`http://localhost:3000/analyze/${resumeFileName}/${jobFileName}`, function(response) {
+            $.get(`https://resume-assistant.herokuapp.com/analyze/${resumeFileName}/${jobFileName}`, function(response) {
                 var output = "<div class=\"document-header\"><label class=\"document-header-label-left\">SENTENCE / PHRASE</label><label class=\"document-header-label-right\">PREDICTION (Confidence%)</label></div>";
                 for (var i = 0; i < response.length; i++) {
                     output += "<div class=\"sentence\" ><div class=\"left-child\" >" + response[i].sentence + "</div><div class=\"right-child\" >" + response[i].label + " (" + response[i].confidence + "%)" + "</div></div>";
@@ -66,7 +66,7 @@ function analyzeFiles() {
     var resumeFileData = new FormData();
     resumeFileData.append('userFile', resumeFiles[0]);
     $.ajax({
-        url: `http://localhost:3000/upload`,
+        url: `https://resume-assistant.herokuapp.com/upload`,
         type: 'POST',
         data: resumeFileData,
         processData: false,
@@ -82,7 +82,7 @@ function analyzeFiles() {
     var jobFileData = new FormData();
     jobFileData.append('userFile', jobFiles[0]);
     $.ajax({
-        url: `http://localhost:3000/upload`,
+        url: `https://resume-assistant.herokuapp.com/upload`,
         type: 'POST',
         data: jobFileData,
         processData: false,
