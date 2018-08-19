@@ -3,7 +3,7 @@ function loadTraining() {
 }
 
 function fetchResumes() {
-    $.get("http://localhost:3000/training/resumes", function(response) {
+    $.get(`http://localhost:3000/training/resumes`, function(response) {
         var output = "";
         for (var i = 0; i < response.length; i++) {
             output += "<div id=" + i + " ><a class=\"file-link\" href=\"#\" onclick=\"fetchDoc('resumes', " + i + ")\">" +  "Resume#" + i + "</a></div>";
@@ -13,7 +13,7 @@ function fetchResumes() {
 }
 
 function fetchJobs() {
-    $.get("http://localhost:3000/training/jobs", function(response) {
+    $.get(`http://localhost:3000/training/jobs`, function(response) {
         var output = "";
         for (var i = 0; i < response.length; i++) {
             output += "<div id=" + i + " ><a class=\"file-link\" href=\"#\" onclick=\"fetchDoc('jobs', " + i + ")\">" +  "Job#" + i + "</a></div>";
@@ -66,7 +66,7 @@ function analyzeFiles() {
     var resumeFileData = new FormData();
     resumeFileData.append('userFile', resumeFiles[0]);
     $.ajax({
-        url: "http://localhost:3000/upload",
+        url: `http://localhost:3000/upload`,
         type: 'POST',
         data: resumeFileData,
         processData: false,
@@ -82,7 +82,7 @@ function analyzeFiles() {
     var jobFileData = new FormData();
     jobFileData.append('userFile', jobFiles[0]);
     $.ajax({
-        url: "http://localhost:3000/upload",
+        url: `http://localhost:3000/upload`,
         type: 'POST',
         data: jobFileData,
         processData: false,
