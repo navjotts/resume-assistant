@@ -4,7 +4,7 @@ const path = require('path');
 const zerorpc = require('zerorpc');
 const Utils = require('./Utils.js');
 
-const TIMEOUT = 60;
+const TIMEOUT = 60*60; // in seconds (training can take a long time depending on the model)
 const IP = '127.0.0.1';
 const PORT = '4242';
 
