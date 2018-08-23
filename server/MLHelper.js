@@ -15,7 +15,7 @@ function collectData(parent, name) {
             var docData = JSON.parse(fs.readFileSync(path.join(dbDir, fileName)));
             docData.content.forEach(each => {
                 samples.push(each.sentence.join(' '));
-                labels.push(each.label === "WORK EXPERIENCE" ? "EXPERIENCE" : each.label); // TODO https://github.com/navjotts/resume-assistant/issues/5
+                labels.push(each.label === 'WORK EXPERIENCE' ? 'EXPERIENCE' : each.label); // TODO https://github.com/navjotts/resume-assistant/issues/5
             });
         }
     }

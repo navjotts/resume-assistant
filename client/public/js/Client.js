@@ -3,22 +3,34 @@ function loadTraining() {
 }
 
 function fetchResumes() {
-    $.get(`http://localhost:3000/training/resumes`, function(response) {
-        var output = "";
-        for (var i = 0; i < response.length; i++) {
-            output += "<div id=" + i + " ><a class=\"file-link\" href=\"#\" onclick=\"fetchDoc('resumes', " + i + ")\">" +  "Resume#" + i + "</a></div>";
+    $.ajax({
+        url: `http://localhost:3000/training/resumes`,
+        success: function(response) {
+            var output = "";
+            for (var i = 0; i < response.length; i++) {
+                output += "<div id=" + i + " ><a class=\"file-link\" href=\"#\" onclick=\"fetchDoc('resumes', " + i + ")\">" +  "Resume#" + i + "</a></div>";
+            }
+            $('#resumes-list').html(output);
+        },
+        error: function(response) {
+            console.log('error in fetchResumes()', response);
         }
-        $('#resumes-list').html(output);
     });
 }
 
 function fetchJobs() {
-    $.get(`http://localhost:3000/training/jobs`, function(response) {
-        var output = "";
-        for (var i = 0; i < response.length; i++) {
-            output += "<div id=" + i + " ><a class=\"file-link\" href=\"#\" onclick=\"fetchDoc('jobs', " + i + ")\">" +  "Job#" + i + "</a></div>";
+    $.ajax({
+        url: `http://localhost:3000/training/jobs`,
+        success: function(response) {
+            var output = "";
+            for (var i = 0; i < response.length; i++) {
+                output += "<div id=" + i + " ><a class=\"file-link\" href=\"#\" onclick=\"fetchDoc('jobs', " + i + ")\">" +  "Job#" + i + "</a></div>";
+            }
+            $('#jobs-list').html(output);
+        },
+        error: function(response) {
+            console.log('error in fetchResumes()', response);
         }
-        $('#jobs-list').html(output);
     });
 }
 
@@ -45,13 +57,19 @@ function analyzeFiles() {
         if (resumeFileName && jobFileName) {
             $('#analyze_button').text('ANALYZING...');
             var files = {resume: resumeFileName, job: jobFileName};
-            $.get(`http://localhost:3000/analyze/${resumeFileName}/${jobFileName}`, function(response) {
-                var output = "<div class=\"document-header\"><label class=\"document-header-label-left\">SENTENCE / PHRASE</label><label class=\"document-header-label-right\">PREDICTION (Confidence%)</label></div>";
-                for (var i = 0; i < response.length; i++) {
-                    output += "<div class=\"sentence\" ><div class=\"left-child\" >" + response[i].sentence + "</div><div class=\"right-child\" >" + response[i].label + " (" + response[i].confidence + "%)" + "</div></div>";
+            $.ajax({
+                url: `http://localhost:3000/analyze/${resumeFileName}/${jobFileName}`,
+                success: function(response) {
+                    var output = "<div class=\"document-header\"><label class=\"document-header-label-left\">SENTENCE / PHRASE</label><label class=\"document-header-label-right\">PREDICTION (Confidence%)</label></div>";
+                    for (var i = 0; i < response.length; i++) {
+                        output += "<div class=\"sentence\" ><div class=\"left-child\" >" + response[i].sentence + "</div><div class=\"right-child\" >" + response[i].label + " (" + response[i].confidence + "%)" + "</div></div>";
+                    }
+                    $('#document').html(output);
+                    $('#analyze_button').text('START ANALYZING');
+                },
+                error: function(response) {
+                    console.log('error in analyzeIfReady()', response);
                 }
-                $('#document').html(output);
-                $('#analyze_button').text('START ANALYZING');
             });
         }
     }
