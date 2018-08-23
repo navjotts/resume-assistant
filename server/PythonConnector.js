@@ -4,29 +4,33 @@ const path = require('path');
 const zerorpc = require('zerorpc');
 const Utils = require('./Utils.js');
 
+const TIMEOUT = 60;
+const IP = '127.0.0.1';
+const PORT = '4242';
+
 class PythonConnector {
     static server() {
         if (!PythonConnector.connected) {
             console.log('PythonConnector – making a new connection to the python layer');
-            PythonConnector.zeropcProcess = spawn('python3', ['-u', path.join(__dirname, 'PythonServer.py')]);
-            PythonConnector.zeropcProcess.stdout.on('data', function(data) {
+            PythonConnector.zerorpcProcess = spawn('python3', ['-u', path.join(__dirname, 'PythonServer.py')]);
+            PythonConnector.zerorpcProcess.stdout.on('data', function(data) {
                 console.info('python:', data.toString());
             });
-            PythonConnector.zeropcProcess.stderr.on('data', function(data) {
+            PythonConnector.zerorpcProcess.stderr.on('data', function(data) {
                 console.error('python:', data.toString());
             });
 
-            PythonConnector.zeropc = new zerorpc.Client({'timeout': 50000, 'heartbeatInterval': 50000000});
-            PythonConnector.zeropc.connect('tcp://127.0.0.1:4242');
+            PythonConnector.zerorpc = new zerorpc.Client({'timeout': TIMEOUT, 'heartbeatInterval': TIMEOUT*1000});
+            PythonConnector.zerorpc.connect('tcp://' + IP + ':' + PORT);
             PythonConnector.connected = true;
         }
 
-        return PythonConnector.zeropc;
+        return PythonConnector.zerorpc;
     }
 
     static async invoke(method, ...args) {
-        var zeropc = PythonConnector.server();
-        return await Utils.promisify(zeropc.invoke, zeropc, method, ...args);
+        var zerorpc = PythonConnector.server();
+        return await Utils.promisify(zerorpc.invoke, zerorpc, method, ...args);
     }
 }
 
