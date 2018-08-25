@@ -56,5 +56,5 @@ Models:
 
 **Things to try**:<br>
 1. Features: same as Part1, word/sentence embeddings
-2. Similarity measure using above features
+2. Similarity measure using above features (**special mention:** check Universal Sentence Encoder from TFHub)
 3. Recursively go 1 level deeper (once you have 'Work Experience', pull out what exact company and number of years)
