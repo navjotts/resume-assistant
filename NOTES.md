@@ -21,7 +21,7 @@ Once we collect the resume and job description data, we need a framework to labe
 
 * We can start with parsing resumes and job descriptions as a list of sentences (with each sentence being a list of words)
 * Each sentence will be labelled as 1 of the parts decided in the Approach section
-* We can create a quick web app where we'll start with a list of resumes and job descriptions, clicking on each gives a list of sentences, with each sentence mapped to a editable TextField with label
+* We can create a quick web app where we'll start with a list of resumes and job descriptions, clicking on each gives a list of sentences, with each sentence mapped to a Dropdown with the available labels (basic functionality to label data)
 
 Once the above is in place, we can start experimenting with classification models based on word/sentence embeddings.
 
