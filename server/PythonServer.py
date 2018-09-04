@@ -1,8 +1,8 @@
 from hashlib import sha256
 import zerorpc
 
-from py.Spacy import Spacy
-from py.SentenceClassifier import SentenceClassifier
+from py_files.Spacy import Spacy
+from py_files.SentenceClassifier import SentenceClassifier
 
 class PythonServer(object):
     def hash_file_name(self, filename):
