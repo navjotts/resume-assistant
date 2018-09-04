@@ -20,7 +20,10 @@ class Log_reg():
     #traing the model on the given samples and labels.
     #input the whole data set, this method will split into train and test
     def train(self,samples,labels):
-
+        """
+        Given a list of samples and labels this method will do a trai/test split and
+        train the modeol on that data.
+        """
         #split data into test train split
         x_train, x_test, y_train, y_test = train_test_split(samples, labels, 
                                                             test_size=0.25, random_state=42)
@@ -39,17 +42,22 @@ class Log_reg():
         """
         Input a list of vectors, these vectors will all get a predicted class from the loaded model
         """
-
+        #load the model form the given input path
         loaded_model = joblib.load(model_path)
         print("\n\n+++++ Model successfully loaded +++++\n\n")
+        #for each vector in the list append a prediction to results
         results = [loaded_model.predict(vec) for vec in vects]
         print("\n\n+++++ Results +++++\n\n")
+        #print out the results
         print(results)
 
     def productionize(self, model_path, production_path):
         """
         Saves the specified model to production weights file
         """
+        #TODO find the best model score and load/save that one
+        #load the specified model
         loaded_model = joblib.load(model_path)
+        #save the model to specified path
         joblib.dump(loaded_model,production_path)
-        print("\n+++++ Model saved to production path. +++++\n")
+        print("\n+++++ Model saved to production path. +++++\n\n %s", production_path)
