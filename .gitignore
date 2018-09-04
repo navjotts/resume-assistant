@@ -9,3 +9,4 @@
 **/uploads/*.txt
 *.pyc
 *.env
+.vscode/settings.json
