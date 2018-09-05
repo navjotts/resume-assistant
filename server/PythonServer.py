@@ -3,6 +3,8 @@ import zerorpc
 
 from py_files.Spacy import Spacy
 from py_files.SentenceClassifier import SentenceClassifier
+from py_files.ML_models.Log_reg.Logistic_reg import Log_reg
+from py_files.Preprocess.NLP_preprocess import train_d2v,process_sent
 
 class PythonServer(object):
     def hash_file_name(self, filename):
@@ -23,6 +25,12 @@ class PythonServer(object):
 
     def train_sentence_classifier(self, name, path, samples, labels):
         return SentenceClassifier.train(self, name, path, samples, labels)
+
+    def train_doc2vec(self,samples):
+        return train_d2v(samples)
+
+    def sent_vects(self,samples):
+        return process_sent(samples)
 
     def test_sentence_classifier(self, name, path, samples, labels):
         SentenceClassifier.test(self, name, path, samples, labels)

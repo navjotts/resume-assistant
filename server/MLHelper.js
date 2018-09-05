@@ -28,9 +28,11 @@ async function train(name) {
     console.log(`Starting training on data size of (samples, labels): (${data.samples.length}, ${data.labels.length})`);
 
     try {
-        var modelPath = path.join(__dirname, 'data', 'models', name);
-        var result = await PythonConnector.invoke('train_sentence_classifier', name, modelPath, data.samples, data.labels);
-        console.log(`Training result of ${name}: Precision=${result.precision}, Recall=${result.precision}`);
+        // var modelPath = path.join(__dirname, 'data', 'models', name);
+        var result = await PythonConnector.invoke('train_doc2vec',data.samples);
+        var vec = await PythonConnector.invoke('sent_vects',"whats");
+        // console.log(`Training result of ${name}: Precision=${result.precision}, Recall=${result.precision}`);
+        // console.log(vec)
     }
     catch (e) {
         console.log('Error in train:', e);
@@ -84,7 +86,7 @@ async function classifyResume(name) {
 
 async function start() {
     //await train('jobs');
-    //await train('resumes');
+    await train('resumes');
     //await test('resumes');
     //await classifyResume()
 }
