@@ -29,9 +29,8 @@ async function train(name) {
 
     try {
         // var modelPath = path.join(__dirname, 'data', 'models', name);
-        var result = await PythonConnector.invoke('train_doc2vec',data.samples);
-        var vec = await PythonConnector.invoke('sent_vects',"whats");
-        // console.log(`Training result of ${name}: Precision=${result.precision}, Recall=${result.precision}`);
+        var result = await PythonConnector.invoke('train_classifier',name,data.samples, data.labels);
+        console.log(`Training result of ${name}: Accuracy = ${result.Accuracy}%`);
         // console.log(vec)
     }
     catch (e) {

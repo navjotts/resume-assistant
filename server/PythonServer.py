@@ -26,6 +26,13 @@ class PythonServer(object):
     def train_sentence_classifier(self, name, path, samples, labels):
         return SentenceClassifier.train(self, name, path, samples, labels)
 
+    def train_classifier(self, name, samples, labels):
+        train_d2v(samples)
+        vectors = process_sent(samples)
+        model = Log_reg(name)
+        results = model.train(vectors,labels)
+        return results
+
     def train_doc2vec(self,samples):
         return train_d2v(samples)
 

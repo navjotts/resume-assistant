@@ -24,6 +24,8 @@ class Log_reg():
         Given a list of samples and labels this method will do a trai/test split and
         train the modeol on that data.
         """
+        # print(samples)
+        # print(labels)
         # split data into test train split
         x_train, x_test, y_train, y_test = train_test_split(samples, labels, 
                                                             test_size=0.25, random_state=42)
@@ -33,10 +35,12 @@ class Log_reg():
         print("\n\n++++ Training Complete ++++\n\n")
         # print accuracy on test data
         score = self.model.score(x_test,y_test)
-        print("On test data, this model was %f accurate.\n\n", score )
+        print("On test data, this model was %f %% accurate.\n\n" %(round(score*100,2)))
         # save model
-        self.path = "./weights/" + str(self.name) + "_" + str(round(score)) + ".pkl"
+        self.path = "server/py_files/ML_models/Log_reg/weights/" + str(self.name) + "_" + str(int(score*100)) + ".pkl"
         joblib.dump(self.model, self.path) 
+
+        return {'Accuracy': round(score*100,2) , 'Predicitons': [self.model.predict([vec]) for vec in samples], 'Labels': labels}
 
     # TODO add test and load method
 
