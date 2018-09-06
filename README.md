@@ -4,7 +4,7 @@ Given a resume and a job description, highlights parts of the resume which are n
 # Setup
 **Installing nodejs**<br/>
 * Mac/Windows: go to [https://nodejs.org/en/](https://nodejs.org/en/) and download the installer and click on - and follow steps<br/>
-* Unix: `sudo apt install nodejs`
+* Linux (Debian based): `sudo apt install build-essential nodejs npm libzmq3-dev python3-dev python3-pip`                                                                                    
 
 **Installing python environment**<br/>
 * python3
