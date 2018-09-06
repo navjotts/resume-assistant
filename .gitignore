@@ -9,3 +9,4 @@
 **/uploads/*.txt
 *.pyc
 *.env
+recreate_data.sh
