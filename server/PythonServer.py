@@ -39,11 +39,11 @@ class PythonServer(object):
         results = model.prediction(vectors, Load_best=True, test=True, labels=labels)
         return results
 
-    def train_doc2vec(self,samples):
-        return train_d2v(samples)
-
-    def sent_vects(self,samples):
-        return process_sent(samples)
+    def classifier(self, name, samples):
+        vectors = process_sent(samples)
+        model = Log_reg(name)
+        results = model.prediction(vectors, Load_best=True)
+        return results
 
     def test_sentence_classifier(self, name, path, samples, labels):
         SentenceClassifier.test(self, name, path, samples, labels)

@@ -1,5 +1,5 @@
 # import relevent modules
-# import numpy as np
+import numpy as np
 from sklearn.linear_model import LogisticRegression
 from sklearn.model_selection import train_test_split
 from sklearn.externals import joblib
@@ -42,7 +42,7 @@ class Log_reg():
 
         return {'Accuracy': round(score*100,2) , 'Predicitons': [self.model.predict([vec]) for vec in samples], 'Labels': labels}
 
-    def prediction(self, vects, Load_best=True, model_path=None, test=False, labels=None):
+    def prediction(self, vects, Load_best=True, model_path=None, test=False, labels="None"):
         """
         Input a list of vectors, these vectors will all get a predicted class from the loaded modelself.
         If you want to test the model without using train set test to True and supply labels.
@@ -51,17 +51,18 @@ class Log_reg():
         self.load_model(self.name)
         # for each vector in the list append a prediction to results
         results = [self.model.predict(vec.reshape(1,-1)) for vec in vects]
+        probs =  [np.argmax(self.model.predict_proba(vec.reshape(1,-1))) for vec in vects]
         print("\n\n+++++ Results +++++\n\n\n\n prediciton:%s\n\n label:%s"%([x[0] for x in results[0:10]],labels[0:10]))
         # print out the results depending on case
         #printout test results with label
-        if(test and labels):
-            return {'results':results,'labels':labels}
+        if(test and bool(labels)):
+            return {'results':results,'labels':labels, 'probabilities': probs}
         #raise error since the labels were not provided with the test
         elif(test and not labels):
             raise Exception('Can not enable test mode without supplying labels, Check arguments')
         #just return the predicted results, this is used for inference/production
         else:
-         return results
+         return list(zip(results, probs))
 
     def productionize(self, model_path, production_path):
         """
@@ -88,7 +89,7 @@ class Log_reg():
                     best_file = file
                 else:
                     next
-
+    
             try:
                 self.model = joblib.load(best_file)
             except:
