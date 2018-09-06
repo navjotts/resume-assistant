@@ -4,9 +4,12 @@ import zerorpc
 from py_files.Spacy import Spacy
 from py_files.SentenceClassifier import SentenceClassifier
 from py_files.ML_models.Log_reg.Logistic_reg import Log_reg
+from py_files.ML_models.Random_forest.Random_forest import Random_forest
 from py_files.Preprocess.NLP_preprocess import train_d2v,process_sent
 
+
 class PythonServer(object):
+
     def hash_file_name(self, filename):
         return sha256(str(filename).encode('utf-8')).hexdigest()
 
@@ -27,21 +30,21 @@ class PythonServer(object):
         return SentenceClassifier.train(self, name, path, samples, labels)
 
     def train_classifier(self, name, samples, labels):
-        train_d2v(samples)
+        # train_d2v(samples)
         vectors = process_sent(samples)
-        model = Log_reg(name)
+        model = self.choose_model(name)
         results = model.train(vectors,labels)
         return results
 
     def test_classifier(self, name, samples, labels):
         vectors = process_sent(samples)
-        model = Log_reg(name)
+        model = self.choose_model(name)
         results = model.prediction(vectors, Load_best=True, test=True, labels=labels)
         return results
 
     def classifier(self, name, samples):
         vectors = process_sent(samples)
-        model = Log_reg(name)
+        model = self.choose_model(name)
         results = model.prediction(vectors, Load_best=True)
         return results
 
@@ -50,6 +53,17 @@ class PythonServer(object):
 
     def classify_sentences(self, name, path, samples):
         return SentenceClassifier.classify(self, name, path, samples)
+
+    def choose_model(self,  name, model = "Random_forest"):
+        """
+        Helper function to choose which model is being used.
+        """
+        if(model == "Log_reg"):
+            return Log_reg(name)
+        elif(model == "Random_forest"):
+            return Random_forest(name)
+        else:
+            raise Exception("Please enter a valid model")
 
 try:
     s = zerorpc.Server(PythonServer())

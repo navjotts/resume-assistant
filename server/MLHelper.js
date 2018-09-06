@@ -85,9 +85,9 @@ async function classifyResume(name) {
 
 async function start() {
     //await train('jobs');
-    // await train('resumes');
+    await train('resumes');
     // await test('resumes');
-    await classifyResume()
+    // await classifyResume()
 }
 
 start();
