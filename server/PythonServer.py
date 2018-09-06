@@ -33,6 +33,12 @@ class PythonServer(object):
         results = model.train(vectors,labels)
         return results
 
+    def test_classifier(self, name, samples, labels):
+        vectors = process_sent(samples)
+        model = Log_reg(name)
+        results = model.prediction(vectors, Load_best=True, test=True, labels=labels)
+        return results
+
     def train_doc2vec(self,samples):
         return train_d2v(samples)
 

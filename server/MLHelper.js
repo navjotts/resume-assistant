@@ -39,12 +39,12 @@ async function train(name) {
 }
 
 async function test(name) {
-    var data = collectData('testDB', name);
+    var data = collectData('DB', name);
     console.log(`Starting testing on data size of (samples, labels): (${data.samples.length}, ${data.labels.length})`);
 
     try {
         var modelPath = path.join(__dirname, 'data', 'models', name);
-        await PythonConnector.invoke('test_sentence_classifier', name, modelPath, data.samples, data.labels);
+        await PythonConnector.invoke('test_classifier', name, data.samples, data.labels);
     }
     catch (e) {
         console.log('Error in test:', e);
@@ -85,8 +85,8 @@ async function classifyResume(name) {
 
 async function start() {
     //await train('jobs');
-    await train('resumes');
-    //await test('resumes');
+    // await train('resumes');
+    await test('resumes');
     //await classifyResume()
 }
 

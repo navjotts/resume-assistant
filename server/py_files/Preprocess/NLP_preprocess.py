@@ -28,7 +28,7 @@ def train_d2v(sentences):
     #train it on a large corpus
     # model = Doc2Vec(sentences, vector_size=5, window=2, min_count=1, workers=4)
     print("\n\n+++++ Started Training of the gensim model +++++\n\n\tThis may take a few momemnts...\n\n++++++++++++++++++++++++++++++++++++++++++++++++")
-    model = Doc2Vec(size=50, window=10, min_count=3, workers=11,alpha=0.025, min_alpha=0.010)
+    model = Doc2Vec(size=50, window=5, min_count=5, workers=10,alpha=0.025, min_alpha=0.010)
     model.build_vocab(sentences)
     model.train(sentences,total_examples=len(sentences), epochs=250)
 
@@ -56,13 +56,6 @@ def train_w2v(sentences):
     #create a gensim word2vec model
     #train it on a large corpus
     #save the model for use in process_sent
-    pass
-
-def process_words(sentences):
-    #TODO
-    #Tokenize the sentence into words
-    #load the most recent word2vec model 
-    #create vector of words
     pass
 
 def process_sentences(sentences):
