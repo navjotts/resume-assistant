@@ -3,7 +3,7 @@ import tempfile
 import fastText
 import numpy as np
 
-class SentenceClassifier(object):
+class FastTextClassifier(object):
     models = {}
 
     def train(self, name, path, samples, labels):
@@ -11,10 +11,10 @@ class SentenceClassifier(object):
         fd, labelPath = tempfile.mkstemp()
 
         try:
-            SentenceClassifier.generate_data_file(self, labelPath, samples, labels)
+            FastTextClassifier.generate_data_file(self, labelPath, samples, labels)
             print('Training started ...')
             model = fastText.train_supervised(labelPath, epoch=30, wordNgrams=2)
-            SentenceClassifier.models[name] = model
+            FastTextClassifier.models[name] = model
             print('Training ended ...')
 
             print("Quantizing ...")
@@ -34,10 +34,10 @@ class SentenceClassifier(object):
         return result
 
     def test(self, name, path, samples, labels):
-        if name not in SentenceClassifier.models:
-            SentenceClassifier.load(self, name, path)
+        if name not in FastTextClassifier.models:
+            FastTextClassifier.load(self, name, path)
 
-        model = SentenceClassifier.models[name]
+        model = FastTextClassifier.models[name]
 
         pred, prob = model.predict(list(samples))
         labels_pred = [each[0][len('__label__'):] for each in pred]
@@ -46,10 +46,10 @@ class SentenceClassifier(object):
         print("Accuracy:", sum(accuracy != 0)/len(accuracy))
 
     def classify(self, name, path, samples):
-        if name not in SentenceClassifier.models:
-            SentenceClassifier.load(self, name, path)
+        if name not in FastTextClassifier.models:
+            FastTextClassifier.load(self, name, path)
 
-        model = SentenceClassifier.models[name]
+        model = FastTextClassifier.models[name]
 
         pred, prob = model.predict(list(samples))
         labels_pred = [each[0][len('__label__'):] for each in pred]
@@ -59,13 +59,13 @@ class SentenceClassifier(object):
 
     def load(self, name, path):
         model = None
-        if name not in SentenceClassifier.models:
+        if name not in FastTextClassifier.models:
             try:
                 model = fastText.load_model(path + '.bin')
             except:
                 print('Unable to locate model', name)
 
-        SentenceClassifier.models[name] = model
+        FastTextClassifier.models[name] = model
 
     def generate_data_file(self, file, samples, labels):
         text = ''

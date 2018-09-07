@@ -29,7 +29,7 @@ async function train(name) {
 
     try {
         // var modelPath = path.join(__dirname, 'data', 'models', name);
-        var result = await PythonConnector.invoke('train_classifier',name,data.samples, data.labels);
+        var result = await PythonConnector.invoke('train_classifier', name, data.samples, data.labels);
         console.log(`Training result of ${name}: Accuracy = ${result.Accuracy}%`);
         // console.log(vec)
     }

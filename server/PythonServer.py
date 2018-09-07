@@ -2,7 +2,7 @@ from hashlib import sha256
 import zerorpc
 
 from py_files.Spacy import Spacy
-from py_files.SentenceClassifier import SentenceClassifier
+from py_files.ML_models.FastText.FastTextClassifier import FastTextClassifier
 from py_files.ML_models.Log_reg.Logistic_reg import Log_reg
 from py_files.ML_models.Random_forest.Random_forest import Random_forest
 from py_files.ML_models.SVM.SVM import svm_model
@@ -28,7 +28,7 @@ class PythonServer(object):
         return sents
 
     def train_sentence_classifier(self, name, path, samples, labels):
-        return SentenceClassifier.train(self, name, path, samples, labels)
+        return FastTextClassifier.train(self, name, path, samples, labels)
 
     def train_classifier(self, name, samples, labels):
         vectors = SK_TFIDF_train(samples)
@@ -52,12 +52,12 @@ class PythonServer(object):
         return results
 
     def test_sentence_classifier(self, name, path, samples, labels):
-        SentenceClassifier.test(self, name, path, samples, labels)
+        FastTextClassifier.test(self, name, path, samples, labels)
 
     def classify_sentences(self, name, path, samples):
-        return SentenceClassifier.classify(self, name, path, samples)
+        return FastTextClassifier.classify(self, name, path, samples)
 
-    def choose_model(self,  name, model = "svm"):
+    def choose_model(self, name, model = "svm"):
         """
         Helper function to choose which model is being used.
         """
