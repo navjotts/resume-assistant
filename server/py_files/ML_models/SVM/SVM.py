@@ -56,7 +56,7 @@ class svm_model():
         # print out the results depending on case
         #printout test results with label
         if(test and bool(labels)):
-            return {'results':results,'labels':labels}
+            return {'Predicitons':results,'labels':labels}
         #raise error since the labels were not provided with the test
         elif(test and not labels):
             raise Exception('Can not enable test mode without supplying labels, Check arguments')
