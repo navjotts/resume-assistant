@@ -28,7 +28,7 @@ async function train(name) {
     console.log(`Starting training on data size of (samples, labels): (${data.samples.length}, ${data.labels.length})`);
 
     try {
-        var result = await PythonConnector.invoke('train_classifier', name, 'FastText', 'None', data.samples, data.labels);
+        var result = await PythonConnector.invoke('train_classifier', name, 'svm', 'tf-idf', data.samples, data.labels);
         console.log(result);
     }
     catch (e) {
@@ -37,11 +37,11 @@ async function train(name) {
 }
 
 async function test(name) {
-    var data = collectData('testDB', name);
+    var data = collectData('DB', name);
     console.log(`Starting testing on data size of (samples, labels): (${data.samples.length}, ${data.labels.length})`);
 
     try {
-        await PythonConnector.invoke('test_classifier', name, 'FastText', 'None', data.samples, data.labels);
+        await PythonConnector.invoke('test_classifier', name, 'Random_forest', 'tf-idf', data.samples, data.labels);
     }
     catch (e) {
         console.log('Error in test:', e);
@@ -82,8 +82,8 @@ async function classifyResume(name) {
 
 async function start() {
     //await train('jobs');
-    //await train('resumes');
-    // await test('resumes');
+    // await train('resumes');
+    await test('resumes');
     // await classifyResume()
 }
 
