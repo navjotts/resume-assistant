@@ -35,7 +35,7 @@ class svm_model():
         print("\n\n++++ Training Complete ++++\n\n")
         # print accuracy on test data
         score = self.model.score(x_test,y_test)
-        print("On test data, this model was %f %% accurate.\n\n" %(round(score*100,2)))
+        print("On test data, the LinearSVC model was %f %% accurate.\n\n" %(round(score*100,2)))
         # save model
         self.path = "server/py_files/ML_models/svm/weights/" + str(self.name) + "_" + str(int(score*100)) + ".pkl"
         joblib.dump(self.model, self.path) 
@@ -56,7 +56,7 @@ class svm_model():
         # print out the results depending on case
         #printout test results with label
         if(test and bool(labels)):
-            return {'results':results,'labels':labels}
+            return {'Predicitons':results,'labels':labels}
         #raise error since the labels were not provided with the test
         elif(test and not labels):
             raise Exception('Can not enable test mode without supplying labels, Check arguments')

@@ -27,26 +27,30 @@ class PythonServer(object):
                     sents.append(sentence)
         return sents
 
+    #intitial sentence classifier using fasttext
     def train_sentence_classifier(self, name, path, samples, labels):
         return FastTextClassifier.train(self, name, path, samples, labels)
 
+    #new training classifier method, can take any available model
     def train_classifier(self, name, samples, labels):
-        vectors = SK_TFIDF_train(samples)
-        # vectors = process_sent(samples)
+        vectors = SK_TFIDF_train(samples) #enables TFIDF sentence vectors
+        # vectors = process_sent(samples) #enables Doc2vec sentence vectors
         model = self.choose_model(name)
         results = model.train(vectors,labels)
         return results
 
+    #new testing classifier method, can take any available model
     def test_classifier(self, name, samples, labels):
-        vectors = SK_TFIDF_predict(samples)
-        # vectors = process_sent(samples)
+        vectors = SK_TFIDF_predict(samples) #enables TFIDF sentence vectors
+        # vectors = process_sent(samples) #enables Doc2vec sentence vectors
         model = self.choose_model(name)
         results = model.prediction(vectors, Load_best=True, test=True, labels=labels)
         return results
 
+    #new classifier method, can take any available model
     def classifier(self, name, samples):
-        vectors = SK_TFIDF_predict(samples)
-        # vectors = process_sent(samples)
+        vectors = SK_TFIDF_predict(samples) #enables TFIDF sentence vectors
+        # vectors = process_sent(samples) #enables Doc2vec sentence vectors
         model = self.choose_model(name)
         results = model.prediction(vectors, Load_best=True)
         return results
@@ -57,10 +61,9 @@ class PythonServer(object):
     def classify_sentences(self, name, path, samples):
         return FastTextClassifier.classify(self, name, path, samples)
 
+    #helper function to choose the appropriate class based on the model name provided
+    # todo consolidate `name` and `model` may be (we don't need 2 keys - may be we can just specify "svm-resume" and "svm-jobs" - not 100% sure, think later)
     def choose_model(self, name, model = "svm"):
-        """
-        Helper function to choose which model is being used.
-        """
         if(model == "Log_reg"):
             return Log_reg(name)
         elif(model == "Random_forest"):

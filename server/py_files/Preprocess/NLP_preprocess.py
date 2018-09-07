@@ -39,6 +39,7 @@ def train_d2v(sentences):
 
     return 0
 
+#predict on new sentence using doc2vec
 def process_sent(sentences, model = None):
     if(not model):
         #load the most recent doc2vec model 
@@ -60,18 +61,22 @@ def train_w2v(sentences):
     #save the model for use in process_sent
     pass
 
+#preprocess sentence and tockenize into words
 def process_sentences(sentences):
     
     text = remove_stopwords(sentences)
     text = text.lower()
     text = strip_punctuation(text)
     text = strip_multiple_whitespaces(text)
-    text = word_tokenize(text)
+    try:
+         text = word_tokenize(text)
+    except:
+        raise Exception("need to run lines 13 and 14 for first time run, check file /server/py_files/preprocess/NLP_preprocess.py")
     
     return text
 
+#create tagged ID objects for the DOC2vec model from gensim
 def form_tags(text):
-
     tagged_documents_list = []
     for i, sent in enumerate(text):
         tagged_documents_list.append(TaggedDocument(sent, ["sent_{}".format(i)]))
@@ -80,6 +85,9 @@ def form_tags(text):
 
 #TFIDF model with scikit learn
 def SK_TFIDF_train(sentences):
+    """
+    Train TFIDF model to encode sentences, check Sklearn documentation for details
+    """
     print("\n\n+++++ Starting TFIDF model training +++++\n")
     count_vect = CountVectorizer()
     X_train_counts = count_vect.fit_transform(sentences)
@@ -90,8 +98,8 @@ def SK_TFIDF_train(sentences):
     print("\n\n+++++ Finished TFIDF model training +++++\n")
     return X_train_tf
 
+#use saved bag of words model and TFIDF model to create sentence vectors
 def SK_TFIDF_predict(sentences):
-
     X_train_counts = joblib.load("server/py_files/Preprocess/models/BOW.pkl")
     tf_transformer = joblib.load("server/py_files/Preprocess/models/TFIDF.pkl")
     print("+++++ Loaded TFIDF Models +++++")
