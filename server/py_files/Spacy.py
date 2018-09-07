@@ -5,16 +5,18 @@ import en_core_web_sm
 nlp = en_core_web_sm.load()
 nlp.max_length = 2000000 # todo check this limit
 
-import time
-
 class Spacy(object):
-    def anonymize(self, t):
+    def anonymize_token(self, t):
         if t.like_email: # todo bring in Human Names as well
             return 'X'*len(t.text)
         return t.text
 
-    def has_phone_number(self, text):
-        return re.search(r'(\+\s?1\s?)|(?:(?:(\s*\(?([2-9]1[02-9]|[2-9][02-8]1|[2-9][02-8][02-9])\s*)|([2-9]1[02-9]|[2-9][02-8]1|[2-9][02-8][02-9]))\)?\s*(?:[.-]\s*)?)([2-9]1[02-9]|[2-9][02-9]1|[2-9][02-9]{2})\s*(?:[.-]\s*)?([0-9]{4})', text)
+    def anonymize_phone_number(self, text):
+        phone_number = re.search(r'(\+\s?1\s?)|(?:(?:(\s*\(?([2-9]1[02-9]|[2-9][02-8]1|[2-9][02-8][02-9])\s*)|([2-9]1[02-9]|[2-9][02-8]1|[2-9][02-8][02-9]))\)?\s*(?:[.-]\s*)?)([2-9]1[02-9]|[2-9][02-9]1|[2-9][02-9]{2})\s*(?:[.-]\s*)?([0-9]{4})', text)
+        if phone_number:
+            return ''.join(['X' if (not char.isspace() and i >= phone_number.start() and i <= phone_number.end()) else char for i, char in enumerate(text)])
+
+        return text
 
     def sentences(self, text, drop_stop_words):
         sents = []
@@ -25,19 +27,18 @@ class Spacy(object):
                     sents.append(sentence)
                 sentence = []
             if not t.is_space and not (drop_stop_words and t.is_stop):
-                sentence.append(Spacy.anonymize(self, t))
+                sentence.append(Spacy.anonymize_token(self, t))
 
         if len(sents) == 0 and len(sentence) > 0:
             sents.append(sentence)
+
         return sents
 
     def tokenize(self, text, drop_stop_words):
         tokens = []
-        has_phone_number = Spacy.has_phone_number(self, text)
+        text = Spacy.anonymize_phone_number(self, text)
         for t in nlp(str(text)):
-            if not t.is_space and has_phone_number:
-                tokens.append('X'*len(t.text))
-            elif not t.is_space and not (drop_stop_words and t.is_stop):
-                tokens.append(Spacy.anonymize(self, t))
+            if not t.is_space and not (drop_stop_words and t.is_stop):
+                tokens.append(Spacy.anonymize_token(self, t))
 
         return tokens
