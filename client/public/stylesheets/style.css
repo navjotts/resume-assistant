@@ -65,6 +65,29 @@ body {
     color: #000;
 }
 
+.model-list {
+    display: flex;
+    justify-content: space-between;
+    text-align: center;
+    margin-top: 20px;
+    margin-left: 50px;
+    margin-right: 50px;
+}
+
+.model-list-left {
+    flex: 1;
+    width: 0;
+    text-align: left;
+    border-right: 1px solid #F0F0F0;
+}
+
+.model-list-right {
+    flex: 1;
+    width: 0;
+    text-align: right;
+    border-left: 1px solid #F0F0F0;
+}
+
 .training-list {
     display: flex;
     justify-content: space-between;
@@ -78,12 +101,14 @@ body {
     flex: 1;
     width: 0;
     text-align: left;
+    border-right: 1px solid #F0F0F0;
 }
 
 .training-list-right {
     flex: 1;
     width: 0;
     text-align: right;
+    border-left: 1px solid #F0F0F0;
 }
 
 .file-link {
@@ -222,4 +247,17 @@ button:focus {outline:0;}
     padding:8px;
     padding-right:20px;
     color: #3a7cc9;
+}
+
+.model-labels {
+    padding-left: 5px;
+    padding-right: 5px;
+}
+
+.model-form {
+    margin-right: 10px;
+}
+
+.train-test-button {
+    margin-right: 50px;
 }

@@ -13,6 +13,44 @@ html
             div(id='training-header', class='training-header')
                 a(class='left-link', href='#', onclick='fetchResumes()')='Resumes'
                 a(class='right-link', href='#', onclick='fetchJobs()')='Jobs'
+            div(class='model-list')
+                div(class='model-list-left')
+                    label()='Select Model'
+                    form(class='model-form')
+                        input(type='radio', name='model-type', value='Logistic Regression')
+                        label(class='model-labels')='Logistic Regression'
+                        <br/>
+                        input(type='radio', name='model-type', value='SVM')
+                        label(class='model-labels')='SVM'
+                        <br/>
+                        input(type='radio', name='model-type', value='Random Forest')
+                        label(class='model-labels')='Random Forest'
+                        <br/>
+                        input(type='radio', name='model-type', value='FastText')
+                        label(class='model-labels')='FastText'
+                        <br/>
+                    <br/>
+                    label(style='text-weight:bold')='Select Feature'
+                    form(class='model-form')
+                        input(type='radio', name='feature-type', value='tf-df')
+                        label(class='model-labels')='tf-df'
+                        <br/>
+                        input(type='radio', name='feature-type', value='word embeddings')
+                        label(class='model-labels')='word embeddings'
+                        <br/>
+                        input(type='radio', name='feature-type', value='sentence embeddings')
+                        label(class='model-labels')='sentence embeddings'
+                        <br/>
+                    <br/>
+                    button(id='train_button'
+                        class='train-test-button',
+                        type='button',
+                        onclick='train()')='Train'
+                    button(id='test_button'
+                        class='train-test-button',
+                        type='button',
+                        onclick='test()')='Test'
+                div(class='model-list-right')
             div(class='training-list')
                 div(id='resumes-list', class='training-list-left')
                 div(id='jobs-list', class='training-list-right')
