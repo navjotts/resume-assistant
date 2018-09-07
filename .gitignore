@@ -9,3 +9,5 @@
 **/uploads/*.txt
 *.pyc
 *.env
+package-lock.json
+*.DS_Store
