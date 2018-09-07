@@ -28,10 +28,8 @@ async function train(name) {
     console.log(`Starting training on data size of (samples, labels): (${data.samples.length}, ${data.labels.length})`);
 
     try {
-        // var modelPath = path.join(__dirname, 'data', 'models', name);
-        var result = await PythonConnector.invoke('train_classifier', name, data.samples, data.labels);
-        console.log(`Training result of ${name}: Accuracy = ${result.Accuracy}%`);
-        // console.log(vec)
+        var result = await PythonConnector.invoke('train_classifier', name, 'FastText', 'None', data.samples, data.labels);
+        console.log(result);
     }
     catch (e) {
         console.log('Error in train:', e);
@@ -39,12 +37,11 @@ async function train(name) {
 }
 
 async function test(name) {
-    var data = collectData('DB', name);
+    var data = collectData('testDB', name);
     console.log(`Starting testing on data size of (samples, labels): (${data.samples.length}, ${data.labels.length})`);
 
     try {
-        var modelPath = path.join(__dirname, 'data', 'models', name);
-        await PythonConnector.invoke('test_classifier', name, data.samples, data.labels);
+        await PythonConnector.invoke('test_classifier', name, 'FastText', 'None', data.samples, data.labels);
     }
     catch (e) {
         console.log('Error in test:', e);
@@ -85,7 +82,7 @@ async function classifyResume(name) {
 
 async function start() {
     //await train('jobs');
-    await train('resumes');
+    //await train('resumes');
     // await test('resumes');
     // await classifyResume()
 }

@@ -8,17 +8,17 @@ from os.path import basename
 
 # Overall class for the logistoc regression model
 class Random_forest():
-    """ 
-    Class used to easily train and logistic regression from SKlearn and then, once trained, 
-    the prediciotn mthod can be called to make predcitions from a saved model   
-    
+    """
+    Class used to easily train and logistic regression from SKlearn and then, once trained,
+    the prediciotn mthod can be called to make predcitions from a saved model
+
     """
     def __init__(self, name):
         self.name = name
         self.path = "server/py_files/ML_models/Random_forest/weights/"
         ## create the acutal model
         self.model = RandomForestClassifier( random_state=42, max_depth=110, n_estimators=150)
-        
+
     # traing the model on the given samples and labels.
     # input the whole data set, this method will split into train and test
     def train(self,samples,labels):
@@ -38,10 +38,11 @@ class Random_forest():
         print("On test data, this model was %f %% accurate.\n\n" %(round(score*100,2)))
         # save model
         self.path = "server/py_files/ML_models/Random_forest/weights/" + str(self.name) + "_" + str(int(score*100)) + ".pkl"
-        joblib.dump(self.model, self.path) 
+        joblib.dump(self.model, self.path)
 
         return {'Accuracy': round(score*100,2) , 'Predicitons': [self.model.predict(vec.reshape(1,-1)) for vec in samples], 'Labels': labels}
 
+    # todo whats the purpose of Load_best? do we need it? Cc @Alex
     def prediction(self, vects, Load_best=True, model_path=None, test=False, labels="None"):
         """
         Input a list of vectors, these vectors will all get a predicted class from the loaded modelself.
@@ -64,6 +65,18 @@ class Random_forest():
         else:
          return list(zip(results, probs))
 
+    def test(self, vects, labels):
+        """
+        Input a list of vectors, and supply labels to test against
+        """
+        self.load_model(self.name)
+
+        # for each vector in the list append a prediction to results
+        results = [self.model.predict(vec.reshape(1,-1)) for vec in vects]
+        probs =  [np.argmax(self.model.predict_proba(vec.reshape(1,-1))) for vec in vects]
+        print("\n\n+++++ Results +++++\n\n\n\n prediciton:%s\n\n label:%s"%([x[0] for x in results[0:10]],labels[0:10]))
+        print({'Predicitons':results,'labels':labels, 'probabilities': probs})
+
     def productionize(self, model_path, production_path):
         """
         Saves the specified model to production weights file
@@ -76,10 +89,10 @@ class Random_forest():
         print("\n+++++ Model saved to production path. +++++\n\n %s", production_path)
 
     def load_model(self, name, Load_best=True, model_path=None):
-        
+
         #load best model
         if(Load_best):
-       
+
             best = 0
             best_file = ""
 
@@ -89,7 +102,7 @@ class Random_forest():
                     best_file = file
                 else:
                     next
-    
+
             try:
                 self.model = joblib.load(best_file)
             except:

@@ -6,7 +6,11 @@ import numpy as np
 class FastTextClassifier(object):
     models = {}
 
-    def train(self, name, path, samples, labels):
+    def __init__(self, name):
+        self.name = name
+        self.path = os.path.join(os.path.dirname(os.path.abspath(__file__)), 'weights', 'resumes')
+
+    def train(self, samples, labels):
         model = None
         fd, labelPath = tempfile.mkstemp()
 
@@ -14,11 +18,11 @@ class FastTextClassifier(object):
             FastTextClassifier.generate_data_file(self, labelPath, samples, labels)
             print('Training started ...')
             model = fastText.train_supervised(labelPath, epoch=30, wordNgrams=2)
-            FastTextClassifier.models[name] = model
+            FastTextClassifier.models[self.name] = model
             print('Training ended ...')
 
-            print("Quantizing ...")
-            model.quantize()
+            # print("Quantizing ...")
+            # model.quantize()
 
             result = model.test(labelPath)
             result = {'precision': result[1],  'recall': result[2], 'examples': result[0]}
@@ -27,17 +31,17 @@ class FastTextClassifier(object):
         finally:
             os.remove(labelPath)
 
-        if not os.path.exists(os.path.dirname(path)):
-            os.makedirs(os.path.dirname(path))
-        model.save_model(path + '.bin')
+        if not os.path.exists(os.path.dirname(self.path)):
+            os.makedirs(os.path.dirname(self.path))
+        model.save_model(self.path + '.bin')
 
         return result
 
-    def test(self, name, path, samples, labels):
-        if name not in FastTextClassifier.models:
-            FastTextClassifier.load(self, name, path)
+    def test(self, samples, labels):
+        if self.name not in FastTextClassifier.models:
+            FastTextClassifier.load(self)
 
-        model = FastTextClassifier.models[name]
+        model = FastTextClassifier.models[self.name]
 
         pred, prob = model.predict(list(samples))
         labels_pred = [each[0][len('__label__'):] for each in pred]
@@ -45,11 +49,12 @@ class FastTextClassifier(object):
         print("Number of misclassifications: %d (out of %d)" % (sum(accuracy == 0), len(accuracy)))
         print("Accuracy:", sum(accuracy != 0)/len(accuracy))
 
-    def classify(self, name, path, samples):
-        if name not in FastTextClassifier.models:
-            FastTextClassifier.load(self, name, path)
+    # todo rename to predcit or classify
+    def prediction(self, samples):
+        if self.name not in FastTextClassifier.models:
+            FastTextClassifier.load(self)
 
-        model = FastTextClassifier.models[name]
+        model = FastTextClassifier.models[self.name]
 
         pred, prob = model.predict(list(samples))
         labels_pred = [each[0][len('__label__'):] for each in pred]
@@ -57,15 +62,15 @@ class FastTextClassifier(object):
 
         return list(zip(labels_pred, prob_pred))
 
-    def load(self, name, path):
+    def load(self):
         model = None
-        if name not in FastTextClassifier.models:
+        if self.name not in FastTextClassifier.models:
             try:
-                model = fastText.load_model(path + '.bin')
+                model = fastText.load_model(self.path + '.bin')
             except:
-                print('Unable to locate model', name)
+                print('Unable to locate model', self.name)
 
-        FastTextClassifier.models[name] = model
+        FastTextClassifier.models[self.name] = model
 
     def generate_data_file(self, file, samples, labels):
         text = ''
