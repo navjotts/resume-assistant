@@ -17,7 +17,7 @@ class svm_model():
         self.name = name
         self.path = "server/py_files/ML_models/svm/weights/"
         ## create the acutal model
-        self.model = LinearSVC( random_state=42)
+        self.model = LinearSVC( random_state=42, class_weight='balanced', tol=.00001, max_iter=5000)
         
     # traing the model on the given samples and labels.
     # input the whole data set, this method will split into train and test
