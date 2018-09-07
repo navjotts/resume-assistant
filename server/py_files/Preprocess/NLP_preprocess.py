@@ -4,6 +4,9 @@ from gensim.parsing.preprocessing import strip_multiple_whitespaces
 from gensim.parsing.preprocessing import strip_punctuation
 from gensim.summarization.textcleaner import clean_text_by_word
 from gensim.models.doc2vec import TaggedDocument
+from sklearn.feature_extraction.text import CountVectorizer
+from sklearn.feature_extraction.text import TfidfTransformer
+from sklearn.externals import joblib
 
 #######################
 #first time run will require this on the local machine
@@ -63,7 +66,6 @@ def process_sentences(sentences):
     text = text.lower()
     text = strip_punctuation(text)
     text = strip_multiple_whitespaces(text)
-    # text = list(clean_text_by_word(text, deacc=True))
     text = word_tokenize(text)
     
     return text
@@ -75,3 +77,22 @@ def form_tags(text):
         tagged_documents_list.append(TaggedDocument(sent, ["sent_{}".format(i)]))
 
     return tagged_documents_list
+
+#TFIDF model with scikit learn
+def SK_TFIDF_train(sentences):
+    print("\n\n+++++ Starting TFIDF model training +++++\n")
+    count_vect = CountVectorizer()
+    X_train_counts = count_vect.fit_transform(sentences)
+    joblib.dump(X_train_counts, "server/py_files/Preprocess/models/BOW.pkl") 
+    tf_transformer = TfidfTransformer(use_idf=False).fit(X_train_counts)
+    joblib.dump(tf_transformer, "server/py_files/Preprocess/models/TFIDF.pkl") 
+    X_train_tf = tf_transformer.transform(X_train_counts)
+    print("\n\n+++++ Finished TFIDF model training +++++\n")
+    return X_train_tf
+
+def SK_TFIDF_predict(sentences):
+
+    X_train_counts = joblib.load("server/py_files/Preprocess/models/BOW.pkl")
+    tf_transformer = joblib.load("server/py_files/Preprocess/models/TFIDF.pkl")
+    print("+++++ Loaded TFIDF Models +++++")
+    return tf_transformer.transform(X_train_counts)

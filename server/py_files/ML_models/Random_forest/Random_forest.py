@@ -17,7 +17,7 @@ class Random_forest():
         self.name = name
         self.path = "server/py_files/ML_models/Random_forest/weights/"
         ## create the acutal model
-        self.model = RandomForestClassifier( random_state=42, max_depth=85, n_estimators=85)
+        self.model = RandomForestClassifier( random_state=42, max_depth=110, n_estimators=150)
         
     # traing the model on the given samples and labels.
     # input the whole data set, this method will split into train and test
@@ -40,7 +40,7 @@ class Random_forest():
         self.path = "server/py_files/ML_models/Random_forest/weights/" + str(self.name) + "_" + str(int(score*100)) + ".pkl"
         joblib.dump(self.model, self.path) 
 
-        return {'Accuracy': round(score*100,2) , 'Predicitons': [self.model.predict([vec]) for vec in samples], 'Labels': labels}
+        return {'Accuracy': round(score*100,2) , 'Predicitons': [self.model.predict(vec.reshape(1,-1)) for vec in samples], 'Labels': labels}
 
     def prediction(self, vects, Load_best=True, model_path=None, test=False, labels="None"):
         """
