@@ -17,7 +17,6 @@ from nltk import word_tokenize
 #train a doc2vec model to be used in the process_sent function
 def train_d2v(sentences):
     #specify file path
-    # fname = "./models/doc2vec.bin"
     fname = "server/py_files/Preprocess/models/doc2vec.model"
 
     #process incoming sentences
