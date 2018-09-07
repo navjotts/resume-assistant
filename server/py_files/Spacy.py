@@ -1,7 +1,7 @@
 import re
 
 import spacy
-import en_core_web_lg
+import en_core_web_lg  # Changed from en*_sm to en*_lg because it is easier to identy names.
 nlp = en_core_web_lg.load()
 nlp.max_length = 2000000 # todo check this limit
 
@@ -18,8 +18,12 @@ class Spacy(object):
         for span in spans:
             span.merge()
         
-        for person in filter(lambda w: w.ent_type_ = 'PERSON', doc):
-            return ('XXXXXXXXXX')
+        for person in filter(lambda w: w.ent_type_ == 'PERSON', doc):
+            sentence = str(text)
+            text =  sentence.replace(str(person), 'XXXXXXXXXX')
+
+        return text
+
 
     # todo: case to check Cc @Antonio - how does the search function behaves if there are more than 1 matches (what happens if there are 2 phone numbers in 1 sentence)
     def anonymize_phone_number(self, text):
