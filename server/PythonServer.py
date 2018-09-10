@@ -3,9 +3,7 @@ import zerorpc
 
 from py_files.Spacy import Spacy
 from py_files.ML_models.FastText.FastTextClassifier import FastTextClassifier
-from py_files.ML_models.Log_reg.Logistic_reg import Log_reg
-from py_files.ML_models.Random_forest.Random_forest import Random_forest
-from py_files.ML_models.SVM.SVM import svm_model
+from py_files.ML_models.classifier import svm_model,Log_reg,Random_forest
 from py_files.Preprocess.NLP_preprocess import train_d2v,process_sent,SK_TFIDF_train, SK_TFIDF_predict
 
 class PythonServer(object):
@@ -28,32 +26,32 @@ class PythonServer(object):
 
     def train_classifier(self, model_name, model_type, feature_type, samples, labels):
         samples = self.choose_features(feature_type, samples)
-        model = self.choose_model(model_name, model_type)
+        model = self.choose_model(model_name, model_type, feature_type)
         return model.train(samples, labels)
 
     def test_classifier(self, model_name, model_type, feature_type, samples, labels):
         samples = self.choose_features(feature_type, samples)
-        model = self.choose_model(model_name, model_type)
+        model = self.choose_model(model_name, model_type, feature_type)
         return model.prediction(samples,test=True, labels = labels)
 
     def classify_sentences(self, model_name, model_type, feature_type, samples):
         samples = self.choose_features(feature_type, samples)
-        model = self.choose_model(model_name, model_type)
+        model = self.choose_model(model_name, model_type, feature_type)
         return model.prediction(samples)
 
     def test_sentence_classifier(self, name, path, samples, labels):
         FastTextClassifier.test(self, name, path, samples, labels)
 
     # helper function to choose the appropriate class based on the model details provided
-    def choose_model(self, model_name, model_type):
+    def choose_model(self, model_name, model_type, feature_type):
         if(model_type == "FastText"):
-            return FastTextClassifier(model_name)
+            return FastTextClassifier(model_name, feature_type)
         elif(model_type == "Log_reg"):
-            return Log_reg(model_name)
+            return Log_reg(model_name, feature_type)
         elif(model_type == "Random_forest"):
-            return Random_forest(model_name)
+            return Random_forest(model_name, feature_type)
         elif(model_type == "svm"):
-            return svm_model(model_name)
+            return svm_model(model_name, feature_type)
         else:
             raise Exception("Please enter a valid model")
 

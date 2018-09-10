@@ -41,7 +41,7 @@ async function test(name) {
     console.log(`Starting testing on data size of (samples, labels): (${data.samples.length}, ${data.labels.length})`);
 
     try {
-        await PythonConnector.invoke('test_classifier', name, 'Random_forest', 'tf-idf', data.samples, data.labels);
+        await PythonConnector.invoke('test_classifier', name, 'svm', 'tf-idf', data.samples, data.labels);
     }
     catch (e) {
         console.log('Error in test:', e);
