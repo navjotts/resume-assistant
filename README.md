@@ -8,7 +8,7 @@ Given a resume and a job description, highlights parts of the resume which are n
     * install python3 and pip3 (suggested: Homebrew)
 * Windows
     * go to [https://nodejs.org/en/](https://nodejs.org/en/) and download the installer and click on - and follow steps
-    * Alex please fill in suggested way to install python3 and pip3 on Windowsw
+    * install python3 and pip3 ... go to [https://www.anaconda.com/download/] download 3.6 installer and follow instructions
 * Linux (Debian based)
     ```
     $ sudo apt install build-essential nodejs npm libzmq3-dev python3-dev python3-pip
