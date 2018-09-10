@@ -44,10 +44,6 @@ class SentenceClassifier(object):
         pred, prob = model.predict(list(samples))
         labels_pred = [each[0][len('__label__'):] for each in pred]
 
-        accuracy = np.array([int(labels_pred[i] == label) for i, label in enumerate(labels)])
-        print("Number of misclassifications: %d (out of %d)" % (sum(accuracy == 0), len(accuracy)))
-        print("Accuracy:", sum(accuracy != 0)/len(accuracy))
-        
         aaa = AccuracyAnalysis.analyze(self, labels, labels_pred)
         print(aaa)
         

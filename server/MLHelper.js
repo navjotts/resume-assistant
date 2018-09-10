@@ -38,7 +38,7 @@ async function train(name) {
 }
 
 async function test(name) {
-    var data = collectData('testDB', name);
+    var data = collectData('DB', name);
     console.log(`Starting testing on data size of (samples, labels): (${data.samples.length}, ${data.labels.length})`);
 
     try {
@@ -85,7 +85,7 @@ async function classifyResume(name) {
 async function start() {
     //await train('jobs');
     //await train('resumes');
-    //await test('resumes');
+    await test('resumes');
     //await classifyResume()
 }
 
