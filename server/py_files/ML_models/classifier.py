@@ -3,6 +3,7 @@ import numpy as np
 from sklearn.ensemble import RandomForestClassifier
 from sklearn.linear_model import LogisticRegression
 from sklearn.svm import LinearSVC
+from sklearn.naive_bayes import MultinomialNB
 from sklearn.model_selection import train_test_split
 from sklearn.externals import joblib
 from glob import glob
@@ -51,10 +52,13 @@ class base_classifier():
         If you want to test the model without using train set test to True and supply labels.
         """
         #load model based on inputs
-        self.load_model(self.name, self.feature_type, self.model_type)
+        self.load_model(self.name, self.model_type, self.feature_type)
         # for each vector in the list append a prediction to results
         results = [self.model.predict(vec.reshape(1,-1)) for vec in vects]
-        probs =  [np.argmax(self.model.predict_proba(vec.reshape(1,-1))) for vec in vects]
+        if(self.model_type == 'svm_model'):
+            probs =  [['N/A for SVM''s' for vec in vects]]
+        else:
+            probs =  [np.argmax(self.model.predict_proba(vec.reshape(1,-1))) for vec in vects]      
         print("\n\n+++++ Results +++++\n\n\n\n prediciton:%s\n\n label:%s"%([x[0] for x in results[0:10]],labels[0:10]))
         # print out the results depending on case
         #printout test results with label
@@ -76,7 +80,7 @@ class base_classifier():
             best_file = ""
 
             #find highest accuracy model
-            for file in glob("./server/py_files/ML_models/%s_%s_%s*.pkl" %(model_type, feature_type, name) ):
+            for file in glob("./server/py_files/ML_models/weights/%s_%s_%s*.pkl" %(model_type, feature_type, name) ):
                 if(int(file[-6:-4]) > best):
                     best_file = file
                 else:
@@ -116,14 +120,23 @@ class Random_forest(base_classifier):
         ## create the acutal model
         self.model = RandomForestClassifier( random_state=42, max_depth=110, n_estimators=150)
 
-class svm_model(base_classifier):
+class svm(base_classifier):
     def __init__(self,name, feature_type):
         self.name = name
         self.feature_type = feature_type
-        self.model_type = 'svm_model'
+        self.model_type = 'svm'
         self.path = "server/py_files/ML_models/weights/"
         ## create the acutal model
         self.model = LinearSVC( random_state=42, class_weight='balanced', tol=.00001, max_iter=5000)
+
+class naive_bayes(base_classifier):
+    def __init__(self,name, feature_type):
+        self.name = name
+        self.feature_type = feature_type
+        self.model_type = 'naive_bayes'
+        self.path = "server/py_files/ML_models/weights/"
+        ## create the acutal model
+        self.model = MultinomialNB()
         
 
 

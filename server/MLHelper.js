@@ -28,7 +28,7 @@ async function train(name) {
     console.log(`Starting training on data size of (samples, labels): (${data.samples.length}, ${data.labels.length})`);
 
     try {
-        var result = await PythonConnector.invoke('train_classifier', name, 'svm', 'tf-idf', data.samples, data.labels);
+        var result = await PythonConnector.invoke('train_classifier', name, 'Log_reg', 'tf-idf', data.samples, data.labels);
         console.log(result);
     }
     catch (e) {
@@ -41,7 +41,7 @@ async function test(name) {
     console.log(`Starting testing on data size of (samples, labels): (${data.samples.length}, ${data.labels.length})`);
 
     try {
-        await PythonConnector.invoke('test_classifier', name, 'svm', 'tf-idf', data.samples, data.labels);
+        await PythonConnector.invoke('test_classifier', name, 'Log_reg', 'sentence-embeddings', data.samples, data.labels);
     }
     catch (e) {
         console.log('Error in test:', e);

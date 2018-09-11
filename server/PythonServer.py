@@ -3,7 +3,7 @@ import zerorpc
 
 from py_files.Spacy import Spacy
 from py_files.ML_models.FastText.FastTextClassifier import FastTextClassifier
-from py_files.ML_models.classifier import svm_model,Log_reg,Random_forest
+from py_files.ML_models.classifier import svm,Log_reg,Random_forest, naive_bayes
 from py_files.Preprocess.NLP_preprocess import train_d2v,process_sent,SK_TFIDF_train, SK_TFIDF_predict
 
 class PythonServer(object):
@@ -40,18 +40,20 @@ class PythonServer(object):
         return model.prediction(samples)
 
     def test_sentence_classifier(self, name, path, samples, labels):
-        FastTextClassifier.test(self, name, path, samples, labels)
+        FastTextClassifier.test(self, samples, labels)
 
     # helper function to choose the appropriate class based on the model details provided
     def choose_model(self, model_name, model_type, feature_type):
         if(model_type == "FastText"):
-            return FastTextClassifier(model_name, feature_type)
+            return FastTextClassifier(self)
         elif(model_type == "Log_reg"):
             return Log_reg(model_name, feature_type)
         elif(model_type == "Random_forest"):
             return Random_forest(model_name, feature_type)
         elif(model_type == "svm"):
-            return svm_model(model_name, feature_type)
+            return svm(model_name, feature_type)
+        elif(model_type == "naive_bayes"):
+            return naive_bayes(model_name, feature_type)
         else:
             raise Exception("Please enter a valid model")
 
