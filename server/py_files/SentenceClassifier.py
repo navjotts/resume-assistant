@@ -3,7 +3,7 @@ import tempfile
 import fastText
 import numpy as np
 
-from py_files.AccuracyAnalysis import AccuracyAnalysis 
+from py_files.AccuracyAnalysis import AccuracyAnalysis
 
 class SentenceClassifier(object):
     models = {}
@@ -52,14 +52,14 @@ class SentenceClassifier(object):
         for n in range(len(aaa)):
             print('\n\t>\t%s\t<>\t%s\t<||\t%s\t||>\t %d\t\n' % (aaa[n]['actual_label'], aaa[n]['pred_label'], aaa[n]['sample'], aaa[n]['sample_index']))
         print('\n')
-        
+
         aas = AccuracyAnalysis.score(self, labels, labels_pred)
         print(aas)
-        
+
         aaf = AccuracyAnalysis.f1_score(self, labels, labels_pred)
         print(aaf)
 
-        
+
     def classify(self, name, path, samples):
         if name not in SentenceClassifier.models:
             SentenceClassifier.load(self, name, path)
