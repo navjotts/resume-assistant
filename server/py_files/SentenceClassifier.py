@@ -50,7 +50,7 @@ class SentenceClassifier(object):
         aaa = AccuracyAnalysis.analyze(self, labels, labels_pred, samples)
         # returns a tuple ((y_true_label[0], y_mispredicted_label[0], original_index[0]), ... , (y_true_label[n], y_mispredicted_label[n], original_index[n]))
         for n in range(len(aaa)):
-            print('\n\t>\t%s\t<>\t%s\t<||\t%s\t||>\t %d\t\n' % (aaa[n][0], aaa[n][1], aaa[n][2], aaa[n][3]))
+            print('\n\t>\t%s\t<>\t%s\t<||\t%s\t||>\t %d\t\n' % (aaa[n]['actual_label'], aaa[n]['pred_label'], aaa[n]['sample'], aaa[n]['sample_index']))
         print('\n')
         
         aas = AccuracyAnalysis.score(self, labels, labels_pred)

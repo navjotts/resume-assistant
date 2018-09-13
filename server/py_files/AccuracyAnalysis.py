@@ -9,7 +9,7 @@ class AccuracyAnalysis(object):
         mispredictions = []
         for n in range(len(y_true)):
             if y_true[n] != y_predict[n]:
-                mispredictions.append((y_true[n], y_predict[n], samples[n], n))
+                mispredictions.append({"actual_label": y_true[n], "pred_label": y_predict[n], "sample": samples[n], "sample_index":n})
 
         print('\n\t\t*** %d mispredictions out of %d samples ***\n' % (len(mispredictions),len(y_true)))                
 
