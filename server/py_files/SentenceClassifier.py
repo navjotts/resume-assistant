@@ -44,8 +44,21 @@ class SentenceClassifier(object):
         pred, prob = model.predict(list(samples))
         labels_pred = [each[0][len('__label__'):] for each in pred]
 
-        aaa = AccuracyAnalysis.analyze(self, labels, labels_pred)
-        print(aaa)
+        # AccuracyAnalysis Module
+        AccuracyAnalysis.report(self, labels, labels_pred)
+
+        aaa = AccuracyAnalysis.analyze(self, labels, labels_pred, samples)
+        # returns a tuple ((y_true_label[0], y_mispredicted_label[0], original_index[0]), ... , (y_true_label[n], y_mispredicted_label[n], original_index[n]))
+        for n in range(len(aaa)):
+            print('\n\t>\t%s\t<>\t%s\t<||\t%s\t||>\t %d\t\n' % (aaa[n][0], aaa[n][1], aaa[n][2], aaa[n][3]))
+        print('\n')
+        
+        aas = AccuracyAnalysis.score(self, labels, labels_pred)
+        print(aas)
+        
+        aaf = AccuracyAnalysis.f1_score(self, labels, labels_pred)
+        print(aaf)
+
         
     def classify(self, name, path, samples):
         if name not in SentenceClassifier.models:
