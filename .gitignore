@@ -9,3 +9,5 @@
 **/uploads/*.txt
 *.pyc
 *.env
+*.DS_Store
+*~
