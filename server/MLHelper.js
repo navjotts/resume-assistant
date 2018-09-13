@@ -38,7 +38,7 @@ async function train(name) {
 }
 
 async function test(name) {
-    var data = collectData('DB', name);
+    var data = collectData('testDB', name);
     console.log(`Starting testing on data size of (samples, labels): (${data.samples.length}, ${data.labels.length})`);
 
     try {
