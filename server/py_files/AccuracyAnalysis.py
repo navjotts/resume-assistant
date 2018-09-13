@@ -2,31 +2,35 @@ import numpy as np
 from sklearn.metrics import precision_recall_fscore_support, f1_score, classification_report
 
 class AccuracyAnalysis(object):
-    def analyze(self, y_true, y_predict, samples):
+    def score(self, y_true, y_predict):
+        '''
+            given y and y_predict,
+            returns a score object with keys 'precision', 'recall' and 'f1_score'
+        '''
+        precision, recall, fscore, _ = precision_recall_fscore_support(y_true, y_predict, average='micro')
+        return {'precision':precision, 'recall':recall, 'f1_score':fscore}
 
-        print(len(y_true), len(y_predict))
+    def misclassifications(self, y_true, y_predict, samples):
+        '''
+            given y, y_predict and samples
+            returns a list of misclassification objects,
+            each with keys 'sample_index', 'sample', 'pred_label', 'actual_label'
+        '''
+        assert len(y_true) == len(y_predict) == len(samples)
+        ret = []
+        for i in range(len(y_true)):
+            if y_true[i] != y_predict[i]:
+                ret.append({
+                    'sample_index':i,
+                    'sample': samples[i],
+                    'pred_label': y_predict[i],
+                    'actual_label': y_true[i]
+                    })
 
-        mispredictions = []
-        for n in range(len(y_true)):
-            if y_true[n] != y_predict[n]:
-                mispredictions.append({"actual_label": y_true[n], "pred_label": y_predict[n], "sample": samples[n], "sample_index":n})
-
-        print('\n\t\t*** %d mispredictions out of %d samples ***\n' % (len(mispredictions),len(y_true)))
-
-        return tuple(mispredictions)
+        return ret
 
     def report(self, y_true, y_predict):
-        print('\nscikit_learn Classification Report\n\n', classification_report(y_true, y_predict), '\n')
-
-        accuracy = np.array([int(y_predict[i] == label) for i, label in enumerate(y_true)])
-        print("\n\n\tNumber of mispredictions: %d (out of %d)\n" % (sum(accuracy == 0), len(accuracy)))
-
-    def score(self, y_true, y_predict):
-        precision, recall, fscore, _ = precision_recall_fscore_support(y_true, y_predict, average="micro")
-        return {'precision':precision, 'recall':recall, 'f1_score':fscore }
-
-    def f1_score(self, y_true, y_predict):
-        return {'f1_score':f1_score(y_true,y_predict, average="micro") }
-#        return(f1_score(y_true, y_predict, average="micro"))
-
-
+        '''
+            returns a text report (string) showing the classification metrics per label
+        '''
+        return classification_report(y_true, y_predict, digits = 3)

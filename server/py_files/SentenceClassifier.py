@@ -44,21 +44,20 @@ class SentenceClassifier(object):
         pred, prob = model.predict(list(samples))
         labels_pred = [each[0][len('__label__'):] for each in pred]
 
-        # AccuracyAnalysis Module
-        AccuracyAnalysis.report(self, labels, labels_pred)
+        report = AccuracyAnalysis.report(self, labels, labels_pred)
+        print()
+        print(report)
 
-        aaa = AccuracyAnalysis.analyze(self, labels, labels_pred, samples)
-        # returns a tuple ((y_true_label[0], y_mispredicted_label[0], original_index[0]), ... , (y_true_label[n], y_mispredicted_label[n], original_index[n]))
-        for n in range(len(aaa)):
-            print('\n\t>\t%s\t<>\t%s\t<||\t%s\t||>\t %d\t\n' % (aaa[n]['actual_label'], aaa[n]['pred_label'], aaa[n]['sample'], aaa[n]['sample_index']))
-        print('\n')
+        misclassifications = AccuracyAnalysis.misclassifications(self, labels, labels_pred, samples)
+        print()
+        print('Index          Sample                         Predicted          Actual')
+        for each in misclassifications:
+            print('%d          %.20s          %s          %s' % (each['sample_index'], each['sample'], each['pred_label'], each['actual_label']))
+        # todo : it seems like some of the actual_labels are empty ==> please check Cc @darwin (we can check with if each['actual_label'] is empty string inside the above for loop)
 
-        aas = AccuracyAnalysis.score(self, labels, labels_pred)
-        print(aas)
-
-        aaf = AccuracyAnalysis.f1_score(self, labels, labels_pred)
-        print(aaf)
-
+        score = AccuracyAnalysis.score(self, labels, labels_pred)
+        print()
+        print(score)
 
     def classify(self, name, path, samples):
         if name not in SentenceClassifier.models:
