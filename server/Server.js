@@ -8,14 +8,14 @@ const PythonConnector = require('./PythonConnector.js');
 const DocxParser = require('./DocxParser.js');
 
 var storage = multer.diskStorage({
-    destination: function(req, file, callback) {
+    destination: function (req, file, callback) {
         callback(null, path.join(__dirname, 'uploads'));
     },
-    filename: function(req, file, callback) {
+    filename: function (req, file, callback) {
         callback(null, file.originalname);
     }
 });
-var upload = multer({storage: storage}, {limits: {files: 1}}).single('userFile');
+var upload = multer({ storage: storage }, { limits: { files: 1 } }).single('userFile');
 
 var app = express();
 
@@ -24,45 +24,45 @@ app.set('view engine', 'pug');
 app.use(express.static(path.join(__dirname, '..', 'client', 'public')));
 
 app.use(bodyParser.json());
-app.use(bodyParser.urlencoded({extended: true}));
+app.use(bodyParser.urlencoded({ extended: true }));
 
-app.use(function(req, res, next) {
-	res.header('Access-Control-Allow-Origin', '*');
-	res.header('Access-Control-Max-Age', 7200);
-	res.header('Access-Control-Allow-Headers', 'X-Requested-With');
-	res.header('Access-Control-Allow-Headers', 'Content-Type');
-	next();
+app.use(function (req, res, next) {
+    res.header('Access-Control-Allow-Origin', '*');
+    res.header('Access-Control-Max-Age', 7200);
+    res.header('Access-Control-Allow-Headers', 'X-Requested-With');
+    res.header('Access-Control-Allow-Headers', 'Content-Type');
+    next();
 });
 
-app.get('/', function(req, res) {
+app.get('/', function (req, res) {
     console.log(req.url);
-    res.render('index', {title: 'Resume Assistant'});
+    res.render('index', { title: 'Resume Assistant' });
 });
 
-app.get('/training', function(req, res) {
+app.get('/training', function (req, res) {
     console.log(req.url);
-    res.render('dashboard', {title: 'Resume Assistant'});
+    res.render('dashboard', { title: 'Resume Assistant' });
 });
 
-app.get('/training/resumes', function(req, res, next) {
+app.get('/training/resumes', function (req, res, next) {
     console.log(req.url);
     var resumes = [];
     var dbDir = path.join(__dirname, 'data', 'DB', 'resumes');
     var files = fs.readdirSync(dbDir).filter(fileName => fileName.split('.').pop() === 'json');
     files.forEach(fileName => resumes.push(fileName.split('.')[0]));
-	res.json(resumes);
+    res.json(resumes);
 });
 
-app.get('/training/jobs', function(req, res, next) {
+app.get('/training/jobs', function (req, res, next) {
     console.log(req.url);
     var jobs = [];
     var dbDir = path.join(__dirname, 'data', 'DB', 'jobs');
     var files = fs.readdirSync(dbDir).filter(fileName => fileName.split('.').pop() === 'json');
     files.forEach(fileName => jobs.push(fileName.split('.')[0]));
-	res.json(jobs);
+    res.json(jobs);
 });
 
-app.get('/training/resumes/:id', function(req, res, next) {
+app.get('/training/resumes/:id', function (req, res, next) {
     console.log(req.url);
     var parent = 'resumes';
     var resumeId = req.params.id;
@@ -85,7 +85,7 @@ app.get('/training/resumes/:id', function(req, res, next) {
     }
 });
 
-app.get('/training/jobs/:id', function(req, res, next) {
+app.get('/training/jobs/:id', function (req, res, next) {
     console.log(req.url);
     var parent = 'jobs';
     var jobId = req.params.id;
@@ -110,7 +110,7 @@ app.get('/training/jobs/:id', function(req, res, next) {
 
 
 // TODO error handling inside these
-app.post('/training/:parent/:docId/sentences/:sentenceId/edit', function(req, res, next) {
+app.post('/training/:parent/:docId/sentences/:sentenceId/edit', function (req, res, next) {
     console.log(req.url);
     var parent = req.params.parent;
     var docId = req.params.docId;
@@ -128,9 +128,9 @@ app.post('/training/:parent/:docId/sentences/:sentenceId/edit', function(req, re
 
 
 // TODO need error handling
-app.post('/upload', function(req, res, next) {
+app.post('/upload', function (req, res, next) {
     console.log(req.url);
-    upload(req, res, function(err) {
+    upload(req, res, function (err) {
         if (err) {
             res.end("Error uploading file");
         }
@@ -156,10 +156,10 @@ function collectData(parent, name) {
         }
     }
 
-    return {samples, labels};
+    return { samples, labels };
 }
 
-app.get('/training/:trainOrTest/:dataset/:modelName/:modelType/:featureType', async function(req, res, next) {
+app.get('/training/:trainOrTest/:dataset/:modelName/:modelType/:featureType', async function (req, res, next) {
     console.log(req.url);
     var modelName = req.params.modelName;
     if (modelName != 'resumes') {
@@ -189,30 +189,25 @@ app.get('/training/:trainOrTest/:dataset/:modelName/:modelType/:featureType', as
     }
 });
 
-function collectSentences() {
-    var sents = [];
-    name = 'resumes'; // TODO add jobs also
-    ['DB', 'testDB'].forEach(db => {
-        console.log(`Collecting sentences from ${db}...`);
-        var dbDir = path.join(__dirname, 'data', db, name);
-        var files = fs.readdirSync(dbDir);
+app.get('/training/embeddings', async function (req, res, next) {
+    console.log(req.url);
+    try {
+        var sents = [];
+        name = 'resumes'; // TODO add jobs also
+        var srcFolder = 'resumes-txt';
+        console.log(`Collecting sentences from ${srcFolder}...`);
+        var srcDir = path.join(__dirname, 'data', srcFolder);
+        var files = fs.readdirSync(srcDir);
 
         for (var i = 0; i < files.length; i++) {
             var fileName = files[i];
-            if (fileName.split('.').pop() === 'json') {
-                var docData = JSON.parse(fs.readFileSync(path.join(dbDir, fileName)));
-                docData.content.forEach(each => sents.push(each.sentence));
+            if (fileName.split('.').pop() === 'txt') {
+                console.log(`#${i} Collecting sentences for: ${fileName}`);
+                var sentences = await PythonConnector.invoke('sentences_from_file_lines', path.join(srcDir, fileName), true, true);
+                sentences.forEach(each => sents.push(each)); // TODO use concat
             }
         }
-    });
 
-    return sents;
-}
-
-app.get('/training/embeddings', async function(req, res, next) {
-    console.log(req.url);
-    try {
-        var sents = collectSentences(); // TODO we need to remove punctuations for embeddings
         await PythonConnector.invoke('train_embeddings', 'resumes', 100, sents);
         res.json(200);
     }
@@ -222,7 +217,7 @@ app.get('/training/embeddings', async function(req, res, next) {
     }
 });
 
-app.get('/analyze/:resumeFile/:jobFile', async function(req, res, next) {
+app.get('/analyze/:resumeFile/:jobFile', async function (req, res, next) {
     console.log(req.url);
     var resumeFileName = req.params.resumeFile;
     var resumeFilePath = path.join(__dirname, 'uploads', resumeFileName);
@@ -248,7 +243,7 @@ app.get('/analyze/:resumeFile/:jobFile', async function(req, res, next) {
         samples.forEach((sent, index) => data.push({
             sentence: sent,
             label: labelsPredicted[index][0] === 'EXPERIENCE' ? 'WORK EXPERIENCE' : labelsPredicted[index][0],
-            confidence: Math.round(labelsPredicted[index][1]*1000)/10
+            confidence: Math.round(labelsPredicted[index][1] * 1000) / 10
         }));
         res.json(data);
     }
@@ -265,19 +260,19 @@ app.get('/analyze/:resumeFile/:jobFile', async function(req, res, next) {
     });
 });
 
-app.get('*', function(req, res, next) {
+app.get('*', function (req, res, next) {
     var err = new Error();
     err.status = 404;
     next(err);
 });
 
-app.use(function(err, req, res, next) {
+app.use(function (err, req, res, next) {
     if (err.status !== 404) {
         return next(err);
     }
 
     res.status(500);
-    res.render('error', {error: err});
+    res.render('error', { error: err });
 });
 
 const PORT = process.env.PORT || 3000;

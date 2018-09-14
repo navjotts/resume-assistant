@@ -19,7 +19,7 @@ class Spacy(object):
 
         return text
 
-    def sentences(self, text, drop_stop_words):
+    def sentences(self, text, drop_stop):
         sents = []
         sentence = []
         for t in nlp(str(text)):
@@ -27,7 +27,7 @@ class Spacy(object):
                 if len(sentence) > 0:
                     sents.append(sentence)
                 sentence = []
-            if not t.is_space and not (drop_stop_words and t.is_stop):
+            if not t.is_space and not (drop_stop and t.is_stop):
                 sentence.append(Spacy.anonymize_token(self, t))
 
         if len(sents) == 0 and len(sentence) > 0:
@@ -35,11 +35,11 @@ class Spacy(object):
 
         return sents
 
-    def tokenize(self, text, drop_stop_words):
+    def tokenize(self, text, drop_stop, drop_punct):
         tokens = []
         text = Spacy.anonymize_phone_number(self, text)
         for t in nlp(str(text)):
-            if not t.is_space and not (drop_stop_words and t.is_stop):
+            if not t.is_space and not (drop_stop and t.is_stop) and not (drop_punct and t.is_punct):
                 tokens.append(Spacy.anonymize_token(self, t))
 
         return tokens

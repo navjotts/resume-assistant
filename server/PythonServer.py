@@ -10,24 +10,22 @@ class PythonServer(object):
     def sentences(self, text):
         return Spacy.sentences(self, text, False)
 
-    def sentences_from_file_lines(self, filepath):
+    def sentences_from_file_lines(self, filepath, drop_stop = False, drop_punct = False):
         sents = []
         with open(filepath, encoding = 'utf8') as f:
             for line in f:
                 # todo we are assuming incorrectly that each paragraph can be treated as a single sentence
-                sentence = Spacy.tokenize(self, line, False)
+                sentence = Spacy.tokenize(self, line, drop_stop, drop_punct)
                 if sentence:
                     sents.append(sentence)
         return sents
 
     def train_classifier(self, model_name, model_type, feature_type, samples, labels):
-        print('=== train_classifier ===', model_name, model_type, feature_type)
         samples = self.choose_features(feature_type, samples)
         model = self.choose_model(model_name, model_type, feature_type)
         return model.train(samples, labels)
 
     def test_classifier(self, model_name, model_type, feature_type, samples, labels):
-        print('=== test_classifier ===', model_name, model_type, feature_type)
         sample_vecs = self.choose_features(feature_type, samples)
         model = self.choose_model(model_name, model_type, feature_type,)
         return model.prediction(sample_vecs, test = True, labels = labels, samples=samples)
