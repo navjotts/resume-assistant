@@ -189,6 +189,19 @@ app.get('/training/:trainOrTest/:dataset/:modelName/:modelType/:featureType', as
     }
 });
 
+app.get('/training/summary', async function (req, res, next) {
+    console.log(req.url);
+    try {
+        var scoresFilePath = path.join(__dirname, 'data', 'scores.json');
+        var scoresData = JSON.parse(fs.readFileSync(scoresFilePath));
+        res.json(scoresData)
+    }
+    catch (e) {
+        console.log('error in /training/summary', e);
+        res.send(404);
+    }
+});
+
 app.get('/training/embeddings', async function (req, res, next) {
     console.log(req.url);
     try {

@@ -11,7 +11,7 @@ from os.path import basename
 from py_files.AccuracyAnalysis import AccuracyAnalysis
 
 # General classifier object, call this to instantiate a model.
-class base_classifier():  
+class base_classifier():
     """
     Class used to easily call train, test, prediction, and load on to act on a ml model object.
 
@@ -44,7 +44,7 @@ class base_classifier():
         score = AccuracyAnalysis.score(self, labels, labels_pred)
         report = AccuracyAnalysis.report(self, labels, labels_pred)
         misclassifications = AccuracyAnalysis.misclassifications(self, labels, labels_pred, samples)
-        
+
         print("On test data, this model was %f %% accurate.\n\n" %(round(score*100,2)))
         # save model
         self.path = self.path + str(self.model_type)+ '_' + str(self.feature_type) + '_' + str(self.name) + "_" + str(int(score*100)) + ".pkl"
@@ -65,7 +65,7 @@ class base_classifier():
         # if(self.model_type == 'svm_model'):
         #     probs =  [['N/A for SVM''s' for vec in vecs]]
         # else:
-        #     probs =  [np.argmax(self.model.predict_proba(vec.reshape(1,-1))) for vec in vecs]     
+        #     probs =  [np.argmax(self.model.predict_proba(vec.reshape(1,-1))) for vec in vecs]
 
         score = AccuracyAnalysis.score(self, labels, labels_pred)
         report = AccuracyAnalysis.report(self, labels, labels_pred)
@@ -171,7 +171,7 @@ numpy.random.seed(7)
 
 class DL_classifier():
     """
-    deep learning class with its own training methods, 
+    deep learning class with its own training methods,
     as they differ from the base class since they are all sk learn models.
     """
 
@@ -198,7 +198,7 @@ class DL_classifier():
         x_train, x_test, y_train, y_test = train_test_split(padded_docs, dummy_labels,
                                                             test_size=0.25, random_state=42)
 
-        
+
         # print(np.array(x_train).flatten().reshape(padded_docs.shape[0],25,2))
         x_train = np.array(x_train)
         y_train = np.array(y_train)
@@ -217,7 +217,7 @@ class DL_classifier():
         print(score)
         print("On test data, this model was %.2f %% accurate.\n\n" %(score[1]*100))
 
-    
+
 class LSTM_model(DL_classifier):
     def __init__(self,name, feature_type):
         self.name = name
