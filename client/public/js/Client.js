@@ -136,24 +136,30 @@ function test(modelName) {
 }
 
 function fireTrainingOrTesting(trainOrTest, modelName) {
-    model = selectedModelType(modelName);
+    var model = selectedModelType(modelName);
     if (!model) {
         alert(`Please select a model to ${trainOrTest}`);
         return;
     }
 
     var modelType = model.value;
-    var featureType = 'None';
 
-    feature = selectedFeatureType(modelName);
+    var featureType = 'None';
+    var feature = selectedFeatureType(modelName);
     if (feature) {
         featureType = feature.value;
     }
 
-    console.log(`${trainOrTest} (model, feature): (${modelType}, ${featureType})`);
+    var datasetName = 'DB';
+    var dataset = selectedDataset(modelName);
+    if (dataset) {
+        datasetName = dataset.value;
+    }
+
+    console.log(`${trainOrTest} (dataset, model, feature): (${datasetName}, ${modelType}, ${featureType})`);
 
     $.ajax({
-        url: `http://localhost:3000/training/${trainOrTest}/${modelName}/${modelType}/${featureType}`,
+        url: `http://localhost:3000/training/${trainOrTest}/${datasetName}/${modelName}/${modelType}/${featureType}`,
         success: function(response) {
             var output = "";
 
@@ -211,6 +217,21 @@ function selectedFeatureType(modelName) {
 
     return feature;
 }
+
+function selectedDataset(modelName) {
+    var dataset;
+    var formName = modelName + 'DatasetForm';
+    var inputName = modelName + 'Dataset';
+    var radios = document[formName][inputName];
+    radios.forEach(rad => {
+        if (rad.checked) {
+            dataset = rad;
+        }
+    });
+
+    return dataset;
+}
+
 
 function selectDashboardTab(selectedTab) {
     ['resumes_tab', 'jobs_tab', 'comparison_tab'].forEach(tab => {

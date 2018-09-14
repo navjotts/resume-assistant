@@ -25,8 +25,8 @@ html
                         onclick='selectDashboardTab("' + 'comparison_tab' + '")')='Comparison'
                 div(id='resumes_tab_content', class='dashboard_tab_content')
                     label(style='text-decoration: underline;')='Select Model'
-                    form(class='training-form', name='resumesModelForm')
-                        input(type='radio', name='resumesModelType', value='LogisticRegression', checked=true)
+                    form(class='dashboard_form', name='resumesModelForm')
+                        input(type='radio', name='resumesModelType', value='LogisticRegression')
                         label(class='model-labels')='Logistic Regression'
                         <br/>
                         input(type='radio', name='resumesModelType', value='SVM')
@@ -43,7 +43,7 @@ html
                         <br/>
                     <br/>
                     label(style='text-decoration: underline;')='Select Feature'
-                    form(class='training-form', name='resumesFeatureForm')
+                    form(class='dashboard_form', name='resumesFeatureForm')
                         input(type='radio', name='resumesFeatureType', value='tf-df')
                         label(class='model-labels')='tf-df'
                         <br/>
@@ -52,6 +52,15 @@ html
                         <br/>
                         input(type='radio', name='resumesFeatureType', value='sentence-embeddings')
                         label(class='model-labels')='sentence embeddings'
+                        <br/>
+                    <br/>
+                    label(style='text-decoration: underline;')='Select Dataset'
+                    form(class='dashboard_form', name='resumesDatasetForm')
+                        input(type='radio', name='resumesDataset', value='DB')
+                        label(class='model-labels')='Training dataset'
+                        <br/>
+                        input(type='radio', name='resumesDataset', value='testDB')
+                        label(class='model-labels')='Test dataset'
                         <br/>
                     <br/>
                     button(id='train_button'
@@ -65,7 +74,7 @@ html
                     div(id='resumes_results', class='results')
                 div(id='jobs_tab_content', class='no-display')
                     label(style='text-decoration: underline;')='Select Model'
-                    form(class='training-form', name='jobsModelForm')
+                    form(class='dashboard_form', name='jobsModelForm')
                         input(type='radio', name='jobsModelType', value='LogisticRegression', checked=true)
                         label(class='model-labels')='Logistic Regression'
                         <br/>
@@ -77,7 +86,7 @@ html
                         <br/>
                     <br/>
                     label(style='text-decoration: underline;')='Select Feature'
-                    form(class='training-form', name='jobsFeatureForm')
+                    form(class='dashboard_form', name='jobsFeatureForm')
                         input(type='radio', name='jobsFeatureType', value='tf-df')
                         label(class='model-labels')='tf-df'
                         <br/>

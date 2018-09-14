@@ -159,7 +159,7 @@ function collectData(parent, name) {
     return {samples, labels};
 }
 
-app.get('/training/:trainOrTest/:modelName/:modelType/:featureType', async function(req, res, next) {
+app.get('/training/:trainOrTest/:dataset/:modelName/:modelType/:featureType', async function(req, res, next) {
     console.log(req.url);
     var modelName = req.params.modelName;
     if (modelName != 'resumes') {
@@ -169,12 +169,15 @@ app.get('/training/:trainOrTest/:modelName/:modelType/:featureType', async funct
     }
 
     var trainOrTest = req.params.trainOrTest;
-    var db = trainOrTest == 'train' ? 'DB' : 'DB'; // TODO should be 'testDB' in else => but need to share the test data with everyone
+    var dataset = req.params.dataset;
+    if (trainOrTest == 'train') {
+        dataset = 'DB'; // training should always happens on the training dataset (testing can happen either on training or testing dataset)
+    }
     var method = trainOrTest == 'train' ? 'train_classifier' : 'test_classifier';
     var modelType = req.params.modelType;
     var featureType = req.params.featureType;
     try {
-        var data = collectData(db, modelName);
+        var data = collectData(dataset, modelName);
         console.log(`Starting testing on data size of (samples, labels): (${data.samples.length}, ${data.labels.length})`);
 
         var result = await PythonConnector.invoke(method, modelName, modelType, featureType, data.samples, data.labels);
