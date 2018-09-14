@@ -1,4 +1,3 @@
-from hashlib import sha256
 import zerorpc
 
 from py_files.Spacy import Spacy
@@ -7,10 +6,6 @@ from py_files.ML_models.classifier import svm, Log_reg, Random_forest, naive_bay
 from py_files.Preprocess.NLP_preprocess import train_d2v, process_sent, SK_TFIDF_train, SK_TFIDF_predict
 
 class PythonServer(object):
-    # todo remove, not needed
-    def hash_file_name(self, filename):
-        return sha256(str(filename).encode('utf-8')).hexdigest()
-
     def sentences(self, text):
         return Spacy.sentences(self, text, False)
 
