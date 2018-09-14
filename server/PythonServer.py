@@ -3,8 +3,8 @@ import zerorpc
 from py_files.Spacy import Spacy
 from py_files.ML_models.Embeddings.Embeddings import Embeddings
 from py_files.ML_models.FastText.FastTextClassifier import FastTextClassifier
-from py_files.ML_models.classifier import svm, Log_reg, Random_forest, naive_bayes
-from py_files.Preprocess.NLP_preprocess import train_d2v, process_sent, SK_TFIDF_train, SK_TFIDF_predict
+from py_files.ML_models.classifier import svm,Log_reg,Random_forest, naive_bayes, LSTM_model
+from py_files.Preprocess.NLP_preprocess import train_d2v,process_sent,SK_TFIDF_train, SK_TFIDF_predict, process_sentences
 
 class PythonServer(object):
     def sentences(self, text):
@@ -52,6 +52,8 @@ class PythonServer(object):
             return svm(model_name, feature_type)
         elif model_type == 'NaiveBayes':
             return naive_bayes(model_name, feature_type)
+        elif(model_type == "LSTM"):
+            return LSTM_model(model_name, feature_type)
         else:
             raise Exception('Please enter a valid model')
 
