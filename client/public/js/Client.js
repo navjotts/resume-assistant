@@ -126,26 +126,58 @@ function showFilePicked(inputId, labelId) {
     }
 }
 
-function test() {
-    $.ajax({
-        url: `http://localhost:3000/training/test`,
-        success: function(response) {
-            var output = "";
-            Object.keys(response).forEach(key => {
-                output += "<div style=\"padding:5px\">" + key + ": " + response[key] + "</div>"
-            });
-            $('#results').html(output);
-        },
-        error: function(response) {
-            console.log('error in test()', response);
+function selectedModelType() {
+    var model;
+    var radios = document.modelForm.modelType;
+    radios.forEach(rad => {
+        if (rad.checked) {
+            model = rad;
         }
     });
+
+    return model;
+}
+
+function selectedFeatureType() {
+    var feature;
+    var radios = document.featureForm.featureType;
+    radios.forEach(rad => {
+        if (rad.checked) {
+            feature = rad;
+        }
+    });
+
+    return feature;
+}
+
+function test() {
+    fireTrainingOrTesting('test');
 }
 
 // TODO need an option to NOT really fire any training when the call is from the production URL (as then we have to manage the saving of the updated model weights etc)
 function train() {
+    fireTrainingOrTesting('train');
+}
+
+function fireTrainingOrTesting(trainOrTest) {
+    model = selectedModelType();
+    if (!model) {
+        alert(`Please select a model to ${trainOrTest}`);
+        return;
+    }
+
+    var modelType = model.value;
+    var featureType = 'None';
+
+    feature = selectedFeatureType();
+    if (feature) {
+        featureType = feature.value;
+    }
+
+    console.log(`${trainOrTest} (model, feature): (${modelType}, ${featureType})`);
+
     $.ajax({
-        url: `http://localhost:3000/training/train`,
+        url: `http://localhost:3000/training/${trainOrTest}/${modelType}/${featureType}`,
         success: function(response) {
             var output = "";
             Object.keys(response).forEach(key => {

@@ -159,30 +159,19 @@ function collectData(parent, name) {
     return {samples, labels};
 }
 
-app.get('/training/test', async function(req, res, next) {
+app.get('/training/:trainOrTest/:modelType/:featureType', async function(req, res, next) {
     console.log(req.url);
+    var name = 'resumes'; // TODO this will also be passed from the UI
+    var trainOrTest = req.params.trainOrTest;
+    var db = trainOrTest == 'train' ? 'DB' : 'DB'; // TODO should be 'testDB' in else => but need to share the test data with everyone
+    var method = trainOrTest == 'train' ? 'train_classifier' : 'test_classifier';
+    var modelType = req.params.modelType;
+    var featureType = req.params.featureType;
     try {
-        var name = 'resumes'
-        var data = collectData('DB', name); // should be testDB => but need to share the test data with everyone
+        var data = collectData(db, name);
         console.log(`Starting testing on data size of (samples, labels): (${data.samples.length}, ${data.labels.length})`);
 
-        var result = await PythonConnector.invoke('test_classifier', name, 'FastText', 'None', data.samples, data.labels);
-        res.json(result);
-    }
-    catch (e) {
-        console.log('error in /analyze', e);
-        res.send(404);
-    }
-});
-
-app.get('/training/train', async function(req, res, next) {
-    console.log(req.url);
-    try {
-        var name = 'resumes'
-        var data = collectData('DB', name);
-        console.log(`Starting testing on data size of (samples, labels): (${data.samples.length}, ${data.labels.length})`);
-
-        var result = await PythonConnector.invoke('train_classifier', name, 'FastText', 'None', data.samples, data.labels);
+        var result = await PythonConnector.invoke(method, name, modelType, featureType, data.samples, data.labels);
         res.json(result);
     }
     catch (e) {

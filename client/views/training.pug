@@ -16,29 +16,32 @@ html
             div(class='model-list')
                 div(class='model-list-left')
                     label()='Select Model'
-                    form(class='model-form')
-                        input(type='radio', name='model-type', value='Logistic Regression')
+                    form(class='training-form', name='modelForm')
+                        input(type='radio', name='modelType', value='LogisticRegression', checked=true)
                         label(class='model-labels')='Logistic Regression'
                         <br/>
-                        input(type='radio', name='model-type', value='SVM')
+                        input(type='radio', name='modelType', value='SVM')
                         label(class='model-labels')='SVM'
                         <br/>
-                        input(type='radio', name='model-type', value='Random Forest')
+                        input(type='radio', name='modelType', value='RandomForest')
                         label(class='model-labels')='Random Forest'
                         <br/>
-                        input(type='radio', name='model-type', value='FastText')
+                        input(type='radio', name='modelType', value='NaiveBayes')
+                        label(class='model-labels')='Naive Bayes'
+                        <br/>
+                        input(type='radio', name='modelType', value='FastText')
                         label(class='model-labels')='FastText'
                         <br/>
                     <br/>
                     label(style='text-weight:bold')='Select Feature'
-                    form(class='model-form')
-                        input(type='radio', name='feature-type', value='tf-df')
+                    form(class='training-form', name='featureForm')
+                        input(type='radio', name='featureType', value='tf-df')
                         label(class='model-labels')='tf-df'
                         <br/>
-                        input(type='radio', name='feature-type', value='word embeddings')
+                        input(type='radio', name='featureType', value='word-embeddings')
                         label(class='model-labels')='word embeddings'
                         <br/>
-                        input(type='radio', name='feature-type', value='sentence embeddings')
+                        input(type='radio', name='featureType', value='sentence-embeddings')
                         label(class='model-labels')='sentence embeddings'
                         <br/>
                     <br/>
