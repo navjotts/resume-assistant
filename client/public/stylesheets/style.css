@@ -290,12 +290,6 @@ button.train_test_button:hover {background-color: #000000;}
     margin-right: 10px;
 }
 
-.results {
-    margin: 20px 0px 20px 0px;
-    border: 1px solid #E1E5E8;
-    min-height: 40px;
-}
-
 .dashboard_tabs {
     text-align: center;
 }
@@ -306,12 +300,24 @@ button.train_test_button:hover {background-color: #000000;}
     padding: 20px;
 }
 
+.results {
+    margin: 20px 0px 20px 0px;
+    border: 1px solid #E1E5E8;
+    min-height: 40px;
+}
+
+.result_header {
+    margin: 20px 20px 0px 20px;
+    font-size: 16px;
+    font-weight: bold;
+}
+
 table, th, td {
    border: 1px solid #E1E5E8;
 }
 
 table {
-    margin: 10px;
+    margin: 2px 20px 50px 20px;
     font-size: 14px;
 }
 

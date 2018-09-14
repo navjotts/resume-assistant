@@ -165,17 +165,17 @@ function fireTrainingOrTesting(trainOrTest, modelName) {
 
             var score = response['score'];
             if (score) {
-                output += "<table border=\"1\"><tr><th>precision</th><th>recall</th><th>f1-score</th></tr><tr><td>" +  score['precision'] + "</td><td>" + score['recall'] + "</td><td>" + score['f1_score'] + "</td></tr></table>";
+                output += "<div class=\"result_header\">SCORE</div><table border=\"1\"><tr><th>precision</th><th>recall</th><th>f1-score</th></tr><tr><td>" +  score['precision'] + "</td><td>" + score['recall'] + "</td><td>" + score['f1_score'] + "</td></tr></table>";
             }
 
             var report = response['report'];
             if (report) {
-                output += "<table border=\"1\"><tr><td><div class=\"report\">" + report + "</div></td></tr></table>";
+                output += "<div class=\"result_header\">REPORT</div><table border=\"1\"><tr><td><div class=\"report\">" + report + "</div></td></tr></table>";
             }
 
             var misclassifications = response['misclassifications'];
             if (misclassifications) {
-                output += "<table border=\"1\"><tr><th>Sample</th><th>Actual</th><th>Predicted</th></tr>";
+                output += "<div class=\"result_header\">MISCLASSIFICATIONS</div><table border=\"1\"><tr><th>Sample</th><th>Actual</th><th>Predicted</th></tr>";
                 misclassifications.forEach(each => {
                     output += "<tr><td>" + each['sample'] + "</td><td>" + each['actual_label'] + "</td><td>" + each['pred_label'] + "</td></tr>";
                 });
