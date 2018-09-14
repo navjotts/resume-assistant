@@ -74,6 +74,7 @@ class base_classifier():
     def load_model(self, name, model_type, feature_type, Load_best=True, model_path=None):
 
         #load best model
+        print(model_type,feature_type,name)
         if(Load_best):
 
             best = 0
@@ -137,6 +138,100 @@ class naive_bayes(base_classifier):
         self.path = "server/py_files/ML_models/weights/"
         ## create the acutal model
         self.model = MultinomialNB()
-        
 
+import numpy
+from keras.datasets import imdb
+from keras.models import Sequential
+from keras.layers import Dense, Flatten, Input
+from keras.layers import LSTM, TimeDistributed, Dropout
+from keras.layers.embeddings import Embedding
+from keras.metrics import sparse_categorical_accuracy
+from keras.preprocessing import sequence
+from keras.preprocessing.text import one_hot
+from keras.preprocessing.sequence import pad_sequences
+from sklearn.preprocessing import LabelEncoder
+from keras.utils import np_utils
+# from scipy.sparse import csr_matrix
+# fix random seed for reproducibility
+numpy.random.seed(7)
+
+
+class DL_classifier():
+    """
+    deep learning class with its own training methods, 
+    as they differ from the base class since they are all sk learn models.
+    """
+
+    def __init__(self, name, feature_type):
+        self.name = name
+        self.feature_type = feature_type
+        self.model_type = None
+        self.path = "server/py_files/ML_models/weights/"
+        ## create the acutal model
+        self.model = None
+
+    def train(self,samples,labels):
+        self.compile()
+        # encoded_docs = [one_hot(d, 1000) for d in samples]
+
+        max_length = 4000
+        print(type(samples))
+        padded_docs = pad_sequences(np.array(samples.todense()), maxlen=max_length)
+        padded_docs = np.array(padded_docs).flatten().reshape((padded_docs.shape[0],16, 250))
+        labels = LabelEncoder().fit_transform(labels)
+        dummy_labels = np_utils.to_categorical(labels)
+        print(dummy_labels.shape)
+        # split data into test train split
+        x_train, x_test, y_train, y_test = train_test_split(padded_docs, dummy_labels,
+                                                            test_size=0.25, random_state=42)
+
+        
+        # print(np.array(x_train).flatten().reshape(padded_docs.shape[0],25,2))
+        x_train = np.array(x_train)
+        y_train = np.array(y_train)
+        x_test = np.array(x_test)
+        y_test = np.array(y_test)
+
+        # max_review_length = 50
+        # x_train = sequence.pad_sequences(x_train, maxlen=max_review_length)
+        # x_test = sequence.pad_sequences(x_test, maxlen=max_review_length)
+
+        print("\n++++ Begin Training ++++\n\n")
+        self.model.fit(x_train, y_train, validation_data=(x_test, y_test), epochs=5000, batch_size=128, verbose = 1)
+        print("\n\n++++ Training Complete ++++\n\n")
+
+        score = self.model.evaluate(x_test,y_test)
+        print(score)
+        print("On test data, this model was %.2f %% accurate.\n\n" %(score[1]*100))
+
+    
+class LSTM_model(DL_classifier):
+    def __init__(self,name, feature_type):
+        self.name = name
+        self.feature_type = feature_type
+        self.model_type = 'LSTM'
+        self.path = "server/py_files/ML_models/weights/"
+        ## create the acutal model
+        self.model = None
+
+    def compile(self):
+        model = Sequential()
+        model.add(LSTM(100, input_shape = (16,250),return_sequences=True))
+        model.add(LSTM(50,return_sequences=True))
+        model.add(LSTM(50,return_sequences=True))
+        model.add(LSTM(50,return_sequences=True))
+        model.add(LSTM(50))
+        model.add(Dropout(0.3))
+        model.add(Dense(128, activation='relu'))
+        model.add(Dense(128, activation='relu'))
+        model.add(Dense(128, activation='relu'))
+        model.add(Dense(128, activation='relu'))
+        model.add(Dropout(0.3))
+        model.add(Dense(32, activation='relu'))
+        model.add(Dense(5, activation='sigmoid'))
+        model.compile(loss='categorical_crossentropy', optimizer='adam', metrics=['accuracy'])
+        print(model.summary())
+        self.model = model
+
+        return model
 
