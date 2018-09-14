@@ -137,21 +137,21 @@ function summary(modelName) {
             // TESTING dataset
             var trace1 = {
             x: ['Logistic Regression', 'SVM', 'RandomForest', 'NaiveBayes', 'FastText'],
-            y: [71, 82, 79, 66, 73],
+            y: [66.86, 72.77, 72.66, 62.97, 76.11],
             name: 'Precision',
             type: 'bar'
         };
 
             var trace2 = {
             x: ['Logistic Regression', 'SVM', 'RandomForest', 'NaiveBayes', 'FastText'],
-            y: [69, 81, 76, 61, 71],
+            y: [62.29, 74.77, 68.97, 59.66, 76.75],
             name: 'Recall',
             type: 'bar'
         };
 
             var trace3 = {
                 x: ['Logistic Regression', 'SVM', 'RandomForest', 'NaiveBayes', 'FastText'],
-                y: [69, 81, 76, 61, 71],
+                y: [65.81, 73.77, 70.18, 61.28, 75.93],
                 name: 'F1 Score',
                 type: 'bar',
                 marker: {
@@ -171,21 +171,21 @@ function summary(modelName) {
             // TRAINING dataset
             var trace1 = {
             x: ['Logistic Regression', 'SVM', 'RandomForest', 'NaiveBayes', 'FastText'],
-            y: [71, 82, 79, 66, 73],
+            y: [84.77, 94.26, 91.04, 79.99, 98.65],
             name: 'Precision',
             type: 'bar'
         };
 
             var trace2 = {
             x: ['Logistic Regression', 'SVM', 'RandomForest', 'NaiveBayes', 'FastText'],
-            y: [69, 81, 76, 61, 71],
+            y: [82.24, 92.05, 88.97, 78.61, 98.18],
             name: 'Recall',
             type: 'bar'
         };
 
             var trace3 = {
                 x: ['Logistic Regression', 'SVM', 'RandomForest', 'NaiveBayes', 'FastText'],
-                y: [69, 81, 76, 61, 71],
+                y: [83.11, 93.46, 90.06, 79.43, 98.35],
                 name: 'F1 Score',
                 type: 'bar',
                 marker: {
