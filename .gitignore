@@ -9,6 +9,5 @@
 **/uploads/*.txt
 *.pyc
 *.env
-**/**/recreate_data.py
-recreate_data.sh
-all_resumes.txt
+*.DS_Store
+*~
