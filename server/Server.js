@@ -163,10 +163,26 @@ app.get('/training/test', async function(req, res, next) {
     console.log(req.url);
     try {
         var name = 'resumes'
-        var data = collectData('DB', name);
+        var data = collectData('DB', name); // should be testDB => but need to share the test data with everyone
         console.log(`Starting testing on data size of (samples, labels): (${data.samples.length}, ${data.labels.length})`);
 
         var result = await PythonConnector.invoke('test_classifier', name, 'FastText', 'None', data.samples, data.labels);
+        res.json(result);
+    }
+    catch (e) {
+        console.log('error in /analyze', e);
+        res.send(404);
+    }
+});
+
+app.get('/training/train', async function(req, res, next) {
+    console.log(req.url);
+    try {
+        var name = 'resumes'
+        var data = collectData('DB', name);
+        console.log(`Starting testing on data size of (samples, labels): (${data.samples.length}, ${data.labels.length})`);
+
+        var result = await PythonConnector.invoke('train_classifier', name, 'FastText', 'None', data.samples, data.labels);
         res.json(result);
     }
     catch (e) {

@@ -142,6 +142,19 @@ function test() {
     });
 }
 
+// TODO need an option to NOT really fire any training when the call is from the production URL (as then we have to manage the saving of the updated model weights etc)
 function train() {
-    alert('Not implemented yet!');
+    $.ajax({
+        url: `http://localhost:3000/training/train`,
+        success: function(response) {
+            var output = "";
+            Object.keys(response).forEach(key => {
+                output += "<div style=\"padding:5px\">" + key + ": " + response[key] + "</div>"
+            });
+            $('#results').html(output);
+        },
+        error: function(response) {
+            console.log('error in test()', response);
+        }
+    });
 }
