@@ -41,7 +41,7 @@ app.get('/', function(req, res) {
 
 app.get('/training', function(req, res) {
     console.log(req.url);
-    res.render('training', {title: 'Resume Assistant'});
+    res.render('dashboard', {title: 'Resume Assistant'});
 });
 
 app.get('/training/resumes', function(req, res, next) {

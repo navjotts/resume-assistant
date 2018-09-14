@@ -190,3 +190,16 @@ function fireTrainingOrTesting(trainOrTest) {
         }
     });
 }
+
+function selectDashboardTab(selectedTab) {
+    ['resumes_tab', 'jobs_tab', 'comparison_tab'].forEach(tab => {
+        if (selectedTab == tab) {
+            $('#' + tab).removeClass().addClass('dashboard_tab_focussed');
+            $('#' + tab + '_content').removeClass().addClass('dashboard_tab_content');
+        }
+        else {
+            $('#' + tab).removeClass().addClass('dashboard_tab');
+            $('#' + tab + '_content').removeClass().addClass('no-display');
+        }
+    });
+}

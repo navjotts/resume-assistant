@@ -211,6 +211,26 @@ button.choose_file_button {
   color: #3a7cc9;
 }
 
+button.dashboard_tab {
+  width: 150px;
+  height: 40px;
+  border-radius: 2px;
+  background-color: #ffffff;
+  border: solid 1px #E1E5E8;
+  font-size: 13px;
+  color: #3a7cc9;
+}
+
+button.dashboard_tab_focussed {
+  width: 150px;
+  height: 40px;
+  border-radius: 2px;
+  background-color: #F0F0F0;
+  border: solid 1px #E1E5E8;
+  font-size: 13px;
+  color: #3a7cc9;
+}
+
 button:focus {outline:0;}
 
 .document {
@@ -264,6 +284,16 @@ button:focus {outline:0;}
 
 .results {
     margin: 20px 20px 20px 0px;
-    border: 1px solid #F0F0F0;
+    border: 1px solid #E1E5E8;
     min-height: 40px;
+}
+
+.dashboard_tabs {
+    text-align: center;
+}
+
+.dashboard_tab_content {
+    border-top: 1px solid #E1E5E8;
+    text-align: left;
+    padding: 20px;
 }
