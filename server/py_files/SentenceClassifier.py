@@ -3,8 +3,6 @@ import tempfile
 import fastText
 import numpy as np
 
-from py_files.AccuracyAnalysis import AccuracyAnalysis
-
 class SentenceClassifier(object):
     models = {}
 
@@ -43,21 +41,9 @@ class SentenceClassifier(object):
 
         pred, prob = model.predict(list(samples))
         labels_pred = [each[0][len('__label__'):] for each in pred]
-
-        report = AccuracyAnalysis.report(self, labels, labels_pred)
-        print()
-        print(report)
-
-        misclassifications = AccuracyAnalysis.misclassifications(self, labels, labels_pred, samples)
-        print()
-        print('Index          Sample                         Predicted          Actual')
-        for each in misclassifications:
-            print('%d          %.20s          %s          %s' % (each['sample_index'], each['sample'], each['pred_label'], each['actual_label']))
-        # todo : it seems like some of the actual_labels are empty ==> please check Cc @darwin (we can check with if each['actual_label'] is empty string inside the above for loop)
-
-        score = AccuracyAnalysis.score(self, labels, labels_pred)
-        print()
-        print(score)
+        accuracy = np.array([int(labels_pred[i] == label) for i, label in enumerate(labels)])
+        print("Number of misclassifications: %d (out of %d)" % (sum(accuracy == 0), len(accuracy)))
+        print("Accuracy:", sum(accuracy != 0)/len(accuracy))
 
     def classify(self, name, path, samples):
         if name not in SentenceClassifier.models:
