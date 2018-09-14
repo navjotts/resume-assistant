@@ -126,6 +126,31 @@ function showFilePicked(inputId, labelId) {
     }
 }
 
+function summary(modelName) {
+    var output = "<div id=\"summary_plot\" style=\"margin:20px;\"></div>";
+    $('#' + modelName + '_' + 'results').html(output);
+
+    var trace1 = {
+    x: ['Logistic Regression', 'SVM', 'RandomForest', 'NaiveBayes', 'FastText'],
+    y: [71, 82, 79, 66, 73],
+    name: 'Precision',
+    type: 'bar'
+    };
+
+    var trace2 = {
+    x: ['Logistic Regression', 'SVM', 'RandomForest', 'NaiveBayes', 'FastText'],
+    y: [69, 81, 76, 61, 71],
+    name: 'Recall',
+    type: 'bar'
+    };
+
+    var data = [trace1, trace2];
+
+    var layout = {barmode: 'group'};
+
+    Plotly.newPlot('summary_plot', data, layout);
+}
+
 // TODO need an option to NOT really fire any training when the call is from the production URL (as then we have to manage the saving of the updated model weights etc)
 function train(modelName) {
     fireTrainingOrTesting('train', modelName);

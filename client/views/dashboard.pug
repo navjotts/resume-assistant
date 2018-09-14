@@ -4,6 +4,7 @@ html
         link(rel='stylesheet', href='https://stackpath.bootstrapcdn.com/bootstrap/4.1.0/css/bootstrap.min.css')
         link(rel='stylesheet', href='/stylesheets/style.css')
         script(src='https://code.jquery.com/jquery-3.1.1.min.js')
+        script(src='https://cdn.plot.ly/plotly-latest.min.js')
         script(src='/js/Client.js')
     body
         div(class='container-fluid')
@@ -71,6 +72,10 @@ html
                         class='train_test_button',
                         type='button',
                         onclick='test("' + 'resumes' + '")')='Test'
+                    button(id='summary_button'
+                        class='train_test_button',
+                        type='button',
+                        onclick='summary("' + 'resumes' + '")')='Summary'
                     div(id='resumes_results', class='results')
                 div(id='jobs_tab_content', class='no-display')
                     label(style='text-decoration: underline;')='Select Model'
