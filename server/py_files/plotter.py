@@ -1,4 +1,4 @@
-# At the moment this is a test graph to make sure the process works.
+# At the moment this is a test graph to make sure the process works using bokeh.
 import os
 from bokeh.plotting import figure, output_file, show
 

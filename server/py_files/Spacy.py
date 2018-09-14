@@ -10,14 +10,14 @@ class Spacy(object):
         if t.like_email: # todo bring in Human Names as well
             return 'X'*len(t.text)
         return t.text
-    
+
     def anonymize_name(self, text):
         doc = nlp(text)
         spans = list(doc.ents)
 
         for span in spans:
             span.merge()
-        
+
         for person in filter(lambda w: w.ent_type_ == 'PERSON', doc):
             sentence = str(text)
             text =  sentence.replace(str(person), (len(str(person))*'X'))
@@ -58,7 +58,3 @@ class Spacy(object):
                 tokens.append(Spacy.anonymize_token(self, t))
 
         return tokens
-
-#findall(pattern, string, flags=0)
-#Return all non-overlapping matches of pattern in string, as a list of strings. The string is scanned left-to-right, and matches are returned in the order found. If one or more groups are present in the pattern, return a list of groups; this will be a list of tuples if the pattern has more than one group. Empty matches are included in the result.
-#
