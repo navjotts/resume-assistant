@@ -74,6 +74,7 @@ class base_classifier():
     def load_model(self, name, model_type, feature_type, Load_best=True, model_path=None):
 
         #load best model
+        print(model_type,feature_type,name)
         if(Load_best):
 
             best = 0
@@ -129,7 +130,7 @@ class svm(base_classifier):
         ## create the acutal model
         self.model = LinearSVC( random_state=42, class_weight='balanced', tol=.00001, max_iter=5000)
 
-class NaiveBayes(base_classifier):
+class naive_bayes(base_classifier):
     def __init__(self,name, feature_type):
         self.name = name
         self.feature_type = feature_type
@@ -155,7 +156,7 @@ from keras.utils import np_utils
 numpy.random.seed(7)
 
 
-class DlClassifier():
+class DL_classifier():
     """
     deep learning class with its own training methods, 
     as they differ from the base class since they are all sk learn models.
