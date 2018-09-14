@@ -55,16 +55,16 @@ class FastTextClassifier(object):
         return {'score': score, 'report': report, 'misclassifications': misclassifications}
 
     # todo rename to predcit or classify
-    def prediction(self, samples, test=False, labels="None"):
+    def prediction(self, samples_true, test=False, labels="None", samples = "None"):
         if test:
-            return self.test(samples, labels)
+            return self.test(samples_true, labels)
 
         if self.name not in self.models:
             self.load()
 
         model = self.models[self.name]
 
-        pred, prob = model.predict(list(samples))
+        pred, prob = model.predict(list(samples_true))
         labels_pred = [each[0][len('__label__'):] for each in pred]
         prob_pred = [each[0] for each in prob]
 

@@ -8,6 +8,7 @@ from sklearn.model_selection import train_test_split
 from sklearn.externals import joblib
 from glob import glob
 from os.path import basename
+from py_files.AccuracyAnalysis import AccuracyAnalysis
 
 # General classifier object, call this to instantiate a model.
 class base_classifier():  
@@ -38,15 +39,21 @@ class base_classifier():
         self.model.fit(x_train, y_train)
         print("\n\n++++ Training Complete ++++\n\n")
         # print accuracy on test data
-        score = self.model.score(x_test,y_test)
+        # score = self.model.score(x_test,y_test)
+        labels_pred = [self.model.predict(vec.reshape(1,-1)) for vec in samples]
+        score = AccuracyAnalysis.score(self, labels, labels_pred)
+        report = AccuracyAnalysis.report(self, labels, labels_pred)
+        misclassifications = AccuracyAnalysis.misclassifications(self, labels, labels_pred, samples)
+        
         print("On test data, this model was %f %% accurate.\n\n" %(round(score*100,2)))
         # save model
         self.path = self.path + str(self.model_type)+ '_' + str(self.feature_type) + '_' + str(self.name) + "_" + str(int(score*100)) + ".pkl"
         joblib.dump(self.model, self.path)
 
-        return {'Accuracy': round(score*100,2) , 'Predicitons': [self.model.predict(vec.reshape(1,-1)) for vec in samples], 'Labels': labels}
+        # return {'Accuracy': round(score*100,2) , 'Predicitons': [self.model.predict(vec.reshape(1,-1)) for vec in samples], 'Labels': labels}
+        return {'score': score, 'report': report, 'misclassifications': misclassifications}
 
-    def prediction(self, vects, Load_best=True, model_path=None, test=False, labels="None"):
+    def prediction(self, vecs, Load_best=True, model_path=None, test=False, labels="None", samples = 'None'):
         """
         Input a list of vectors, these vectors will all get a predicted class from the loaded modelself.
         If you want to test the model without using train set test to True and supply labels.
@@ -54,22 +61,28 @@ class base_classifier():
         #load model based on inputs
         self.load_model(self.name, self.model_type, self.feature_type)
         # for each vector in the list append a prediction to results
-        results = [self.model.predict(vec.reshape(1,-1)) for vec in vects]
-        if(self.model_type == 'svm_model'):
-            probs =  [['N/A for SVM''s' for vec in vects]]
-        else:
-            probs =  [np.argmax(self.model.predict_proba(vec.reshape(1,-1))) for vec in vects]      
-        print("\n\n+++++ Results +++++\n\n\n\n prediciton:%s\n\n label:%s"%([x[0] for x in results[0:10]],labels[0:10]))
+        labels_pred = [str(self.model.predict(vec[0]))[2:-2] for vec in vecs]
+        # if(self.model_type == 'svm_model'):
+        #     probs =  [['N/A for SVM''s' for vec in vecs]]
+        # else:
+        #     probs =  [np.argmax(self.model.predict_proba(vec.reshape(1,-1))) for vec in vecs]     
+
+        score = AccuracyAnalysis.score(self, labels, labels_pred)
+        report = AccuracyAnalysis.report(self, labels, labels_pred)
+        misclassifications = AccuracyAnalysis.misclassifications(self, labels, labels_pred, samples)
+        # todo : it seems like some of the pred_label are empty ==> please check Cc @darwin (we can check with if each['pred_label'] is empty string inside the for loop `for each in misclassifications`)
+
+        print("\n\n+++++ Results +++++\n\n\n\n prediciton:%s\n\n label:%s"%([x for x in labels_pred[0:10]],labels[0:10]))
         # print out the results depending on case
         #printout test results with label
         if(test and bool(labels)):
-            return {'Predicitons':results,'labels':labels, 'probabilities': probs}
+            return {'score': score, 'report': report, 'misclassifications': misclassifications}
         #raise error since the labels were not provided with the test
         elif(test and not labels):
             raise Exception('Can not enable test mode without supplying labels, Check arguments')
         #just return the predicted results, this is used for inference/production
         else:
-         return list(zip(results, probs))
+         return labels_pred
 
     def load_model(self, name, model_type, feature_type, Load_best=True, model_path=None):
 

@@ -28,9 +28,9 @@ class PythonServer(object):
 
     def test_classifier(self, model_name, model_type, feature_type, samples, labels):
         print('=== test_classifier ===', model_name, model_type, feature_type)
-        samples = self.choose_features(feature_type, samples)
-        model = self.choose_model(model_name, model_type, feature_type)
-        return model.prediction(samples, test = True, labels = labels)
+        sample_vecs = self.choose_features(feature_type, samples)
+        model = self.choose_model(model_name, model_type, feature_type,)
+        return model.prediction(sample_vecs, test = True, labels = labels, samples=samples)
 
     def classify_sentences(self, model_name, model_type, feature_type, samples):
         samples = self.choose_features(feature_type, samples)
