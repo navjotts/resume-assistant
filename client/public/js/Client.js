@@ -62,7 +62,7 @@ function analyzeFiles() {
                 success: function(response) {
                     var output = "<div class=\"document-header\"><label class=\"document-header-label-left\">SENTENCE / PHRASE</label><label class=\"document-header-label-right\">PREDICTION (Confidence%)</label></div>";
                     for (var i = 0; i < response.length; i++) {
-                        output += "<div class=\"sentence\" ><div class=\"left-child\" >" + response[i].sentence + "</div><div class=\"right-child\" >" + response[i].label + " (" + response[i].confidence + "%)" + "</div></div>";
+                        output += "<div class=\"sentence\"><div class=\"left-child\" >" + response[i].sentence + "</div><div class=\"right-child\" >" + response[i].label + " (" + response[i].confidence + "%)" + "</div></div>";
                     }
                     $('#document').html(output);
                     $('#analyze_button').text('START ANALYZING');
@@ -156,10 +156,27 @@ function fireTrainingOrTesting(trainOrTest, modelName) {
         url: `http://localhost:3000/training/${trainOrTest}/${modelName}/${modelType}/${featureType}`,
         success: function(response) {
             var output = "";
-            Object.keys(response).forEach(key => {
-                output += "<div style=\"padding:5px\">" + key + ": " + response[key] + "</div>"
-            });
-            $('#results').html(output);
+
+            var score = response['score'];
+            if (score) {
+                output += "<table border=\"1\"><tr><th>precision</th><th>recall</th><th>f1-score</th></tr><tr><td>" +  score['precision'] + "</td><td>" + score['recall'] + "</td><td>" + score['f1_score'] + "</td></tr></table>";
+            }
+
+            var report = response['report'];
+            if (report) {
+                output += "<table border=\"1\"><tr><td><div class=\"report\">" + report + "</div></td></tr></table>";
+            }
+
+            var misclassifications = response['misclassifications'];
+            if (misclassifications) {
+                output += "<table border=\"1\"><tr><th>Sample</th><th>Actual</th><th>Predicted</th></tr>";
+                misclassifications.forEach(each => {
+                    output += "<tr><td>" + each['sample'] + "</td><td>" + each['actual_label'] + "</td><td>" + each['pred_label'] + "</td></tr>";
+                });
+                output += "</table>";
+            }
+
+            $('#' + modelName + '_' + 'results').html(output);
         },
         error: function(response) {
             console.log('error in test()', response);

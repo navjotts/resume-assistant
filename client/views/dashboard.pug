@@ -62,7 +62,7 @@ html
                         class='train-test-button',
                         type='button',
                         onclick='test("' + 'resumes' + '")')='Test'
-                    div(id='results', class='results')
+                    div(id='resumes_results', class='results')
                 div(id='jobs_tab_content', class='no-display')
                     label(style='text-decoration: underline;')='Select Model'
                     form(class='training-form', name='jobsModelForm')
@@ -96,7 +96,7 @@ html
                         class='train-test-button',
                         type='button',
                         onclick='test("' + 'jobs' + '")')='Test'
-                    div(id='results', class='results')
+                    div(id='jobs_results', class='results')
                 div(id='comparison_tab_content', class='no-display')
                     button(id='train_button'
                         class='train-test-button',
@@ -104,4 +104,4 @@ html
                     button(id='test_button'
                         class='train-test-button',
                         type='button')='Test'
-                    div(id='results', class='results')
+                    div(id='comparison_results', class='results')

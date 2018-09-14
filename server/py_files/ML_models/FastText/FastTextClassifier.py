@@ -47,22 +47,12 @@ class FastTextClassifier(object):
         pred, prob = model.predict(list(samples))
         labels_pred = [each[0][len('__label__'):] for each in pred]
 
-        report = AccuracyAnalysis.report(self, labels, labels_pred)
-        print()
-        print(report)
-
-        misclassifications = AccuracyAnalysis.misclassifications(self, labels, labels_pred, samples)
-        print()
-        print('Index          Sample                         Predicted          Actual')
-        for each in misclassifications:
-            print('%d          %.20s          %s          %s' % (each['sample_index'], each['sample'], each['pred_label'], each['actual_label']))
-        # todo : it seems like some of the actual_labels are empty ==> please check Cc @darwin (we can check with if each['actual_label'] is empty string inside the above for loop)
-
         score = AccuracyAnalysis.score(self, labels, labels_pred)
-        print()
-        print(score)
+        report = AccuracyAnalysis.report(self, labels, labels_pred)
+        misclassifications = AccuracyAnalysis.misclassifications(self, labels, labels_pred, samples)
+        # todo : it seems like some of the pred_label are empty ==> please check Cc @darwin (we can check with if each['pred_label'] is empty string inside the for loop `for each in misclassifications`)
 
-        return score
+        return {'score': score, 'report': report, 'misclassifications': misclassifications}
 
     # todo rename to predcit or classify
     def prediction(self, samples, test=False, labels="None"):
