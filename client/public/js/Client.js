@@ -262,11 +262,27 @@ function selectDashboardTab(selectedTab) {
     ['resumes_tab', 'jobs_tab', 'comparison_tab'].forEach(tab => {
         if (selectedTab == tab) {
             $('#' + tab).removeClass().addClass('dashboard_tab_focussed');
-            $('#' + tab + '_content').removeClass().addClass('dashboard_tab_content');
+            $('#' + tab + '_content').removeClass().addClass('dashboard_content');
         }
         else {
             $('#' + tab).removeClass().addClass('dashboard_tab');
             $('#' + tab + '_content').removeClass().addClass('no-display');
         }
     });
+}
+
+function trainEmbeddings() {
+    $.ajax({
+        url: `http://localhost:3000/training/embeddings`,
+        success: function(response) {
+            console.log(response);
+        },
+        error: function(response) {
+            console.log('error in test()', response);
+        }
+    });
+}
+
+function visualizeEmbeddings() {
+    alert('Not implemented yet');
 }

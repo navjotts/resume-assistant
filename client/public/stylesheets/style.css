@@ -11,7 +11,6 @@ body {
     padding: 10px;
     padding-left: 50px;
     padding-right: 50px;
-    padding-bottom: 50px;
     text-align: center;
     font-size: 14px;
 }
@@ -52,7 +51,6 @@ body {
     flex: 1;
     width: 0;
     text-align: left;
-    margin-left: 50px;
     text-decoration: underline;
     color: #000;
 }
@@ -61,7 +59,6 @@ body {
     flex: 1;
     width: 0;
     text-align: right;
-    margin-right: 50px;
     text-decoration: underline;
     color: #000;
 }
@@ -94,8 +91,6 @@ body {
     justify-content: space-between;
     text-align: center;
     margin-top: 20px;
-    margin-left: 50px;
-    margin-right: 50px;
 }
 
 .training-list-left {
@@ -219,7 +214,7 @@ button.dashboard_tab {
   background-color: #ffffff;
   border: solid 1px #E1E5E8;
   font-size: 13px;
-  color: #3a7cc9;
+  color: #000000;
 }
 
 button.dashboard_tab_focussed {
@@ -229,7 +224,7 @@ button.dashboard_tab_focussed {
   background-color: #F0F0F0;
   border: solid 1px #E1E5E8;
   font-size: 13px;
-  color: #3a7cc9;
+  color: #000000;
 }
 
 button.train_test_button {
@@ -239,7 +234,7 @@ button.train_test_button {
     border-radius: 4px;
     background-color: #282C31;
     color: #ffffff;
-    margin-right: 50px;
+    margin-right: 20px;
 }
 
 button:focus {outline:0;}
@@ -295,7 +290,7 @@ button.train_test_button:hover {background-color: #000000;}
     text-align: center;
 }
 
-.dashboard_tab_content {
+.dashboard_content {
     border-top: 1px solid #E1E5E8;
     text-align: left;
     padding: 20px;

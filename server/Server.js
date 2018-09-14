@@ -184,7 +184,40 @@ app.get('/training/:trainOrTest/:dataset/:modelName/:modelType/:featureType', as
         res.json(result);
     }
     catch (e) {
-        console.log('error in /analyze', e);
+        console.log('error in /training', e);
+        res.send(404);
+    }
+});
+
+function collectSentences() {
+    var sents = [];
+    name = 'resumes'; // TODO add jobs also
+    ['DB', 'testDB'].forEach(db => {
+        console.log(`Collecting sentences from ${db}...`);
+        var dbDir = path.join(__dirname, 'data', db, name);
+        var files = fs.readdirSync(dbDir);
+
+        for (var i = 0; i < files.length; i++) {
+            var fileName = files[i];
+            if (fileName.split('.').pop() === 'json') {
+                var docData = JSON.parse(fs.readFileSync(path.join(dbDir, fileName)));
+                docData.content.forEach(each => sents.push(each.sentence));
+            }
+        }
+    });
+
+    return sents;
+}
+
+app.get('/training/embeddings', async function(req, res, next) {
+    console.log(req.url);
+    try {
+        var sents = collectSentences(); // TODO we need to remove punctuations for embeddings
+        await PythonConnector.invoke('train_embeddings', 'resumes', 100, sents);
+        res.json(200);
+    }
+    catch (e) {
+        console.log('error in /training/embeddings', e);
         res.send(404);
     }
 });

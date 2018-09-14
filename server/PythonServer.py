@@ -1,6 +1,7 @@
 import zerorpc
 
 from py_files.Spacy import Spacy
+from py_files.ML_models.Embeddings.Embeddings import Embeddings
 from py_files.ML_models.FastText.FastTextClassifier import FastTextClassifier
 from py_files.ML_models.classifier import svm, Log_reg, Random_forest, naive_bayes
 from py_files.Preprocess.NLP_preprocess import train_d2v, process_sent, SK_TFIDF_train, SK_TFIDF_predict
@@ -62,6 +63,10 @@ class PythonServer(object):
             return process_sent(samples)
         else:
             return samples # feature vector construction happens inside the model
+
+    def train_embeddings(self, model_name, dimension, sents):
+        embeddings = Embeddings(model_name, dimension)
+        embeddings.train(sents)
 
 try:
     s = zerorpc.Server(PythonServer())

@@ -8,23 +8,23 @@ html
         script(src='/js/Client.js')
     body
         div(class='container-fluid')
-            div(class='center')
+            div(class='center' style='padding-bottom: 200px;')
                 div(class='title')
                     p='Dashboard'
                 div(class='dashboard_tabs')
                     button(id= 'resumes_tab',
-                        class='dashboard_tab_focussed',
-                        type='button',
-                        onclick='selectDashboardTab("' + 'resumes_tab' + '")')='Resumes'
+                            class='dashboard_tab_focussed',
+                            type='button',
+                            onclick='selectDashboardTab("' + 'resumes_tab' + '")')='Resumes'
                     button(id= 'jobs_tab',
-                        class='dashboard_tab',
-                        type='button',
-                        onclick='selectDashboardTab("' + 'jobs_tab' + '")')='Jobs'
+                            class='dashboard_tab',
+                            type='button',
+                            onclick='selectDashboardTab("' + 'jobs_tab' + '")')='Jobs'
                     button(id= 'comparison_tab',
-                        class='dashboard_tab',
-                        type='button',
-                        onclick='selectDashboardTab("' + 'comparison_tab' + '")')='Comparison'
-                div(id='resumes_tab_content', class='dashboard_tab_content')
+                            class='dashboard_tab',
+                            type='button',
+                            onclick='selectDashboardTab("' + 'comparison_tab' + '")')='Comparison'
+                div(id='resumes_tab_content', class='dashboard_content')
                     label(class='dashboard_form_header_label')='Select Model'
                     form(class='dashboard_form', name='resumesModelForm')
                         input(type='radio', name='resumesModelType', value='LogisticRegression')
@@ -64,18 +64,15 @@ html
                         label(class='model-labels')='Test dataset'
                         <br/>
                     <br/>
-                    button(id='train_button'
-                        class='train_test_button',
-                        type='button',
-                        onclick='train("' + 'resumes' + '")')='Train'
-                    button(id='test_button'
-                        class='train_test_button',
-                        type='button',
-                        onclick='test("' + 'resumes' + '")')='Test'
-                    button(id='summary_button'
-                        class='train_test_button',
-                        type='button',
-                        onclick='summary("' + 'resumes' + '")')='Summary'
+                    button(class='train_test_button',
+                            type='button',
+                            onclick='train("' + 'resumes' + '")')='Train'
+                    button(class='train_test_button',
+                            type='button',
+                            onclick='test("' + 'resumes' + '")')='Test'
+                    button(class='train_test_button',
+                            type='button',
+                            onclick='summary("' + 'resumes' + '")')='Summary'
                     div(id='resumes_results', class='results')
                 div(id='jobs_tab_content', class='no-display')
                     label(class='dashboard_form_header_label')='Select Model'
@@ -102,29 +99,36 @@ html
                         label(class='model-labels')='sentence embeddings'
                         <br/>
                     <br/>
-                    button(id='train_button'
-                        class='train_test_button',
-                        type='button',
-                        onclick='train("' + 'jobs' + '")')='Train'
-                    button(id='test_button'
-                        class='train_test_button',
-                        type='button',
-                        onclick='test("' + 'jobs' + '")')='Test'
+                    button(class='train_test_button',
+                            type='button',
+                            onclick='train("' + 'jobs' + '")')='Train'
+                    button(class='train_test_button',
+                            type='button',
+                            onclick='test("' + 'jobs' + '")')='Test'
                     div(id='jobs_results', class='results')
                 div(id='comparison_tab_content', class='no-display')
-                    button(id='train_button'
-                        class='train_test_button',
-                        type='button')='Train'
-                    button(id='test_button'
-                        class='train_test_button',
-                        type='button')='Test'
+                    button(class='train_test_button',
+                            type='button')='Train'
+                    button(class='train_test_button',
+                            type='button')='Test'
                     div(id='comparison_results', class='results')
-            div(class='center')
+            div(class='center' style='padding-bottom: 200px;')
+                div(class='title')
+                    p='Embeddings'
+                div(class='dashboard_content', style='border: 0px;')
+                    button(class='train_test_button',
+                        type='button',
+                        onclick='trainEmbeddings()')='Train'
+                    button(class='train_test_button',
+                        type='button',
+                        onclick='visualizeEmbeddings()')='Visualize'
+            div(class='center' style='padding-bottom: 200px;')
                 div(class='title')
                     p='Training Data'
-                div(id='training-header', class='training-header')
-                    a(class='left-link', href='#', onclick='fetchResumes()')='Resumes'
-                    a(class='right-link', href='#', onclick='fetchJobs()')='Jobs'
-                div(class='training-list')
-                    div(id='resumes-list', class='training-list-left')
-                    div(id='jobs-list', class='training-list-right')
+                div(class='dashboard_content', style='border: 0px;')
+                    div(id='training-header', class='training-header')
+                        a(class='left-link', href='#', onclick='fetchResumes()')='Resumes'
+                        a(class='right-link', href='#', onclick='fetchJobs()')='Jobs'
+                    div(class='training-list')
+                        div(id='resumes-list', class='training-list-left')
+                        div(id='jobs-list', class='training-list-right')
