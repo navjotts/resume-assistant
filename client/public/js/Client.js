@@ -134,6 +134,7 @@ function summary(modelName) {
             var output = "<div class=\"result_header\">LATEST TRAINING RESULTS</div><div id=\"testing_summary_plot\" style=\"margin:20px;\"></div><div id=\"training_summary_plot\" style=\"margin:20px;\"></div>";
             $('#' + modelName + '_' + 'results').html(output);
 
+            // TESTING dataset
             var trace1 = {
             x: ['Logistic Regression', 'SVM', 'RandomForest', 'NaiveBayes', 'FastText'],
             y: [71, 82, 79, 66, 73],
@@ -158,7 +159,6 @@ function summary(modelName) {
                 }
                 };
 
-
             var data = [trace1, trace2, trace3];
 
             var layout = {
@@ -168,6 +168,7 @@ function summary(modelName) {
 
             Plotly.newPlot('testing_summary_plot', data, layout);
 
+            // TRAINING dataset
             var trace1 = {
             x: ['Logistic Regression', 'SVM', 'RandomForest', 'NaiveBayes', 'FastText'],
             y: [71, 82, 79, 66, 73],
