@@ -3,6 +3,8 @@ import tempfile
 import fastText
 import numpy as np
 
+from py_files.AccuracyAnalysis import AccuracyAnalysis
+
 class FastTextClassifier(object):
     models = {}
 
@@ -45,12 +47,29 @@ class FastTextClassifier(object):
 
         pred, prob = model.predict(list(samples))
         labels_pred = [each[0][len('__label__'):] for each in pred]
-        accuracy = np.array([int(labels_pred[i] == label) for i, label in enumerate(labels)])
-        print("Number of misclassifications: %d (out of %d)" % (sum(accuracy == 0), len(accuracy)))
-        print("Accuracy:", sum(accuracy != 0)/len(accuracy))
+
+        report = AccuracyAnalysis.report(self, labels, labels_pred)
+        print()
+        print(report)
+
+        misclassifications = AccuracyAnalysis.misclassifications(self, labels, labels_pred, samples)
+        print()
+        print('Index          Sample                         Predicted          Actual')
+        for each in misclassifications:
+            print('%d          %.20s          %s          %s' % (each['sample_index'], each['sample'], each['pred_label'], each['actual_label']))
+        # todo : it seems like some of the actual_labels are empty ==> please check Cc @darwin (we can check with if each['actual_label'] is empty string inside the above for loop)
+
+        score = AccuracyAnalysis.score(self, labels, labels_pred)
+        print()
+        print(score)
+
+        return score
 
     # todo rename to predcit or classify
-    def prediction(self, samples):
+    def prediction(self, samples, test=False, labels="None"):
+        if test:
+            return self.test(samples, labels)
+
         if self.name not in FastTextClassifier.models:
             FastTextClassifier.load(self)
 

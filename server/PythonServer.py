@@ -32,7 +32,7 @@ class PythonServer(object):
     def test_classifier(self, model_name, model_type, feature_type, samples, labels):
         samples = self.choose_features(feature_type, samples)
         model = self.choose_model(model_name, model_type, feature_type)
-        return model.prediction(samples,test=True, labels = labels)
+        return model.prediction(samples, test = True, labels = labels)
 
     def classify_sentences(self, model_name, model_type, feature_type, samples):
         samples = self.choose_features(feature_type, samples)
