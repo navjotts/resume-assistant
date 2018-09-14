@@ -126,41 +126,17 @@ function showFilePicked(inputId, labelId) {
     }
 }
 
-function selectedModelType() {
-    var model;
-    var radios = document.modelForm.modelType;
-    radios.forEach(rad => {
-        if (rad.checked) {
-            model = rad;
-        }
-    });
-
-    return model;
-}
-
-function selectedFeatureType() {
-    var feature;
-    var radios = document.featureForm.featureType;
-    radios.forEach(rad => {
-        if (rad.checked) {
-            feature = rad;
-        }
-    });
-
-    return feature;
-}
-
-function test() {
-    fireTrainingOrTesting('test');
-}
-
 // TODO need an option to NOT really fire any training when the call is from the production URL (as then we have to manage the saving of the updated model weights etc)
-function train() {
-    fireTrainingOrTesting('train');
+function train(modelName) {
+    fireTrainingOrTesting('train', modelName);
 }
 
-function fireTrainingOrTesting(trainOrTest) {
-    model = selectedModelType();
+function test(modelName) {
+    fireTrainingOrTesting('test', modelName);
+}
+
+function fireTrainingOrTesting(trainOrTest, modelName) {
+    model = selectedModelType(modelName);
     if (!model) {
         alert(`Please select a model to ${trainOrTest}`);
         return;
@@ -169,7 +145,7 @@ function fireTrainingOrTesting(trainOrTest) {
     var modelType = model.value;
     var featureType = 'None';
 
-    feature = selectedFeatureType();
+    feature = selectedFeatureType(modelName);
     if (feature) {
         featureType = feature.value;
     }
@@ -177,7 +153,7 @@ function fireTrainingOrTesting(trainOrTest) {
     console.log(`${trainOrTest} (model, feature): (${modelType}, ${featureType})`);
 
     $.ajax({
-        url: `http://localhost:3000/training/${trainOrTest}/${modelType}/${featureType}`,
+        url: `http://localhost:3000/training/${trainOrTest}/${modelName}/${modelType}/${featureType}`,
         success: function(response) {
             var output = "";
             Object.keys(response).forEach(key => {
@@ -189,6 +165,34 @@ function fireTrainingOrTesting(trainOrTest) {
             console.log('error in test()', response);
         }
     });
+}
+
+function selectedModelType(modelName) {
+    var model;
+    var formName = modelName + 'ModelForm';
+    var inputName = modelName + 'ModelType';
+    var radios = document[formName][inputName];
+    radios.forEach(rad => {
+        if (rad.checked) {
+            model = rad;
+        }
+    });
+
+    return model;
+}
+
+function selectedFeatureType(modelName) {
+    var feature;
+    var formName = modelName + 'FeatureForm';
+    var inputName = modelName + 'FeatureType';
+    var radios = document[formName][inputName];
+    radios.forEach(rad => {
+        if (rad.checked) {
+            feature = rad;
+        }
+    });
+
+    return feature;
 }
 
 function selectDashboardTab(selectedTab) {

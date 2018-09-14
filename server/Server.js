@@ -159,19 +159,25 @@ function collectData(parent, name) {
     return {samples, labels};
 }
 
-app.get('/training/:trainOrTest/:modelType/:featureType', async function(req, res, next) {
+app.get('/training/:trainOrTest/:modelName/:modelType/:featureType', async function(req, res, next) {
     console.log(req.url);
-    var name = 'resumes'; // TODO this will also be passed from the UI
+    var modelName = req.params.modelName;
+    if (modelName != 'resumes') {
+        console.log('wip');
+        res.send(200);
+        return;
+    }
+
     var trainOrTest = req.params.trainOrTest;
     var db = trainOrTest == 'train' ? 'DB' : 'DB'; // TODO should be 'testDB' in else => but need to share the test data with everyone
     var method = trainOrTest == 'train' ? 'train_classifier' : 'test_classifier';
     var modelType = req.params.modelType;
     var featureType = req.params.featureType;
     try {
-        var data = collectData(db, name);
+        var data = collectData(db, modelName);
         console.log(`Starting testing on data size of (samples, labels): (${data.samples.length}, ${data.labels.length})`);
 
-        var result = await PythonConnector.invoke(method, name, modelType, featureType, data.samples, data.labels);
+        var result = await PythonConnector.invoke(method, modelName, modelType, featureType, data.samples, data.labels);
         res.json(result);
     }
     catch (e) {
