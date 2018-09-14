@@ -10,12 +10,12 @@ class PythonServer(object):
     def sentences(self, text):
         return Spacy.sentences(self, text, False)
 
-    def sentences_from_file_lines(self, filepath):
+    def sentences_from_file_lines(self, filepath, drop_stop = False, drop_punct = False):
         sents = []
         with open(filepath, encoding = 'utf8') as f:
             for line in f:
                 # todo we are assuming incorrectly that each paragraph can be treated as a single sentence
-                sentence = Spacy.tokenize(self, line, False)
+                sentence = Spacy.tokenize(self, line, drop_stop, drop_punct)
                 if sentence:
                     sents.append(sentence)
         return sents

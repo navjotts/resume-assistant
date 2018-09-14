@@ -21,9 +21,11 @@ class Embeddings(object):
 
         model.build_vocab(sentences)
 
+        print(model)
+
         model.train(sentences,
                     total_examples=len(sentences),
-                    epochs=10)
+                    epochs=100)
 
         print('saving the model at: %s' % self.path)
         model.wv.save_word2vec_format(self.path, binary = False)
