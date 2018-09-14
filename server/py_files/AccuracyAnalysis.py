@@ -19,7 +19,7 @@ class AccuracyAnalysis(object):
         assert len(y_true) == len(y_predict) == len(samples)
         ret = []
         for i in range(len(y_true)):
-            if y_true[i] != y_predict[i]:
+            if y_true[i] != y_predict[i] and y_true[i] and y_predict[i]: # todo: remove hack-fix
                 ret.append({
                     'sample_index':i,
                     'sample': samples[i],

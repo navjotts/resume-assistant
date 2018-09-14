@@ -21,13 +21,11 @@ class PythonServer(object):
         return sents
 
     def train_classifier(self, model_name, model_type, feature_type, samples, labels):
-        print('=== train_classifier ===', model_name, model_type, feature_type)
         samples = self.choose_features(feature_type, samples)
         model = self.choose_model(model_name, model_type, feature_type)
         return model.train(samples, labels)
 
     def test_classifier(self, model_name, model_type, feature_type, samples, labels):
-        print('=== test_classifier ===', model_name, model_type, feature_type)
         samples = self.choose_features(feature_type, samples)
         model = self.choose_model(model_name, model_type, feature_type)
         return model.prediction(samples, test = True, labels = labels)
