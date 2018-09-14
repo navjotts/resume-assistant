@@ -140,6 +140,41 @@ app.post('/upload', function(req, res, next) {
     });
 });
 
+function collectData(parent, name) {
+    var samples = [];
+    var labels = [];
+    var dbDir = path.join(__dirname, 'data', parent, name)
+    var files = fs.readdirSync(dbDir);
+    for (var i = 0; i < files.length; i++) {
+        var fileName = files[i];
+        if (fileName.split('.').pop() === 'json') {
+            var docData = JSON.parse(fs.readFileSync(path.join(dbDir, fileName)));
+            docData.content.forEach(each => {
+                samples.push(each.sentence.join(' '));
+                labels.push(each.label === 'WORK EXPERIENCE' ? 'EXPERIENCE' : each.label); // TODO https://github.com/navjotts/resume-assistant/issues/5
+            });
+        }
+    }
+
+    return {samples, labels};
+}
+
+app.get('/training/test', async function(req, res, next) {
+    console.log(req.url);
+    try {
+        var name = 'resumes'
+        var data = collectData('DB', name);
+        console.log(`Starting testing on data size of (samples, labels): (${data.samples.length}, ${data.labels.length})`);
+
+        var result = await PythonConnector.invoke('test_classifier', name, 'FastText', 'None', data.samples, data.labels);
+        res.json(result);
+    }
+    catch (e) {
+        console.log('error in /analyze', e);
+        res.send(404);
+    }
+});
+
 app.get('/analyze/:resumeFile/:jobFile', async function(req, res, next) {
     console.log(req.url);
     var resumeFileName = req.params.resumeFile;

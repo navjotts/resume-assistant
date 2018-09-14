@@ -261,3 +261,9 @@ button:focus {outline:0;}
 .train-test-button {
     margin-right: 50px;
 }
+
+.results {
+    margin: 20px 20px 20px 0px;
+    border: 1px solid #F0F0F0;
+    min-height: 40px;
+}

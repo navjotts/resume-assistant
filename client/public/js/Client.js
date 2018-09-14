@@ -125,3 +125,23 @@ function showFilePicked(inputId, labelId) {
         $(`#${labelId}`).text(files[0].name);
     }
 }
+
+function test() {
+    $.ajax({
+        url: `http://localhost:3000/training/test`,
+        success: function(response) {
+            var output = "";
+            Object.keys(response).forEach(key => {
+                output += "<div style=\"padding:5px\">" + key + ": " + response[key] + "</div>"
+            });
+            $('#results').html(output);
+        },
+        error: function(response) {
+            console.log('error in test()', response);
+        }
+    });
+}
+
+function train() {
+    alert('Not implemented yet!');
+}
