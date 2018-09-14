@@ -9,4 +9,6 @@
 **/uploads/*.txt
 *.pyc
 *.env
+*.DS_Store
+*~
 recreate_data.sh
