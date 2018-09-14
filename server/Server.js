@@ -39,6 +39,11 @@ app.get('/', function(req, res) {
     res.render('index', {title: 'Resume Assistant'});
 });
 
+app.get('/plotter', function(req, res) {
+    console.log(req.url);
+    res.render('plotter', {title: 'Accuracy Plot'});
+});
+
 app.get('/training', function(req, res) {
     console.log(req.url);
     res.render('training', {title: 'Resume Assistant'});
