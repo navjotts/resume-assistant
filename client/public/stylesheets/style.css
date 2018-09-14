@@ -231,7 +231,19 @@ button.dashboard_tab_focussed {
   color: #3a7cc9;
 }
 
+button.train_test_button {
+    width: 80px;
+    height: 30px;
+    border: solid 1px #282C31;
+    border-radius: 4px;
+    background-color: #282C31;
+    color: #ffffff;
+    margin-right: 50px;
+}
+
 button:focus {outline:0;}
+
+button.train_test_button:hover {background-color: #000000;}
 
 .document {
     margin: auto;
@@ -276,10 +288,6 @@ button:focus {outline:0;}
 
 .dashboard_form {
     margin-right: 10px;
-}
-
-.train-test-button {
-    margin-right: 50px;
 }
 
 .results {
