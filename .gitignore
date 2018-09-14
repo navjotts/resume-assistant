@@ -10,3 +10,5 @@
 *.pyc
 *.env
 .vscode/settings.json
+*.DS_Store
+*~
