@@ -127,7 +127,7 @@ function showFilePicked(inputId, labelId) {
 }
 
 function summary(modelName) {
-    var output = "<div id=\"summary_plot\" style=\"margin:20px;\"></div>";
+    var output = "<div class=\"result_header\">LATEST TRAINING RESULTS</div><div id=\"summary_plot\" style=\"margin:20px;\"></div>";
     $('#' + modelName + '_' + 'results').html(output);
 
     var trace1 = {
