@@ -9,8 +9,9 @@ body {
 .center {
     margin: auto;
     padding: 10px;
-    padding-left:50px;
-    padding-right:50px;
+    padding-left: 50px;
+    padding-right: 50px;
+    padding-bottom: 50px;
     text-align: center;
     font-size: 14px;
 }
@@ -19,8 +20,8 @@ body {
     text-align: left;
     font-size: 14px;
     padding: 10px 10px 10px 10px;
-    padding-left:20px;
-    padding-right:20px;
+    padding-left: 20px;
+    padding-right: 20px;
     margin: 10px 10px 10px 10px;
 }
 

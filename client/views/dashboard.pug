@@ -119,3 +119,12 @@ html
                         class='train_test_button',
                         type='button')='Test'
                     div(id='comparison_results', class='results')
+            div(class='center')
+                div(class='title')
+                    p='Training Data'
+                div(id='training-header', class='training-header')
+                    a(class='left-link', href='#', onclick='fetchResumes()')='Resumes'
+                    a(class='right-link', href='#', onclick='fetchJobs()')='Jobs'
+                div(class='training-list')
+                    div(id='resumes-list', class='training-list-left')
+                    div(id='jobs-list', class='training-list-right')
