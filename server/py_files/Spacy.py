@@ -5,8 +5,6 @@ import en_core_web_sm
 nlp = en_core_web_sm.load()
 nlp.max_length = 2000000 # todo check this limit
 
-import time
-
 class Spacy(object):
     def anonymize(self, t):
         if t.like_email: # todo bring in Human Names as well
