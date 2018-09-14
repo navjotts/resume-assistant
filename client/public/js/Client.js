@@ -127,28 +127,88 @@ function showFilePicked(inputId, labelId) {
 }
 
 function summary(modelName) {
-    var output = "<div class=\"result_header\">LATEST TRAINING RESULTS</div><div id=\"summary_plot\" style=\"margin:20px;\"></div>";
+    var output = "<div class=\"result_header\">LATEST TRAINING RESULTS</div><div id=\"testing_summary_plot\" style=\"margin:20px;\"></div><div id=\"training_summary_plot\" style=\"margin:20px;\"></div>";
     $('#' + modelName + '_' + 'results').html(output);
 
     var trace1 = {
     x: ['Logistic Regression', 'SVM', 'RandomForest', 'NaiveBayes', 'FastText'],
     y: [71, 82, 79, 66, 73],
     name: 'Precision',
-    type: 'bar'
+    type: 'bar',
+    marker: {
+        color: 'rbg(108,23,178)',
+    }
     };
 
     var trace2 = {
     x: ['Logistic Regression', 'SVM', 'RandomForest', 'NaiveBayes', 'FastText'],
     y: [69, 81, 76, 61, 71],
     name: 'Recall',
-    type: 'bar'
+    type: 'bar' ,
+    marker:{
+        color: 'rgb(17,97,47)', 
+    }
+    };
+    
+    var trace3 = {
+        x: ['Logistic Regression', 'SVM', 'RandomForest', 'NaiveBayes', 'FastText'],
+        y: [69, 81, 76, 61, 71],
+        name: 'F1 Score',
+        type: 'bar',
+        marker: {
+            color: 'rgb(255,79,76)',
+        }
+        };
+
+
+    var data = [trace1, trace2, trace3];
+
+    var layout = {
+        barmode: 'group',
+        title: 'Testing Stage Results'
     };
 
-    var data = [trace1, trace2];
+    Plotly.newPlot('testing_summary_plot', data, layout);
 
-    var layout = {barmode: 'group'};
+    var trace1 = {
+    x: ['Logistic Regression', 'SVM', 'RandomForest', 'NaiveBayes', 'FastText'],
+    y: [71, 82, 79, 66, 73],
+    name: 'Precision',
+    type: 'bar',
+    marker: {
+        color: 'rbg(108,23,178)',
+    }
+    };
 
-    Plotly.newPlot('summary_plot', data, layout);
+    var trace2 = {
+    x: ['Logistic Regression', 'SVM', 'RandomForest', 'NaiveBayes', 'FastText'],
+    y: [69, 81, 76, 61, 71],
+    name: 'Recall',
+    type: 'bar' ,
+    marker:{
+        color: 'rgb(17,97,47)', 
+    }
+    };
+    
+    var trace3 = {
+        x: ['Logistic Regression', 'SVM', 'RandomForest', 'NaiveBayes', 'FastText'],
+        y: [69, 81, 76, 61, 71],
+        name: 'F1 Score',
+        type: 'bar',
+        marker: {
+            color: 'rgb(255,79,76)',
+        }
+        };
+
+
+    var data = [trace1, trace2, trace3];
+
+    var layout = {
+        barmode: 'group',
+        title: 'Training Stage Results'
+    };
+
+    Plotly.newPlot('training_summary_plot', data, layout);
 }
 
 // TODO need an option to NOT really fire any training when the call is from the production URL (as then we have to manage the saving of the updated model weights etc)
