@@ -25,7 +25,7 @@ html
                         type='button',
                         onclick='selectDashboardTab("' + 'comparison_tab' + '")')='Comparison'
                 div(id='resumes_tab_content', class='dashboard_tab_content')
-                    label(style='text-decoration: underline;')='Select Model'
+                    label(class='dashboard_form_header_label')='Select Model'
                     form(class='dashboard_form', name='resumesModelForm')
                         input(type='radio', name='resumesModelType', value='LogisticRegression')
                         label(class='model-labels')='Logistic Regression'
@@ -43,7 +43,7 @@ html
                         label(class='model-labels')='FastText'
                         <br/>
                     <br/>
-                    label(style='text-decoration: underline;')='Select Feature'
+                    label(class='dashboard_form_header_label')='Select Feature'
                     form(class='dashboard_form', name='resumesFeatureForm')
                         input(type='radio', name='resumesFeatureType', value='tf-df')
                         label(class='model-labels')='tf-df'
@@ -55,7 +55,7 @@ html
                         label(class='model-labels')='sentence embeddings'
                         <br/>
                     <br/>
-                    label(style='text-decoration: underline;')='Select Dataset'
+                    label(class='dashboard_form_header_label')='Select Dataset'
                     form(class='dashboard_form', name='resumesDatasetForm')
                         input(type='radio', name='resumesDataset', value='DB')
                         label(class='model-labels')='Training dataset'
@@ -78,9 +78,9 @@ html
                         onclick='summary("' + 'resumes' + '")')='Summary'
                     div(id='resumes_results', class='results')
                 div(id='jobs_tab_content', class='no-display')
-                    label(style='text-decoration: underline;')='Select Model'
+                    label(class='dashboard_form_header_label')='Select Model'
                     form(class='dashboard_form', name='jobsModelForm')
-                        input(type='radio', name='jobsModelType', value='LogisticRegression', checked=true)
+                        input(type='radio', name='jobsModelType', value='LogisticRegression')
                         label(class='model-labels')='Logistic Regression'
                         <br/>
                         input(type='radio', name='jobsModelType', value='SVM')
@@ -90,7 +90,7 @@ html
                         label(class='model-labels')='FastText'
                         <br/>
                     <br/>
-                    label(style='text-decoration: underline;')='Select Feature'
+                    label(class='dashboard_form_header_label')='Select Feature'
                     form(class='dashboard_form', name='jobsFeatureForm')
                         input(type='radio', name='jobsFeatureType', value='tf-df')
                         label(class='model-labels')='tf-df'
