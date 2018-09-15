@@ -1,6 +1,7 @@
 import os
 import multiprocessing
 import gensim.models.word2vec as w2v
+from gensim.models import KeyedVectors
 
 import logging
 logging.basicConfig(format='%(asctime)s : %(levelname)s : %(message)s', level=logging.INFO)
@@ -32,8 +33,12 @@ class Embeddings(object):
 
         self.model = model
 
-    def most_similar_by_word(self, word):
+    def most_similar(self, word):
         if not self.model:
-            print('error: please train/load the model before testing')
+            self.model = KeyedVectors.load_word2vec_format(self.path, binary = False)
+
+        if not self.model:
+            print('error: unable to load trained model')
             return
-        return model.wv.similar_by_word(word)
+
+        return self.model.wv.similar_by_word(word)

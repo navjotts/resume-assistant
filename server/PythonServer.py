@@ -68,6 +68,11 @@ class PythonServer(object):
         embeddings = Embeddings(model_name, dimension)
         embeddings.train(sents)
 
+    # for testing/comparing trained embeddings
+    def most_similar_word(self, model_name, dimension, word):
+        embeddings = Embeddings(model_name, dimension)
+        return embeddings.most_similar(word)
+
 try:
     s = zerorpc.Server(PythonServer())
     s.bind('tcp://0.0.0.0:4242')
