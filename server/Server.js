@@ -217,7 +217,7 @@ app.get('/training/embeddings', async function (req, res, next) {
             if (fileName.split('.').pop() === 'txt') {
                 console.log(`#${i} Collecting sentences for: ${fileName}`);
                 var sentences = await PythonConnector.invoke('sentences_from_file_lines', path.join(srcDir, fileName), true, true);
-                sentences.forEach(each => sents.push(each)); // TODO use concat
+                sents = sents.concat(sentences);
             }
         }
 
