@@ -130,78 +130,37 @@ function summary(modelName) {
     $.ajax({
         url: `http://localhost:3000/training/summary`,
         success: function(response) {
-            console.log(response);
-            var output = "<div class=\"result_header\">LATEST TRAINING RESULTS</div><div id=\"testing_summary_plot\" style=\"margin:20px;\"></div><div id=\"training_summary_plot\" style=\"margin:20px;\"></div>";
+            var output = "<div class=\"result_header\">LATEST RESULTS</div>";
+            var plots = [];
+            var stages = Object.keys(response);
+            stages.forEach(stage => {
+                var divId = modelName + '_' + stage + '_summary_plot';
+                output += "<div id=\"" + divId + "\" style=\"margin:20px;\"></div>";
+                var models = Object.keys(response[stage]);
+                if (models.length) {
+                    var data = [];
+                    var scores = Object.keys(response[stage][models[0]]);
+                    scores.forEach(scoreType => {
+                        var scoreValues = models.map(model => response[stage][model][scoreType]);
+                        var trace = {
+                            x: models,
+                            y: scoreValues,
+                            name: scoreType,
+                            type: 'bar'
+                        };
+                        data.push(trace);
+                    });
+
+                    var layout = {
+                        barmode: 'group',
+                        title: stage + ' Dataset'
+                    };
+                    plots.push({divId, data, layout});
+                }
+            });
+            output += "</div>";
             $('#' + modelName + '_' + 'results').html(output);
-
-            // TESTING dataset
-            var trace1 = {
-            x: ['Logistic Regression', 'SVM', 'RandomForest', 'NaiveBayes', 'FastText'],
-            y: [66.86, 72.77, 72.66, 62.97, 76.11],
-            name: 'Precision',
-            type: 'bar'
-        };
-
-            var trace2 = {
-            x: ['Logistic Regression', 'SVM', 'RandomForest', 'NaiveBayes', 'FastText'],
-            y: [62.29, 74.77, 68.97, 59.66, 76.75],
-            name: 'Recall',
-            type: 'bar'
-        };
-
-            var trace3 = {
-                x: ['Logistic Regression', 'SVM', 'RandomForest', 'NaiveBayes', 'FastText'],
-                y: [65.81, 73.77, 70.18, 61.28, 75.93],
-                name: 'F1 Score',
-                type: 'bar',
-                marker: {
-                    color: '#61A98F',
-                }
-                };
-
-            var data = [trace1, trace2, trace3];
-
-            var layout = {
-                barmode: 'group',
-                title: 'Testing Stage Results'
-            };
-
-            Plotly.newPlot('testing_summary_plot', data, layout);
-
-            // TRAINING dataset
-            var trace1 = {
-            x: ['Logistic Regression', 'SVM', 'RandomForest', 'NaiveBayes', 'FastText'],
-            y: [84.77, 94.26, 91.04, 79.99, 98.65],
-            name: 'Precision',
-            type: 'bar'
-        };
-
-            var trace2 = {
-            x: ['Logistic Regression', 'SVM', 'RandomForest', 'NaiveBayes', 'FastText'],
-            y: [82.24, 92.05, 88.97, 78.61, 98.18],
-            name: 'Recall',
-            type: 'bar'
-        };
-
-            var trace3 = {
-                x: ['Logistic Regression', 'SVM', 'RandomForest', 'NaiveBayes', 'FastText'],
-                y: [83.11, 93.46, 90.06, 79.43, 98.35],
-                name: 'F1 Score',
-                type: 'bar',
-                marker: {
-                    color: '#61A98F',
-                }
-                };
-
-
-            var data = [trace1, trace2, trace3];
-
-            var layout = {
-                barmode: 'group',
-                title: 'Training Stage Results'
-            };
-
-            Plotly.newPlot('training_summary_plot', data, layout);
+            plots.forEach(plot => Plotly.newPlot(plot.divId, plot.data, plot.layout));
         },
         error: function(response) {
             console.log('error in test()', response);
