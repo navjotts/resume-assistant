@@ -2,6 +2,8 @@ import os
 import multiprocessing
 import gensim.models.word2vec as w2v
 from gensim.models import KeyedVectors
+import sklearn.manifold
+import pandas as pd
 
 import logging
 logging.basicConfig(format='%(asctime)s : %(levelname)s : %(message)s', level=logging.INFO)
@@ -33,12 +35,50 @@ class Embeddings(object):
 
         self.model = model
 
-    def most_similar(self, word):
+    # loads the model from local (if needed)
+    def load(self):
         if not self.model:
             self.model = KeyedVectors.load_word2vec_format(self.path, binary = False)
 
+    # for testing/comparing trained embeddings
+    def most_similar(self, word):
+        self.load()
         if not self.model:
-            print('error: unable to load trained model')
-            return
+            print('error: unable to load model')
+            return None
 
         return self.model.wv.similar_by_word(word)
+
+    # for visualization purposes
+    def reduce_dimensionality(self, dimension):
+        self.load()
+        if not self.model:
+            print('error: unable to load model')
+            return None
+
+        tsne = sklearn.manifold.TSNE(n_components=dimension, random_state=42)
+        word_vectors_reduced = tsne.fit_transform(self.model.wv.syn0)
+        return word_vectors_reduced
+
+    # for visualization purposes
+    def words_coordinates(self, dimension):
+        self.load()
+        if not self.model:
+            print('error: unable to load model')
+            return None
+
+        word_vectors_reduced = self.reduce_dimensionality(dimension)
+        words_and_coords = []
+        for word in self.model.wv.vocab:
+            word_info = self.model.wv.vocab[word]
+            coords = word_vectors_reduced[word_info.index]
+            words_and_coords.append((word,) + tuple(coords))
+
+        print('words_and_coords', len(words_and_coords))
+        points = pd.DataFrame(words_and_coords, columns=["word", "x", "y"])
+        print(points.head(10))
+
+        outout_file = os.path.join(os.path.dirname(os.path.abspath(__file__)), 'models', 'embeddings' + str(dimension) + 'd.csv')
+        with open(outout_file, 'w') as f:
+            f.write('')
+        points.to_csv(outout_file)

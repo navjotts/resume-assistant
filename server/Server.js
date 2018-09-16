@@ -202,7 +202,7 @@ app.get('/training/summary', async function (req, res, next) {
     }
 });
 
-app.get('/training/embeddings', async function (req, res, next) {
+app.get('/training/embeddings/train', async function (req, res, next) {
     console.log(req.url);
     try {
         var sents = [];
@@ -222,6 +222,19 @@ app.get('/training/embeddings', async function (req, res, next) {
         }
 
         await PythonConnector.invoke('train_embeddings', 'resumes', 100, sents);
+        res.json(200);
+    }
+    catch (e) {
+        console.log('error in /training/embeddings', e);
+        res.send(404);
+    }
+});
+
+app.get('/training/embeddings/generatecoordinates/:dimension', async function (req, res, next) {
+    console.log(req.url);
+    var dimension = req.params.dimension;
+    try {
+        await PythonConnector.invoke('generate_embeddings_coordinates', 'resumes', 100, Number(dimension));
         res.json(200);
     }
     catch (e) {

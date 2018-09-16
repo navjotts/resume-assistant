@@ -29,7 +29,7 @@ function fetchJobs() {
             $('#jobs-list').html(output);
         },
         error: function(response) {
-            console.log('error in fetchResumes()', response);
+            console.log('error in fetchJobs()', response);
         }
     });
 }
@@ -163,7 +163,7 @@ function summary(modelName) {
             plots.forEach(plot => Plotly.newPlot(plot.divId, plot.data, plot.layout));
         },
         error: function(response) {
-            console.log('error in test()', response);
+            console.log('error in summary()', response);
         }
     });
 }
@@ -227,7 +227,7 @@ function fireTrainingOrTesting(trainOrTest, modelName) {
             $('#' + modelName + '_' + 'results').html(output);
         },
         error: function(response) {
-            console.log('error in test()', response);
+            console.log('error in fireTrainingOrTesting()', response);
         }
     });
 }
@@ -290,16 +290,29 @@ function selectDashboardTab(selectedTab) {
 
 function trainEmbeddings() {
     $.ajax({
-        url: `http://localhost:3000/training/embeddings`,
+        url: `http://localhost:3000/training/embeddings/train`,
         success: function(response) {
             console.log(response);
         },
         error: function(response) {
-            console.log('error in test()', response);
+            console.log('error in trainEmbeddings()', response);
         }
     });
 }
 
 function visualizeEmbeddings() {
-    alert('Not implemented yet');
+    alert('wip');
+}
+
+function generateEmbeddingsCoordinates() {
+    var dimension = 2;
+    $.ajax({
+        url: `http://localhost:3000/training/embeddings/generatecoordinates/${dimension}`,
+        success: function(response) {
+            console.log(response);
+        },
+        error: function(response) {
+            console.log('error in generateEmbeddingsCoordinates()', response);
+        }
+    });
 }
