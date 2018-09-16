@@ -207,7 +207,7 @@ function fireTrainingOrTesting(trainOrTest, modelName) {
 
             var score = response['score'];
             if (score) {
-                output += "<div class=\"result_header\">SCORE</div><table border=\"1\"><tr><th>precision</th><th>recall</th><th>f1-score</th></tr><tr><td>" +  (score['precision'] - Math.random()/100) + "</td><td>" + (score['recall'] - Math.random()/100) + "</td><td>" + (score['f1_score'] - Math.random()/100) + "</td></tr></table>";
+                output += "<div class=\"result_header\">SCORE</div><table border=\"1\"><tr><th>precision</th><th>recall</th><th>f1-score</th></tr><tr><td>" +  score['precision'] + "</td><td>" + score['recall'] + "</td><td>" + score['f1_score'] + "</td></tr></table>";
             }
 
             var report = response['report'];
