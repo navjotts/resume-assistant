@@ -4,6 +4,7 @@ import gensim.models.word2vec as w2v
 from gensim.models import KeyedVectors
 import sklearn.manifold
 import pandas as pd
+import keras
 
 import logging
 logging.basicConfig(format='%(asctime)s : %(levelname)s : %(message)s', level=logging.INFO)
@@ -39,6 +40,17 @@ class Embeddings(object):
     def load(self):
         if not self.model:
             self.model = KeyedVectors.load_word2vec_format(self.path, binary = False)
+
+    # for integration into other ML/DL models
+    def keras_embeddings_layer(self):
+        self.load()
+        if not self.model:
+            print('error: unable to load model')
+            return None
+
+        embeddings = self.model.wv.get_keras_embedding()
+        print(embeddings.input_dim)
+        return embeddings
 
     # for testing/comparing trained embeddings
     def most_similar(self, word):

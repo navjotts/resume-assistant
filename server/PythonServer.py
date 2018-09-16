@@ -76,6 +76,10 @@ class PythonServer(object):
         embeddings = Embeddings(model_name, dimension)
         embeddings.words_coordinates(reduced_dimension)
 
+    def embeddings_layer(self, model_name, dimension):
+        embeddings = Embeddings(model_name, dimension)
+        return embeddings.keras_embeddings_layer()
+
 try:
     s = zerorpc.Server(PythonServer())
     s.bind('tcp://0.0.0.0:4242')
