@@ -50,8 +50,8 @@ async function test(name) {
 }
 
 async function start() {
-    // await train('resumes');
-    await test('resumes');
+    await train('resumes');
+    // await test('resumes');
 }
 
 start();

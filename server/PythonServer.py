@@ -1,9 +1,9 @@
 import zerorpc
 
 from py_files.Spacy import Spacy
-from py_files.ML_models.Embeddings.Embeddings import Embeddings
-from py_files.ML_models.FastText.FastTextClassifier import FastTextClassifier
-from py_files.ML_models.classifier import svm,Log_reg,Random_forest, naive_bayes, LSTM_model
+from py_files.models.Embeddings.Embeddings import Embeddings
+from py_files.models.FastText.FastTextClassifier import FastTextClassifier
+from py_files.models.classifier import SVM, LogisticRegression, RandomForest, NaiveBayes, LSTM
 from py_files.Preprocess.NLP_preprocess import train_d2v,process_sent,SK_TFIDF_train, SK_TFIDF_predict, process_sentences
 
 class PythonServer(object):
@@ -43,15 +43,15 @@ class PythonServer(object):
         if model_type == 'FastText':
             return FastTextClassifier(self)
         elif model_type == 'LogisticRegression':
-            return Log_reg(model_name, feature_type)
+            return LogisticRegression(model_name, feature_type)
         elif model_type == 'RandomForest':
-            return Random_forest(model_name, feature_type)
+            return RandomForest(model_name, feature_type)
         elif model_type == 'SVM':
-            return svm(model_name, feature_type)
+            return SVM(model_name, feature_type)
         elif model_type == 'NaiveBayes':
-            return naive_bayes(model_name, feature_type)
+            return NaiveBayes(model_name, feature_type)
         elif(model_type == "LSTM"):
-            return LSTM_model(model_name, feature_type)
+            return LSTM(model_name, feature_type)
         else:
             raise Exception('Please enter a valid model')
 
