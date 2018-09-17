@@ -80,6 +80,10 @@ class PythonServer(object):
         embeddings = Embeddings(model_name, dimension)
         return embeddings.keras_embeddings_layer()
 
+    def embedding_vector(self, model_name, dimension, word):
+        embeddings = Embeddings(model_name, dimension)
+        return embeddings.embedding_vector(word)
+
 try:
     s = zerorpc.Server(PythonServer())
     s.bind('tcp://0.0.0.0:4242')

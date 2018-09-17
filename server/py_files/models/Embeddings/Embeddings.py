@@ -13,7 +13,7 @@ class Embeddings(object):
     def __init__(self, name, dimension):
         self.name = name
         self.dimension = dimension
-        self.path = os.path.join(os.path.dirname(os.path.abspath(__file__)), 'models', name + str(dimension) + 'd.txt')
+        self.path = os.path.join(os.path.dirname(os.path.abspath(__file__)), 'trained', name + str(dimension) + 'd.txt')
         self.model = None
 
     def train(self, sentences):
@@ -51,6 +51,16 @@ class Embeddings(object):
         embeddings = self.model.wv.get_keras_embedding()
         print(embeddings.input_dim)
         return embeddings
+
+    def embedding_vector(self, word):
+        self.load()
+        if not self.model:
+            print('error: unable to load model')
+            return None
+
+        vec = self.model.wv.word_vec(word)
+        print(word, vec)
+        return vec
 
     # for testing/comparing trained embeddings
     def most_similar(self, word):
@@ -90,7 +100,7 @@ class Embeddings(object):
         points = pd.DataFrame(words_and_coords, columns=["word", "x", "y"])
         print(points.head(10))
 
-        outout_file = os.path.join(os.path.dirname(os.path.abspath(__file__)), 'models', 'embeddings' + str(dimension) + 'd.csv')
+        outout_file = os.path.join(os.path.dirname(os.path.abspath(__file__)), 'trained', 'embeddings' + str(dimension) + 'd.csv')
         with open(outout_file, 'w') as f:
             f.write('')
         points.to_csv(outout_file)

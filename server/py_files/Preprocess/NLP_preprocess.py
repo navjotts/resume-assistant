@@ -42,10 +42,10 @@ def train_d2v(sentences):
 #predict on new sentence using doc2vec
 def process_sent(sentences, model = None):
     if(not model):
-        #load the most recent doc2vec model 
+        #load the most recent doc2vec model
         model = Doc2Vec.load("server/py_files/Preprocess/models/doc2vec.model")
         print("\n\n+++++ Successfully loaded the Doc2vec model +++++\n")
-    
+
     #process incoming sentences. no need to tag here, that is only for training.
     sentences = [process_sentences(text) for text in sentences]
     #create vector of of a given sentence
@@ -63,7 +63,7 @@ def train_w2v(sentences):
 
 #preprocess sentence and tockenize into words
 def process_sentences(sentences):
-    
+
     text = remove_stopwords(sentences)
     text = text.lower()
     text = strip_punctuation(text)
@@ -72,7 +72,7 @@ def process_sentences(sentences):
          text = word_tokenize(text)
     except:
         raise Exception("need to run lines 13 and 14 for first time run, check file /server/py_files/preprocess/NLP_preprocess.py")
-    
+
     return text
 
 #create tagged ID objects for the DOC2vec model from gensim
@@ -91,9 +91,9 @@ def SK_TFIDF_train(sentences):
     print("\n\n+++++ Starting TFIDF model training +++++\n")
     count_vect = CountVectorizer()
     X_train_counts = count_vect.fit_transform(sentences)
-    joblib.dump(X_train_counts, "server/py_files/Preprocess/models/BOW.pkl") 
+    joblib.dump(X_train_counts, "server/py_files/Preprocess/models/BOW.pkl")
     tf_transformer = TfidfTransformer(use_idf=False).fit(X_train_counts)
-    joblib.dump(tf_transformer, "server/py_files/Preprocess/models/TFIDF.pkl") 
+    joblib.dump(tf_transformer, "server/py_files/Preprocess/models/TFIDF.pkl")
     X_train_tf = tf_transformer.transform(X_train_counts)
     print("\n\n+++++ Finished TFIDF model training +++++\n")
     return X_train_tf
