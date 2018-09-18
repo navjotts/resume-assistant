@@ -86,8 +86,7 @@ class Embeddings(object):
             for w in s:
                 if self.word_to_index(w):
                     encoded.append(self.word_to_index(w))
-            if encoded:
-                encoded_samples.append(encoded)
+            encoded_samples.append(encoded)
 
         return encoded_samples
 
