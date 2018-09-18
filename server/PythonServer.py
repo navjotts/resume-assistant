@@ -68,10 +68,6 @@ class PythonServer(object):
         embeddings = Embeddings(model_name, dimension)
         embeddings.train(sents)
 
-    def most_similar_word(self, model_name, dimension, word):
-        embeddings = Embeddings(model_name, dimension)
-        return embeddings.most_similar(word)
-
     def generate_embeddings_coordinates(self, model_name, dimension, reduced_dimension):
         embeddings = Embeddings(model_name, dimension)
         embeddings.words_coordinates(reduced_dimension)
@@ -79,10 +75,6 @@ class PythonServer(object):
     def embeddings_layer(self, model_name, dimension):
         embeddings = Embeddings(model_name, dimension)
         return embeddings.keras_embeddings_layer()
-
-    def embedding_vector(self, model_name, dimension, word):
-        embeddings = Embeddings(model_name, dimension)
-        return embeddings.embedding_vector(word)
 
 try:
     s = zerorpc.Server(PythonServer())
