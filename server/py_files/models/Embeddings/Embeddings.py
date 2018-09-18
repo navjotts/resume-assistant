@@ -17,7 +17,7 @@ class Embeddings(object):
         self.model = None
 
     def train(self, sentences):
-        model = w2v.Word2Vec(min_count=3,
+        model = w2v.Word2Vec(min_count=1,
                             window=7,
                             size=self.dimension,
                             seed=42,
