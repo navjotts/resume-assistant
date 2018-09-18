@@ -144,7 +144,6 @@ class NaiveBayes(BaseClassifier):
         self.model = MultinomialNB()
 
 import numpy
-from keras.datasets import imdb
 from keras.models import Sequential
 from keras.layers import Dense, Flatten, Input, Dropout, Conv1D, MaxPool1D, Embedding, AvgPool1D
 from keras.layers import LSTM as long_short_term_memory 
