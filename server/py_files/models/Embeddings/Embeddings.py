@@ -41,13 +41,12 @@ class Embeddings(object):
         if not self.model:
             self.model = KeyedVectors.load_word2vec_format(self.path, binary = False)
 
+        if not self.model:
+            print('error: unable to load model')
+
     # for integration into other ML/DL models
     def keras_embeddings_layer(self, trainable = False):
         self.load()
-        if not self.model:
-            print('error: unable to load model')
-            return None
-
         embeddings = self.model.wv.get_keras_embedding(train_embeddings = trainable)
         print('input dimension of the Embeddings layer (vocab size):', embeddings.input_dim)
         print('output dimension of the Embeddings layer (embedding dimensions):', embeddings.output_dim)
@@ -56,10 +55,6 @@ class Embeddings(object):
 
     def embedding_vector(self, word):
         self.load()
-        if not self.model:
-            print('error: unable to load model')
-            return None
-
         vec = self.model.wv.word_vec(word)
         print(word, vec)
         return vec
@@ -67,19 +62,11 @@ class Embeddings(object):
     # for testing/comparing trained embeddings
     def most_similar(self, word):
         self.load()
-        if not self.model:
-            print('error: unable to load model')
-            return None
-
         return self.model.wv.similar_by_word(word)
 
     # for visualization purposes
     def reduce_dimensionality(self, dimension):
         self.load()
-        if not self.model:
-            print('error: unable to load model')
-            return None
-
         tsne = sklearn.manifold.TSNE(n_components=dimension, random_state=42)
         word_vectors_reduced = tsne.fit_transform(self.model.wv.syn0)
         return word_vectors_reduced
@@ -87,10 +74,6 @@ class Embeddings(object):
     # for visualization purposes
     def words_coordinates(self, dimension):
         self.load()
-        if not self.model:
-            print('error: unable to load model')
-            return None
-
         word_vectors_reduced = self.reduce_dimensionality(dimension)
         words_and_coords = []
         for word in self.model.wv.vocab:
