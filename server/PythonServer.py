@@ -20,19 +20,22 @@ class PythonServer(object):
         return sents
 
     def train_classifier(self, model_name, model_type, feature_type, samples, labels):
-        samples = self.choose_features(feature_type, samples)
+        samples = self.choose_samples(samples, True)
+        features = self.choose_features(feature_type, samples)
         model = self.choose_model(model_name, model_type, feature_type)
         return model.train(samples, labels, feature_type)
 
     def test_classifier(self, model_name, model_type, feature_type, samples, labels):
-        sample_vecs = self.choose_features(feature_type, samples)
+        samples = self.choose_samples(samples, True)
+        features = self.choose_features(feature_type, samples)
         model = self.choose_model(model_name, model_type, feature_type)
-        return model.prediction(sample_vecs, test = True, labels = labels, samples=samples)
+        return model.prediction(features, test = True, labels = labels, samples=samples)
 
     def classify_sentences(self, model_name, model_type, feature_type, samples):
-        samples = self.choose_features(feature_type, samples)
+        samples = self.choose_samples(samples, True)
+        features = self.choose_features(feature_type, samples)
         model = self.choose_model(model_name, model_type, feature_type)
-        return model.prediction(samples)
+        return model.prediction(features)
 
     def test_sentence_classifier(self, name, path, samples, labels):
         FastTextClassifier.test(self, samples, labels)
@@ -54,24 +57,26 @@ class PythonServer(object):
         else:
             raise Exception('Please enter a valid model')
 
+    # todo clean this up
+    def choose_samples(self, samples, combine_to_sents=False):
+        if combine_to_sents:
+            return [(' ').join(s) for s in samples]
+        return samples
+
     # helper function to choose the appropriate feature vectorization based on the feature details provided
     def choose_features(self, feature_type, samples):
         if feature_type == 'tf-idf':
-            return SK_TFIDF_predict(samples)
+            return SK_TFIDF_predict(sents)
         elif feature_type == 'sentence-embeddings':
             return process_sent(samples)
         elif feature_type == 'keras-embeddings':
             return integer_sequence(samples)
         else:
-            return samples # feature vector construction happens inside the model
+            return samples # no change/manipulation
 
     def train_embeddings(self, model_name, dimension, sents):
         embeddings = Embeddings(model_name, dimension)
         embeddings.train(sents)
-
-    def most_similar_word(self, model_name, dimension, word):
-        embeddings = Embeddings(model_name, dimension)
-        return embeddings.most_similar(word)
 
     def generate_embeddings_coordinates(self, model_name, dimension, reduced_dimension):
         embeddings = Embeddings(model_name, dimension)
@@ -81,9 +86,11 @@ class PythonServer(object):
         embeddings = Embeddings(model_name, dimension)
         return embeddings.keras_embeddings_layer()
 
-    def embedding_vector(self, model_name, dimension, word):
+    def encode_samples(self, model_name, dimension, samples):
         embeddings = Embeddings(model_name, dimension)
-        return embeddings.embedding_vector(word)
+        return embeddings.encode_samples(samples)
+
+# print(Embeddings('resumes', 100).word_to_index('React')) # for testing other classes directly (comment out the below zerorps server if you do this)
 
 try:
     s = zerorpc.Server(PythonServer())

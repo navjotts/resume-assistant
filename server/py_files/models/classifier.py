@@ -146,7 +146,7 @@ class NaiveBayes(BaseClassifier):
 import numpy
 from keras.datasets import imdb
 from keras.models import Sequential
-from keras.layers import Dense, Flatten, Input,Dropout
+from keras.layers import Dense, Flatten, Input, Dropout
 from keras.layers import LSTM as long_short_term_memory 
 from keras.preprocessing.sequence import pad_sequences
 from sklearn.preprocessing import LabelEncoder

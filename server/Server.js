@@ -150,7 +150,7 @@ function collectData(parent, name) {
         if (fileName.split('.').pop() === 'json') {
             var docData = JSON.parse(fs.readFileSync(path.join(dbDir, fileName)));
             docData.content.forEach(each => {
-                samples.push(each.sentence.join(' '));
+                samples.push(each.sentence);
                 labels.push(each.label === 'WORK EXPERIENCE' ? 'EXPERIENCE' : each.label); // TODO https://github.com/navjotts/resume-assistant/issues/5
             });
         }
@@ -192,7 +192,7 @@ app.get('/training/:trainOrTest/:dataset/:modelName/:modelType/:featureType', as
 app.get('/training/summary', async function (req, res, next) {
     console.log(req.url);
     try {
-        var scoresFilePath = path.join(__dirname, 'py_files', 'ML_models', 'scores.json');
+        var scoresFilePath = path.join(__dirname, 'py_files', 'models', 'scores.json');
         var scoresData = JSON.parse(fs.readFileSync(scoresFilePath));
         res.json(scoresData)
     }
