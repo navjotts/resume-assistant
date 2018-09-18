@@ -74,10 +74,6 @@ class Embeddings(object):
 
         return self.model.wv.index2word[index]
 
-    def index_to_word(self, index):
-        self.load()
-        return self.model.wv.index2word[index]
-
     # samples is expected to be a list of samples, where each sample is further a list of tokens
     def encode_samples(self, samples):
         self.load()

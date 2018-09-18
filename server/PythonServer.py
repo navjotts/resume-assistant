@@ -2,8 +2,9 @@ import zerorpc
 
 from py_files.Spacy import Spacy
 from py_files.models.FastText.FastTextClassifier import FastTextClassifier
-from py_files.models.classifier import SVM, LogisticRegression, RandomForest, NaiveBayes, LSTM
+from py_files.models.classifier import SVM, LogisticRegression, RandomForest, NaiveBayes, LSTM, NeuralNet, CNN
 from py_files.Preprocess.NLP_preprocess import train_d2v,process_sent,SK_TFIDF_train, SK_TFIDF_predict,process_sentences, integer_sequence
+from py_files.models.Embeddings import Embeddings
 
 class PythonServer(object):
     def sentences(self, text):
@@ -20,10 +21,10 @@ class PythonServer(object):
         return sents
 
     def train_classifier(self, model_name, model_type, feature_type, samples, labels):
-        samples = self.choose_samples(samples, True)
-        features = self.choose_features(feature_type, samples)
+        # samples = self.choose_samples(samples)
+        samples = self.choose_features(model_name,feature_type, samples)
         model = self.choose_model(model_name, model_type, feature_type)
-        return model.train(samples, labels, feature_type)
+        return model.train(samples, labels)
 
     def test_classifier(self, model_name, model_type, feature_type, samples, labels):
         samples = self.choose_samples(samples, True)
@@ -54,6 +55,10 @@ class PythonServer(object):
             return NaiveBayes(model_name, feature_type)
         elif(model_type == "LSTM"):
             return LSTM(model_name, feature_type)
+        elif(model_type == "NeuralNet"):
+            return NeuralNet(model_name, feature_type)
+        elif(model_type == "CNN"):
+            return CNN(model_name, feature_type)
         else:
             raise Exception('Please enter a valid model')
 
@@ -64,13 +69,14 @@ class PythonServer(object):
         return samples
 
     # helper function to choose the appropriate feature vectorization based on the feature details provided
-    def choose_features(self, feature_type, samples):
+    def choose_features(self,model_name, feature_type, samples):
         if feature_type == 'tf-idf':
-            return SK_TFIDF_predict(sents)
+            return SK_TFIDF_predict(samples)
         elif feature_type == 'sentence-embeddings':
             return process_sent(samples)
         elif feature_type == 'keras-embeddings':
-            return integer_sequence(samples)
+            Embedding_model  = Embeddings.Embeddings(model_name, 100)
+            return Embedding_model.encode_samples(samples), Embedding_model.keras_embeddings_layer().input_dim
         else:
             return samples # no change/manipulation
 

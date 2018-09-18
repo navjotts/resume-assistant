@@ -146,13 +146,14 @@ class NaiveBayes(BaseClassifier):
 import numpy
 from keras.datasets import imdb
 from keras.models import Sequential
-from keras.layers import Dense, Flatten, Input, Dropout
+from keras.layers import Dense, Flatten, Input, Dropout, Conv1D, MaxPool1D, Embedding, AvgPool1D
 from keras.layers import LSTM as long_short_term_memory 
 from keras.preprocessing.sequence import pad_sequences
 from sklearn.preprocessing import LabelEncoder
 from keras.utils import np_utils
 from keras.layers import Embedding
 from py_files.models.Embeddings import Embeddings
+import keras
 # from scipy.sparse import csr_matrix
 # fix random seed for reproducibility
 numpy.random.seed(7)
@@ -174,36 +175,48 @@ class DeepClassifier():
 
     def train(self,samples,labels):
         
-
-        if(feature_type == 'intger_sequence'):
+        if(self.feature_type == 'keras-embeddings'):
             self.compile(samples[1])
             max_length = 100
-            padded_docs = pad_sequences(samples[0], maxlen=max_length, padding='post')
-
+            samples = pad_sequences(samples[0], maxlen=max_length, padding='post')
+        elif(self.feature_type == 'tf-idf'):
+            samples = samples.todense()
+            self.compile(np.array(samples).shape)
         else:
-            self.compile(len(samples))
-            padded_docs = samples
-
+            self.compile(np.array(samples).shape)
 
         labels = LabelEncoder().fit_transform(labels)
         dummy_labels = np_utils.to_categorical(labels)
         print(dummy_labels.shape)
         # split data into test train split
-        x_train, x_test, y_train, y_test = train_test_split(padded_docs, dummy_labels,
-                                                            test_size=0.25, random_state=42)
+        x_train, x_test, y_train, y_test = train_test_split(samples, dummy_labels,
+                                                            test_size=0.05, random_state=42)
 
         x_train = np.array(x_train)
         y_train = np.array(y_train)
         x_test = np.array(x_test)
         y_test = np.array(y_test)
 
+        early_stop = keras.callbacks.EarlyStopping(monitor='val_loss',
+                              min_delta=0,
+                              patience=4,
+                              verbose=0, mode='auto')
+
+        callbacks_list = [early_stop]
+
         print("\n++++ Begin Training ++++\n\n")
-        self.model.fit(x_train, y_train, validation_data=(x_test, y_test), epochs=50, batch_size=256, verbose = 1)
+        self.model.fit(x_train, y_train, validation_data=(x_test, y_test), epochs=100, batch_size=4, verbose = 1, callbacks=callbacks_list)
         print("\n\n++++ Training Complete ++++\n\n")
 
         score = self.model.evaluate(x_test,y_test)
         print(score)
         print("On test data, this model was %.2f %% accurate.\n\n" %(score[1]*100))
+        
+        #save model weights
+        self.path = self.path + str(self.model_type)+ '_' + str(self.feature_type) + '_' + str(self.name) + "_" + str(int(score[1]*100)) + ".json"
+        model_json = self.model.to_json()
+        with open(self.path, "w") as json_file:
+            json_file.write(model_json)
 
 
 class LSTM(DeepClassifier):
@@ -220,14 +233,90 @@ class LSTM(DeepClassifier):
         embedding_vecs = Embedding_model.keras_embeddings_layer()
         model = Sequential()
         model.add(embedding_vecs)
-        model.add(long_short_term_memory(100,return_sequences=False))
+        model.add(long_short_term_memory(100,return_sequences=True))
+        model.add(long_short_term_memory(50,return_sequences=True))
+        model.add(long_short_term_memory(50,return_sequences=False))
+        model.add(Dropout(0.3))
+        model.add(Dense(128, activation='relu'))
+        model.add(Dense(64, activation='relu'))
         model.add(Dropout(0.3))
         model.add(Dense(32, activation='relu'))
         model.add(Dense(32, activation='relu'))
-        model.add(Dense(32, activation='relu'))
-        model.add(Dense(32, activation='relu'))
-        model.add(Dense(5, activation='relu'))
+        model.add(Dropout(0.3))
+        model.add(Dense(5, activation='softmax'))
         model.compile(loss='categorical_crossentropy', optimizer='adam', metrics=['accuracy'])
+        print(model.summary())
+        self.model = model
+
+        return model
+
+class NeuralNet(DeepClassifier):
+    def __init__(self,name, feature_type):
+        self.name = name
+        self.feature_type = feature_type
+        self.model_type = 'NeuralNet'
+        self.path = "server/py_files/models/trained/"
+        ## create the acutal model
+        self.model = None
+
+    def compile(self, input_shape):
+        model = Sequential()
+        if(self.feature_type == 'keras-embeddings'):
+            Embedding_model  = Embeddings.Embeddings(self.name, 100)
+            embedding_vecs = Embedding_model.keras_embeddings_layer()
+            model.add(Embedding(input_shape+1,100,input_length = 100, trainable =True))
+            model.add(Flatten())
+            model.add(Dense(1024, activation='relu'))
+        else:
+            model.add(Dense(128, activation='relu', input_dim = input_shape[1]))
+        model.add(Dropout(0.5))
+        model.add(Dense(64, activation='relu'))
+        # model.add(Dropout(0.3))     
+        # model.add(Dense(512, activation='relu'))
+        # model.add(Dropout(0.3))     
+        # model.add(Dense(256, activation='relu'))
+        # model.add(Dropout(0.3))     
+        # model.add(Dense(64, activation='relu')) 
+        # model.add(Dropout(0.3))       
+        # model.add(Dense(32, activation='relu'))
+        # model.add(Dropout(0.3))     
+        # model.add(Dense(32, activation='relu'))
+        # model.add(Dropout(0.5))     
+        model.add(Dense(16, activation='relu'))
+        model.add(Dropout(0.4))        
+        model.add(Dense(5, activation='softmax'))
+        model.compile(loss='categorical_crossentropy', optimizer='adam', metrics=['accuracy'])
+        print(model.summary())
+        self.model = model
+
+        return model
+
+class CNN(DeepClassifier):
+    def __init__(self,name, feature_type):
+        self.name = name
+        self.feature_type = feature_type
+        self.model_type = 'CNN'
+        self.path = "server/py_files/models/trained/"
+        ## create the acutal model
+        self.model = None
+
+    def compile(self, input_shape):
+        Embedding_model  = Embeddings.Embeddings(self.name, 100)
+        embedding_vecs = Embedding_model.keras_embeddings_layer()
+        model = Sequential()
+        model.add(Embedding(input_shape+1,100,input_length = 100, trainable =True))
+        model.add(Conv1D(256, 5, activation='relu',data_format='channels_first', padding = 'valid', strides = 4))
+        model.add(MaxPool1D(5))
+        model.add(Dropout(0.3))  
+        model.add(Conv1D(128, 5, activation='relu',data_format='channels_first',padding = 'valid', strides = 2))
+        model.add(AvgPool1D(10))
+        model.add(Flatten())
+        model.add(Dense(256, activation='relu'))
+        model.add(Dense(32, activation='relu'))
+        model.add(Dense(32, activation='relu'))
+        model.add(Dropout(0.2))      
+        model.add(Dense(5, activation='softmax'))
+        model.compile(loss='categorical_crossentropy', optimizer='adam', metrics=['acc'])
         print(model.summary())
         self.model = model
 
