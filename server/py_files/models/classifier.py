@@ -10,6 +10,7 @@ from glob import glob
 from os.path import basename
 from py_files.AccuracyAnalysis import AccuracyAnalysis
 
+
 # General classifier object, call this to instantiate a model.
 class BaseClassifier():
     """
@@ -147,13 +148,11 @@ from keras.datasets import imdb
 from keras.models import Sequential
 from keras.layers import Dense, Flatten, Input,Dropout
 from keras.layers import LSTM as long_short_term_memory 
-from keras.layers.embeddings import Embedding
-from keras.metrics import sparse_categorical_accuracy
-from keras.preprocessing import sequence
-from keras.preprocessing.text import one_hot
 from keras.preprocessing.sequence import pad_sequences
 from sklearn.preprocessing import LabelEncoder
 from keras.utils import np_utils
+from keras.layers import Embedding
+from py_files.models.Embeddings import Embeddings
 # from scipy.sparse import csr_matrix
 # fix random seed for reproducibility
 numpy.random.seed(7)
@@ -174,12 +173,18 @@ class DeepClassifier():
         self.model = None
 
     def train(self,samples,labels):
-        self.compile()
+        
 
-        max_length = 4000
-        print(type(samples))
-        padded_docs = pad_sequences(np.array(samples.todense()), maxlen=max_length)
-        padded_docs = np.array(padded_docs).flatten().reshape((padded_docs.shape[0],16, 250))
+        if(feature_type == 'intger_sequence'):
+            self.compile(samples[1])
+            max_length = 100
+            padded_docs = pad_sequences(samples[0], maxlen=max_length, padding='post')
+
+        else:
+            self.compile(len(samples))
+            padded_docs = samples
+
+
         labels = LabelEncoder().fit_transform(labels)
         dummy_labels = np_utils.to_categorical(labels)
         print(dummy_labels.shape)
@@ -192,12 +197,8 @@ class DeepClassifier():
         x_test = np.array(x_test)
         y_test = np.array(y_test)
 
-        # max_review_length = 50
-        # x_train = sequence.pad_sequences(x_train, maxlen=max_review_length)
-        # x_test = sequence.pad_sequences(x_test, maxlen=max_review_length)
-
         print("\n++++ Begin Training ++++\n\n")
-        self.model.fit(x_train, y_train, validation_data=(x_test, y_test), epochs=5000, batch_size=128, verbose = 1)
+        self.model.fit(x_train, y_train, validation_data=(x_test, y_test), epochs=50, batch_size=256, verbose = 1)
         print("\n\n++++ Training Complete ++++\n\n")
 
         score = self.model.evaluate(x_test,y_test)
@@ -214,14 +215,18 @@ class LSTM(DeepClassifier):
         ## create the acutal model
         self.model = None
 
-    def compile(self):
+    def compile(self, vocab_size):
+        Embedding_model  = Embeddings.Embeddings(self.name, 100)
+        embedding_vecs = Embedding_model.keras_embeddings_layer()
         model = Sequential()
-        model.add(long_short_term_memory(100, input_shape = (16,250),return_sequences=True))
-        model.add(long_short_term_memory(50,return_sequences=True))
-        model.add(long_short_term_memory(50))
+        model.add(embedding_vecs)
+        model.add(long_short_term_memory(100,return_sequences=False))
         model.add(Dropout(0.3))
         model.add(Dense(32, activation='relu'))
-        model.add(Dense(5, activation='sigmoid'))
+        model.add(Dense(32, activation='relu'))
+        model.add(Dense(32, activation='relu'))
+        model.add(Dense(32, activation='relu'))
+        model.add(Dense(5, activation='relu'))
         model.compile(loss='categorical_crossentropy', optimizer='adam', metrics=['accuracy'])
         print(model.summary())
         self.model = model

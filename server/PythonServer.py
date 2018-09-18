@@ -1,10 +1,9 @@
 import zerorpc
 
 from py_files.Spacy import Spacy
-from py_files.models.Embeddings.Embeddings import Embeddings
 from py_files.models.FastText.FastTextClassifier import FastTextClassifier
 from py_files.models.classifier import SVM, LogisticRegression, RandomForest, NaiveBayes, LSTM
-from py_files.Preprocess.NLP_preprocess import train_d2v,process_sent,SK_TFIDF_train, SK_TFIDF_predict, process_sentences
+from py_files.Preprocess.NLP_preprocess import train_d2v,process_sent,SK_TFIDF_train, SK_TFIDF_predict,process_sentences, integer_sequence
 
 class PythonServer(object):
     def sentences(self, text):
@@ -23,7 +22,7 @@ class PythonServer(object):
     def train_classifier(self, model_name, model_type, feature_type, samples, labels):
         samples = self.choose_features(feature_type, samples)
         model = self.choose_model(model_name, model_type, feature_type)
-        return model.train(samples, labels)
+        return model.train(samples, labels, feature_type)
 
     def test_classifier(self, model_name, model_type, feature_type, samples, labels):
         sample_vecs = self.choose_features(feature_type, samples)
@@ -61,6 +60,8 @@ class PythonServer(object):
             return SK_TFIDF_predict(samples)
         elif feature_type == 'sentence-embeddings':
             return process_sent(samples)
+        elif feature_type == 'keras-embeddings':
+            return integer_sequence(samples)
         else:
             return samples # feature vector construction happens inside the model
 

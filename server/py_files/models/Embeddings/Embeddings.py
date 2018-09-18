@@ -6,6 +6,7 @@ import sklearn.manifold
 import pandas as pd
 import keras
 
+
 import logging
 logging.basicConfig(format='%(asctime)s : %(levelname)s : %(message)s', level=logging.INFO)
 
@@ -44,6 +45,7 @@ class Embeddings(object):
     # for integration into other ML/DL models
     def keras_embeddings_layer(self):
         self.load()
+
         if not self.model:
             print('error: unable to load model')
             return None

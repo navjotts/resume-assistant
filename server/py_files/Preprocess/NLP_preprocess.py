@@ -7,6 +7,8 @@ from gensim.models.doc2vec import TaggedDocument
 from sklearn.feature_extraction.text import CountVectorizer
 from sklearn.feature_extraction.text import TfidfTransformer
 from sklearn.externals import joblib
+from keras.preprocessing.text import Tokenizer
+from keras.preprocessing.sequence import pad_sequences
 
 #######################
 #first time run will require this on the local machine
@@ -104,3 +106,14 @@ def SK_TFIDF_predict(sentences):
     tf_transformer = joblib.load("server/py_files/Preprocess/models/TFIDF.pkl")
     print("+++++ Loaded TFIDF Models +++++")
     return tf_transformer.transform(X_train_counts)
+
+
+def integer_sequence(sentences):
+    t = Tokenizer()
+    t.fit_on_texts(sentences)
+    vocab_size = len(t.word_index) + 1
+
+    # integer encode the documents
+    encoded_docs = t.texts_to_sequences(sentences)
+
+    return encoded_docs,vocab_size
