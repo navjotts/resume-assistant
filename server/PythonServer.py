@@ -21,19 +21,22 @@ class PythonServer(object):
         return sents
 
     def train_classifier(self, model_name, model_type, feature_type, samples, labels):
-        samples = self.choose_features(feature_type, samples)
+        samples = self.choose_samples(samples, True)
+        features = self.choose_features(feature_type, samples)
         model = self.choose_model(model_name, model_type, feature_type)
-        return model.train(samples, labels)
+        return model.train(features, labels)
 
     def test_classifier(self, model_name, model_type, feature_type, samples, labels):
-        sample_vecs = self.choose_features(feature_type, samples)
+        samples = self.choose_samples(samples, True)
+        features = self.choose_features(feature_type, samples)
         model = self.choose_model(model_name, model_type, feature_type)
-        return model.prediction(sample_vecs, test = True, labels = labels, samples=samples)
+        return model.prediction(features, test = True, labels = labels, samples=samples)
 
     def classify_sentences(self, model_name, model_type, feature_type, samples):
-        samples = self.choose_features(feature_type, samples)
+        samples = self.choose_samples(samples, True)
+        features = self.choose_features(feature_type, samples)
         model = self.choose_model(model_name, model_type, feature_type)
-        return model.prediction(samples)
+        return model.prediction(features)
 
     def test_sentence_classifier(self, name, path, samples, labels):
         FastTextClassifier.test(self, samples, labels)
@@ -55,14 +58,20 @@ class PythonServer(object):
         else:
             raise Exception('Please enter a valid model')
 
+    # todo clean this up
+    def choose_samples(self, samples, combine_to_sents=False):
+        if combine_to_sents:
+            return [(' ').join(s) for s in samples]
+        return samples
+
     # helper function to choose the appropriate feature vectorization based on the feature details provided
     def choose_features(self, feature_type, samples):
         if feature_type == 'tf-idf':
-            return SK_TFIDF_predict(samples)
+            return SK_TFIDF_predict(sents)
         elif feature_type == 'sentence-embeddings':
-            return process_sent(samples)
+            return process_sent(sents)
         else:
-            return samples # feature vector construction happens inside the model
+            return samples # no change/manipulation
 
     def train_embeddings(self, model_name, dimension, sents):
         embeddings = Embeddings(model_name, dimension)
