@@ -59,6 +59,14 @@ class Embeddings(object):
         print(word, vec)
         return vec
 
+    def word_to_index(self, word):
+        self.load()
+        return self.model.wv.vocab[word].index
+
+    def index_to_word(self, index):
+        self.load()
+        return self.model.wv.index2word[index]
+
     # for testing/comparing trained embeddings
     def most_similar(self, word):
         self.load()
