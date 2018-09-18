@@ -42,13 +42,13 @@ class Embeddings(object):
             self.model = KeyedVectors.load_word2vec_format(self.path, binary = False)
 
     # for integration into other ML/DL models
-    def keras_embeddings_layer(self):
+    def keras_embeddings_layer(self, trainable = False):
         self.load()
         if not self.model:
             print('error: unable to load model')
             return None
 
-        embeddings = self.model.wv.get_keras_embedding()
+        embeddings = self.model.wv.get_keras_embedding(train_embeddings = trainable)
         print(embeddings.input_dim)
         return embeddings
 
