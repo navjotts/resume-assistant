@@ -49,7 +49,7 @@ class Embeddings(object):
             return None
 
         embeddings = self.model.wv.get_keras_embedding(train_embeddings = trainable)
-        print(embeddings.input_dim)
+        print('input dimension of the Embeddings layer', embeddings.input_dim)
         return embeddings
 
     def embedding_vector(self, word):
