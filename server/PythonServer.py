@@ -76,7 +76,11 @@ class PythonServer(object):
         embeddings = Embeddings(model_name, dimension)
         return embeddings.keras_embeddings_layer()
 
-# print(Embeddings('resumes', 100).word_to_index('computer')) # for testing other layers directly (comment out the below zerorps server if you do this)
+    def encode_samples(self, model_name, dimension, samples):
+        embeddings = Embeddings(model_name, dimension)
+        return embeddings.encode_samples(samples)
+
+# print(Embeddings('resumes', 100).word_to_index('React')) # for testing other layers directly (comment out the below zerorps server if you do this)
 
 try:
     s = zerorpc.Server(PythonServer())

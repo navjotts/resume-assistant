@@ -61,11 +61,35 @@ class Embeddings(object):
 
     def word_to_index(self, word):
         self.load()
+        if word not in self.model.wv.vocab:
+            return None
+
         return self.model.wv.vocab[word].index
 
     def index_to_word(self, index):
         self.load()
+        if index not in self.model.wv.index2word:
+            return None
+
         return self.model.wv.index2word[index]
+
+    def index_to_word(self, index):
+        self.load()
+        return self.model.wv.index2word[index]
+
+    # samples is expected to be a list of samples, where each sample is further a list of tokens
+    def encode_samples(self, samples):
+        self.load()
+        encoded_samples = []
+        for s in samples:
+            encoded = []
+            for w in s:
+                if self.word_to_index(w):
+                    encoded.append(self.word_to_index(w))
+            if encoded:
+                encoded_samples.append(encoded)
+
+        return encoded_samples
 
     # for testing/comparing trained embeddings
     def most_similar(self, word):
