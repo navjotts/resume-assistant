@@ -192,7 +192,7 @@ app.get('/training/:trainOrTest/:dataset/:modelName/:modelType/:featureType', as
 app.get('/training/summary', async function (req, res, next) {
     console.log(req.url);
     try {
-        var scoresFilePath = path.join(__dirname, 'py_files', 'ML_models', 'scores.json');
+        var scoresFilePath = path.join(__dirname, 'py_files', 'models', 'scores.json');
         var scoresData = JSON.parse(fs.readFileSync(scoresFilePath));
         res.json(scoresData)
     }
