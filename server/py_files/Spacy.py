@@ -1,8 +1,8 @@
 import re
 
 import spacy
-import en_core_web_sm
-nlp = en_core_web_sm.load()
+import en_core_web_lg
+nlp = en_core_web_lg.load()
 nlp.max_length = 2000000 # todo check this limit
 
 import time
@@ -10,13 +10,16 @@ import time
 class Spacy(object):
     def anonymize(self, t):
         if t.like_email: # todo bring in Human Names as well
-            return 'X'*len(t.text)
+            #return 'X'*len(t.text)
+            return t.shape
+        if t.ent_type_ == 'PERSON':
+            return t.shape
         return t.text
 
     # todo need a has_phone_number instead
     def is_phone_number(self, text):
-        phone_regex = re.compile('(?:(?:\+?1\s*(?:[.-]\s*)?)?(?:(\s*([2-9]1[02-9]|[2-9][02-8]1|[2-9][02-8][02-9])\s*)|([2-9]1[02-9]|[2-9][02-8]1|[2-9][02-8][02-9]))\s*(?:[.-]\s*)?)([2-9]1[02-9]|[2-9][02-9]1|[2-9][02-9]{2})\s*(?:[.-]\s*)?([0-9]{4})')
-        return phone_regex.match(text)
+        phone_regex = re.compile(r'(\+\s?1\s?)|(?:(?:(\s*\(?([2-9]1[02-9]|[2-9][02-8]1|[2-9][02-8][02-9])\s*)|([2-9]1[02-9]|[2-9][02-8]1|[2-9][02-8][02-9]))\)?\s*(?:[.-]\s*)?)([2-9]1[02-9]|[2-9][02-9]1|[2-9][02-9]{2})\s*(?:[.-]\s*)?([0-9]{4})')
+        return phone_regex.search(text)
 
     def sentences(self, text, drop_stop_words):
         sents = []
