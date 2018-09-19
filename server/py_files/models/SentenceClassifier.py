@@ -17,7 +17,7 @@ class SentenceClassifier(object):
 
         return {'score': score, 'report': report, 'misclassifications': misclassifications}
 
-    # loads the model from local (if needed)
+    # loads the model from local disk (if needed)
     def load(self):
         if not self.model:
             print('Vectorizer: error: unable to load model')

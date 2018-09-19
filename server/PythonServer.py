@@ -46,7 +46,7 @@ class PythonServer(object):
     # helper function to choose the appropriate class based on the model details provided
     def choose_model(self, model_name, model_type, feature_type):
         if model_type == 'FastText':
-            return FastTextClassifier(self)
+            return FastTextClassifier(model_name, feature_type)
         elif model_type == 'LogisticRegression':
             return LogRegClassifier(model_name, feature_type)
         elif model_type == 'SVM':
