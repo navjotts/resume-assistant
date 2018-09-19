@@ -11,15 +11,9 @@ class SentenceClassifier(object):
 
     def train(self, samples, features, labels):
         # build the model and populate `self.labels_pred` in subclasses
-
-        print('features', features.shape)
-
         score = AccuracyAnalysis.score(self, labels, self.labels_pred)
         report = AccuracyAnalysis.report(self, labels, self.labels_pred)
         misclassifications = AccuracyAnalysis.misclassifications(self, labels, self.labels_pred, samples)
-
-        print(score)
-        print(report)
 
         return {'score': score, 'report': report, 'misclassifications': misclassifications}
 
@@ -30,15 +24,9 @@ class SentenceClassifier(object):
 
     def test(self, samples, features, labels):
         # build the model and populate `self.labels_pred` in subclasses
-
-        print('features', features.shape)
-
         score = AccuracyAnalysis.score(self, labels, self.labels_pred)
         report = AccuracyAnalysis.report(self, labels, self.labels_pred)
         misclassifications = AccuracyAnalysis.misclassifications(self, labels, self.labels_pred, samples)
-
-        print(score)
-        print(report)
 
         return {'score': score, 'report': report, 'misclassifications': misclassifications}
 
