@@ -6,7 +6,7 @@ class SentenceClassifier(object):
     def __init__(self, name, feature_type):
         self.name = name
         self.feature_type = feature_type
-        self.model = None
+        self.model = None # todo should be a dict => so that we can hold more than 1 models in memory together
         self.seed = 42 # fix the random seed for consistency of results
 
     def train(self, samples, features, labels):
