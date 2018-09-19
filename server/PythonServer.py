@@ -80,6 +80,7 @@ class PythonServer(object):
             Embedding_model  = Embeddings.Embeddings(model_name, 100)
             return Embedding_model.encode_samples(samples), Embedding_model.keras_embeddings_layer().input_dim
         else:
+            print('no feature engineering!')
             return samples # no change/manipulation
 
     def train_embeddings(self, model_name, dimension, sents):

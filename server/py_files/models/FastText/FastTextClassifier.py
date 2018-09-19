@@ -54,7 +54,7 @@ class FastTextClassifier(object):
 
         return {'score': score, 'report': report, 'misclassifications': misclassifications}
 
-    def classify(self, samples_true, test=False, labels="None", samples = "None"):
+    def classify(self, samples_true, test=False, labels="None", samples="None"):
         if test:
             return self.test(samples, labels)
 
@@ -63,7 +63,7 @@ class FastTextClassifier(object):
 
         model = self.models[self.name]
 
-        pred, prob = model.predict(list(samples))
+        pred, prob = model.predict(list(samples_true))
         labels_pred = [each[0][len('__label__'):] for each in pred]
         prob_pred = [each[0] for each in prob]
 
