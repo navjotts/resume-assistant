@@ -21,7 +21,7 @@ class LSTMClassifier(KerasSentenceClassifier):
         self.path = os.path.join(os.path.dirname(os.path.abspath(__file__)), 'trained', name + '_' + feature_type)
 
     def train(self, samples, features, labels):
-        max_length = 100 # todo change
+        max_length = max([len(s) for s in samples]) # todo think: might be a costly step if huge data, may be it should just be a constant (100)
         x_train = pad_sequences(features, maxlen=max_length, padding='post')
 
         model = Sequential()
@@ -38,7 +38,7 @@ class LSTMClassifier(KerasSentenceClassifier):
         numeric_labels = LabelEncoder().fit_transform(labels)
         y_train = to_categorical(numeric_labels, self.num_classes)
 
-        self.model.fit(x_train, y_train, epochs=3, batch_size=32, verbose=2)
+        self.model.fit(x_train, y_train, epochs=10, batch_size=32, verbose=2)
         loss, self.accuracy = self.model.evaluate(x_train, y_train)
         print('accuracy:', self.accuracy)
 
@@ -47,7 +47,7 @@ class LSTMClassifier(KerasSentenceClassifier):
     def test(self, samples, features, labels):
         self.load()
 
-        max_length = 100 # todo change
+        max_length = max([len(s) for s in samples]) # todo think: might be a costly step if huge data, may be it should just be a constant (100)
         x_test = pad_sequences(features, maxlen=max_length, padding='post')
 
         numeric_labels = LabelEncoder().fit_transform(labels)
