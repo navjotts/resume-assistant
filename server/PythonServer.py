@@ -5,7 +5,8 @@ from py_files.models.FastText.FastTextClassifier import FastTextClassifier
 from py_files.models.LogisticRegression.LogRegClassifier import LogRegClassifier
 from py_files.models.SVM.SVMClassifier import SVMClassifier
 from py_files.models.RandomForest.RandForestClassifier import RandForestClassifier
-from py_files.models.classifier import NaiveBayes, LSTM, NeuralNet, CNN
+from py_files.models.NaiveBayes.NaiveBayesClassifier import NaiveBayesClassifier
+from py_files.models.classifier import LSTM, NeuralNet, CNN
 from py_files.Preprocess.NLP_preprocess import process_sent
 from py_files.models.Vectorizer.Vectorizer import Vectorizer
 from py_files.models.Embeddings import Embeddings
@@ -53,7 +54,7 @@ class PythonServer(object):
         elif model_type == 'RandomForest':
             return RandForestClassifier(model_name, feature_type)
         elif model_type == 'NaiveBayes':
-            return NaiveBayes(model_name, feature_type)
+            return NaiveBayesClassifier(model_name, feature_type)
         elif(model_type == "LSTM"):
             return LSTM(model_name, feature_type)
         elif(model_type == "NeuralNet"):
