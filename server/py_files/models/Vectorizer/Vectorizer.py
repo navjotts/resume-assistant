@@ -5,7 +5,6 @@ from sklearn.externals import joblib
 
 class Vectorizer(object):
     def __init__(self, name, vec_type):
-        # todo bring in ngram_range as well
         self.name = name
         self.vec_type = vec_type
         self.path = os.path.join(os.path.dirname(os.path.abspath(__file__)), 'trained', name + '_' + vec_type + '.pkl')
@@ -13,7 +12,7 @@ class Vectorizer(object):
 
     def create_vectorizer(self):
         if self.vec_type == 'tf-idf':
-            return TfidfVectorizer(max_df=0.5, min_df=1) # todo max_df and min_df should be hyperparams (and hence we need a CV setup)
+            return TfidfVectorizer(max_df=0.5, min_df=1) # todo max_df and min_df should be hyperparams (and hence we need a CV setup) + todo bring in ngram_range as well
 
         if self.vec_type == 'bow':
             return CountVectorizer()
