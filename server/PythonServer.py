@@ -4,7 +4,7 @@ from py_files.Spacy import Spacy
 from py_files.models.FastText.FastTextClassifier import FastTextClassifier
 from py_files.models.classifier import SVM, LogisticRegression, RandomForest, NaiveBayes, LSTM, NeuralNet, CNN
 from py_files.Preprocess.NLP_preprocess import train_d2v,process_sent,SK_TFIDF_train, SK_TFIDF_predict,process_sentences, integer_sequence
-from py_files.models.Embeddings import Embeddings
+from py_files.models.Embeddings.Embeddings import Embeddings
 
 class PythonServer(object):
     def sentences(self, text):
@@ -75,8 +75,8 @@ class PythonServer(object):
         elif feature_type == 'sentence-embeddings':
             return process_sent(samples)
         elif feature_type == 'keras-embeddings':
-            Embedding_model  = Embeddings.Embeddings(model_name, 100)
-            return Embedding_model.encode_samples(samples), Embedding_model.keras_embeddings_layer().input_dim
+            embeddings  = Embeddings(model_name, 100)
+            return embeddings.encode_samples(samples), embeddings.keras_embeddings_layer().input_dim
         else:
             print('no feature engineering!')
             return samples # no change/manipulation
@@ -97,7 +97,7 @@ class PythonServer(object):
         embeddings = Embeddings(model_name, dimension)
         return embeddings.encode_samples(samples)
 
-# print(Embeddings('resumes', 100).word_to_index('React')) # for testing other classes directly (comment out the below zerorps server if you do this)
+# print(Embeddings('resumes', 100).vectors()) # for testing other classes directly (comment out the below zerorps server if you do this)
 
 try:
     s = zerorpc.Server(PythonServer())

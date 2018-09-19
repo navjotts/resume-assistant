@@ -54,7 +54,15 @@ class Embeddings(object):
         print('input length of the Embeddings layer (\'None\' if not fixed size input):', embeddings.input_length)
         return embeddings
 
-    def embedding_vector(self, word):
+    def vectors(self):
+        self.load()
+        pretrained_vectors = self.model.wv.syn0
+        vocab_size, emdedding_size = pretrained_vectors.shape
+        print('input dimension of the Embeddings layer (vocab size):', vocab_size)
+        print('output dimension of the Embeddings layer (embedding dimensions):', emdedding_size)
+        return pretrained_vectors
+
+    def vector(self, word):
         self.load()
         vec = self.model.wv.word_vec(word)
         print(word, vec)
