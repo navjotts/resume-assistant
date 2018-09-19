@@ -2,15 +2,21 @@
 Given a resume and a job description, highlights parts of the resume which are not a good match.<br/><br/>
 
 # Setup
-**Installing nodejs**<br/>
-* Mac/Windows: go to [https://nodejs.org/en/](https://nodejs.org/en/) and download the installer and click on - and follow steps<br/>
-* Ubuntu: `sudo apt install build-essential nodejs npm libzmq3-dev python3-dev python3-pip`
+## Installing nodejs and python environment
+* Mac
+    * go to [https://nodejs.org/en/](https://nodejs.org/en/) and download the installer and click on - and follow steps
+    * install python3 and pip3 (suggested: Homebrew)
+* Windows
+    * go to [https://nodejs.org/en/](https://nodejs.org/en/) and download the installer and click on - and follow steps
+    * install python3 and pip3 ... go to [https://www.anaconda.com/download/] download 3.6 installer and follow instructions
+* Linux (Debian based)
+    ```
+    $ sudo apt install build-essential nodejs npm libzmq3-dev python3-dev python3-pip
+    ```
 
-**Installing python environment**<br/>
-* python3
-* pip3
+<br/>
 
-**Install packages/modules:**<br/>
+## Install packages/modules
 (in the root folder)
 ```
 $ npm install
@@ -23,5 +29,3 @@ $ pip3 install -r requirements.txt
 ```
 $ npm start
 ```
-
-<br/>
