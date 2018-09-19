@@ -18,7 +18,7 @@ class LogRegClassifier(SentenceClassifier):
 
         # todo using the default LogReg (check options which is the most suited for multi-class case)
         # http://scikit-learn.org/stable/modules/generated/sklearn.linear_model.LogisticRegression.html
-        self.model = LogisticRegression(random_state=42) # todo place random_state in the parent class
+        self.model = LogisticRegression(random_state=self.seed) # todo place random_state in the parent class
         self.model.fit(features, labels)
         self.labels_pred = self.model.predict(features)
 

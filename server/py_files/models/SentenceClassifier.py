@@ -7,6 +7,7 @@ class SentenceClassifier(object):
         self.name = name
         self.feature_type = feature_type
         self.model = None
+        self.seed = 42 # fix the random seed for consistency of results
 
     def train(self, samples, features, labels):
         # build the model and populate `self.labels_pred` in subclasses
