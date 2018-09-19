@@ -8,7 +8,7 @@ nlp.max_length = 2000000 # todo check this limit
 class Spacy(object):
     def anonymize_token(self, t):
         if t.like_email: # todo bring in Human Names as well
-            return 'X'*len(t.text)
+            return t.shape
         return t.text
 
     def anonymize_name(self, text):
@@ -23,7 +23,6 @@ class Spacy(object):
             text =  sentence.replace(str(person), (len(str(person))*'X'))
 
         return text
-
 
     # todo: case to check Cc @Antonio - how does the search function behaves if there are more than 1 matches (what happens if there are 2 phone numbers in 1 sentence)
     def anonymize_phone_number(self, text):
