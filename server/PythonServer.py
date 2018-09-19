@@ -3,6 +3,7 @@ import zerorpc
 from py_files.Spacy import Spacy
 from py_files.models.FastText.FastTextClassifier import FastTextClassifier
 from py_files.models.LogisticRegression.LogRegClassifier import LogRegClassifier
+from py_files.models.SVM.SVMClassifier import SVMClassifier
 from py_files.models.classifier import SVM, RandomForest, NaiveBayes, LSTM, NeuralNet, CNN
 from py_files.Preprocess.NLP_preprocess import train_d2v,process_sent,SK_TFIDF_train, SK_TFIDF_predict,process_sentences, integer_sequence
 from py_files.models.Vectorizer.Vectorizer import Vectorizer
@@ -46,10 +47,10 @@ class PythonServer(object):
             return FastTextClassifier(self)
         elif model_type == 'LogisticRegression':
             return LogRegClassifier(model_name, feature_type)
+        elif model_type == 'SVM':
+            return SVMClassifier(model_name, feature_type)
         elif model_type == 'RandomForest':
             return RandomForest(model_name, feature_type)
-        elif model_type == 'SVM':
-            return SVM(model_name, feature_type)
         elif model_type == 'NaiveBayes':
             return NaiveBayes(model_name, feature_type)
         elif(model_type == "LSTM"):
