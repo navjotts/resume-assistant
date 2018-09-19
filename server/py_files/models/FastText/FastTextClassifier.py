@@ -66,7 +66,6 @@ class FastTextClassifier(object):
         pred, prob = model.predict(list(samples_true))
         labels_pred = [each[0][len('__label__'):] for each in pred]
         prob_pred = [each[0] for each in prob]
-
         return list(zip(labels_pred, prob_pred))
 
     def load(self):

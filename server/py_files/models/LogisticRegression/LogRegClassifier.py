@@ -3,64 +3,38 @@ import numpy as np
 from sklearn.linear_model import LogisticRegression
 from sklearn.externals import joblib
 
-from py_files.AccuracyAnalysis import AccuracyAnalysis
+from py_files.models.SentenceClassifier import SentenceClassifier
 
-class LogRegClassifier(object):
+class LogRegClassifier(SentenceClassifier):
     def __init__(self, name, feature_type):
-        self.name = name
-        self.feature_type = feature_type
+        super().__init__(name, feature_type)
         self.path = os.path.join(os.path.dirname(os.path.abspath(__file__)), 'trained', name + '_' + feature_type + '.pkl')
-        self.model = None
 
     def train(self, samples, features, labels):
-        print('features', features.shape)
-
         # todo using the default LogReg (check options which is the most suited for multi-class case)
         # http://scikit-learn.org/stable/modules/generated/sklearn.linear_model.LogisticRegression.html
         self.model = LogisticRegression(random_state=42) # todo place random_state in the parent class
         self.model.fit(features, labels)
-        labels_pred = self.model.predict(features)
-
-        score = AccuracyAnalysis.score(self, labels, labels_pred)
-        report = AccuracyAnalysis.report(self, labels, labels_pred)
-        misclassifications = AccuracyAnalysis.misclassifications(self, labels, labels_pred, samples)
-
-        print(score)
-        print(report)
+        self.labels_pred = self.model.predict(features)
 
         joblib.dump(self.model, self.path)
-        return {'score': score, 'report': report, 'misclassifications': misclassifications}
 
-    # loads the model from local (if needed)
+        return super().train(samples, features, labels)
+
     def load(self):
         if not self.model:
             self.model = joblib.load(self.path)
 
-        if not self.model:
-            print('Vectorizer: error: unable to load model')
+        super().load()
 
     def test(self, samples, features, labels):
-        print('features', features.shape)
-
         self.load()
-        labels_pred = self.model.predict(features)
+        self.labels_pred = self.model.predict(features)
 
-        score = AccuracyAnalysis.score(self, labels, labels_pred)
-        report = AccuracyAnalysis.report(self, labels, labels_pred)
-        misclassifications = AccuracyAnalysis.misclassifications(self, labels, labels_pred, samples)
-
-        print(score)
-        print(report)
-
-        return {'score': score, 'report': report, 'misclassifications': misclassifications}
+        return super().test(samples, features, labels)
 
     def classify(self, features):
         self.load()
-        labels_pred = self.model.predict(features)
-        prob_pred = np.max(self.model.predict_proba(features), axis=1)
-
-        return list(zip(labels_pred, prob_pred))
-
-
-
-
+        self.labels_pred = self.model.predict(features)
+        self.prob_pred = np.max(self.model.predict_proba(features), axis=1)
+        return super().classify(features)
