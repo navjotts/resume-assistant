@@ -204,7 +204,7 @@ class DeepClassifier():
         callbacks_list = [early_stop]
 
         print("\n++++ Begin Training ++++\n\n")
-        self.model.fit(x_train, y_train, validation_data=(x_test, y_test), epochs=100, batch_size=4, verbose = 1, callbacks=callbacks_list)
+        self.model.fit(x_train, y_train, validation_data=(x_test, y_test), epochs=100, batch_size=128, verbose = 1, callbacks=callbacks_list)
         print("\n\n++++ Training Complete ++++\n\n")
 
         score = self.model.evaluate(x_test,y_test)
@@ -227,19 +227,19 @@ class LSTM(DeepClassifier):
         ## create the acutal model
         self.model = None
 
-    def compile(self, vocab_size):
+    def compile(self, input_shape):
         Embedding_model  = Embeddings.Embeddings(self.name, 100)
-        embedding_vecs = Embedding_model.keras_embeddings_layer()
+        embedding_vecs = Embedding_model.vectors()
         model = Sequential()
-        model.add(embedding_vecs)
-        model.add(long_short_term_memory(100,return_sequences=True))
-        model.add(long_short_term_memory(50,return_sequences=True))
+        model.add(Embedding(input_shape,100,input_length = 100, trainable =True, weights = [embedding_vecs] ))
         model.add(long_short_term_memory(50,return_sequences=False))
-        model.add(Dropout(0.3))
-        model.add(Dense(128, activation='relu'))
-        model.add(Dense(64, activation='relu'))
-        model.add(Dropout(0.3))
-        model.add(Dense(32, activation='relu'))
+        # model.add(long_short_term_memory(50,return_sequences=True))
+        # model.add(long_short_term_memory(50,return_sequences=False))
+        # model.add(Dropout(0.3))
+        # model.add(Dense(128, activation='relu'))
+        # model.add(Dense(64, activation='relu'))
+        # model.add(Dropout(0.3))
+        # model.add(Dense(32, activation='relu'))
         model.add(Dense(32, activation='relu'))
         model.add(Dropout(0.3))
         model.add(Dense(5, activation='softmax'))
@@ -262,8 +262,8 @@ class NeuralNet(DeepClassifier):
         model = Sequential()
         if(self.feature_type == 'keras-embeddings'):
             Embedding_model  = Embeddings.Embeddings(self.name, 100)
-            embedding_vecs = Embedding_model.keras_embeddings_layer()
-            model.add(Embedding(input_shape+1,100,input_length = 100, trainable =True))
+            embedding_vecs = Embedding_model.vectors()
+            model.add(Embedding(input_shape,100,input_length = 100, trainable =True, weights = [embedding_vecs] ))
             model.add(Flatten())
             model.add(Dense(1024, activation='relu'))
         else:
@@ -301,19 +301,19 @@ class CNN(DeepClassifier):
 
     def compile(self, input_shape):
         Embedding_model  = Embeddings.Embeddings(self.name, 100)
-        embedding_vecs = Embedding_model.keras_embeddings_layer()
+        embedding_vecs = Embedding_model.vectors()
         model = Sequential()
-        model.add(Embedding(input_shape+1,100,input_length = 100, trainable =True))
+        model.add(Embedding(input_shape,100,input_length = 100, trainable =True, weights = [embedding_vecs] ))
         model.add(Conv1D(256, 5, activation='relu',data_format='channels_first', padding = 'valid', strides = 4))
         model.add(MaxPool1D(5))
         model.add(Dropout(0.3))  
         model.add(Conv1D(128, 5, activation='relu',data_format='channels_first',padding = 'valid', strides = 2))
-        model.add(AvgPool1D(10))
+        model.add(AvgPool1D(50))
         model.add(Flatten())
-        model.add(Dense(256, activation='relu'))
-        model.add(Dense(32, activation='relu'))
-        model.add(Dense(32, activation='relu'))
-        model.add(Dropout(0.2))      
+        # model.add(Dense(256, activation='relu'))
+        # model.add(Dense(32, activation='relu'))
+        model.add(Dense(16, activation='relu'))
+        model.add(Dropout(0.5))      
         model.add(Dense(5, activation='softmax'))
         model.compile(loss='categorical_crossentropy', optimizer='adam', metrics=['acc'])
         print(model.summary())
