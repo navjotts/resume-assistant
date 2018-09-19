@@ -1,7 +1,8 @@
 import os
 import numpy as np
-from sklearn.svm import LinearSVC
+
 from sklearn.externals import joblib
+from sklearn.svm import LinearSVC
 
 from py_files.models.SklearnSentenceClassifier import SklearnSentenceClassifier
 
