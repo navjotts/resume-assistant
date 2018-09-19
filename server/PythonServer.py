@@ -6,7 +6,8 @@ from py_files.models.LogisticRegression.LogRegClassifier import LogRegClassifier
 from py_files.models.SVM.SVMClassifier import SVMClassifier
 from py_files.models.RandomForest.RandForestClassifier import RandForestClassifier
 from py_files.models.NaiveBayes.NaiveBayesClassifier import NaiveBayesClassifier
-from py_files.models.classifier import LSTM, NeuralNet, CNN
+from py_files.models.LSTM.LSTMClassifier import LSTMClassifier
+from py_files.models.classifier import NeuralNet, CNN
 from py_files.Preprocess.NLP_preprocess import process_sent
 from py_files.models.Vectorizer.Vectorizer import Vectorizer
 from py_files.models.Embeddings.Embeddings import Embeddings
@@ -52,8 +53,8 @@ class PythonServer(object):
             return RandForestClassifier(model_name, feature_type)
         elif model_type == 'NaiveBayes':
             return NaiveBayesClassifier(model_name, feature_type)
-        elif(model_type == "LSTM"):
-            return LSTM(model_name, feature_type)
+        elif(model_type == 'LSTM'):
+            return LSTMClassifier(model_name, feature_type)
         elif(model_type == "NeuralNet"):
             return NeuralNet(model_name, feature_type)
         elif(model_type == "CNN"):
@@ -67,11 +68,9 @@ class PythonServer(object):
             return Vectorizer(model_name, feature_type).vectors(samples, retrain).toarray()
         elif feature_type == 'sentence-embeddings':
             return process_sent(samples)
-        elif feature_type == 'keras-embeddings':
-            embeddings  = Embeddings(model_name, 100)
-            return embeddings.encode_samples(samples), embeddings.keras_embeddings_layer().input_dim
+        elif feature_type == 'word-embeddings':
+            return Embeddings(model_name, 100).encode_samples(samples)
         else:
-            print('no feature engineering!')
             return samples # no change/manipulation
 
     def train_embeddings(self, model_name, dimension, sents):

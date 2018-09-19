@@ -174,7 +174,7 @@ class DeepClassifier():
 
     def train(self, samples, features, labels):
 
-        if(self.feature_type == 'keras-embeddings'):
+        if(self.feature_type == 'word-embeddings'):
             self.compile(samples[1])
             max_length = 100
             samples = pad_sequences(samples[0], maxlen=max_length, padding='post')
@@ -260,7 +260,7 @@ class NeuralNet(DeepClassifier):
 
     def compile(self, input_shape):
         model = Sequential()
-        if(self.feature_type == 'keras-embeddings'):
+        if(self.feature_type == 'word-embeddings'):
             Embedding_model  = Embeddings.Embeddings(self.name, 100)
             embedding_vecs = Embedding_model.keras_embeddings_layer()
             model.add(Embedding(input_shape+1,100,input_length = 100, trainable =True))

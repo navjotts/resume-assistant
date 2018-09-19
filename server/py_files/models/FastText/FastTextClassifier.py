@@ -1,11 +1,8 @@
 import os
 import tempfile
 import fastText
-import numpy as np
 
 from py_files.models.SentenceClassifier import SentenceClassifier
-
-from py_files.AccuracyAnalysis import AccuracyAnalysis
 
 class FastTextClassifier(SentenceClassifier):
     def __init__(self, name, feature_type):

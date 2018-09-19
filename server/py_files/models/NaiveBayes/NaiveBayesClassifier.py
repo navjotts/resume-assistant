@@ -1,5 +1,4 @@
 import os
-import numpy as np
 
 from sklearn.externals import joblib
 from sklearn.naive_bayes import MultinomialNB
