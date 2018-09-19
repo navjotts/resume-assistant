@@ -3,44 +3,15 @@ import numpy as np
 from sklearn.linear_model import LogisticRegression
 from sklearn.externals import joblib
 
-from py_files.models.SentenceClassifier import SentenceClassifier
+from py_files.models.SklearnSentenceClassifier import SklearnSentenceClassifier
 
-class LogRegClassifier(SentenceClassifier):
+class LogRegClassifier(SklearnSentenceClassifier):
     def __init__(self, name, feature_type):
         super().__init__(name, feature_type)
         self.path = os.path.join(os.path.dirname(os.path.abspath(__file__)), 'trained', name + '_' + feature_type + '.pkl')
 
-    def process_samples(self, samples):
-        return [(' ').join(s) for s in samples]
-
     def train(self, samples, features, labels):
-        samples = self.process_samples(samples)
-
         # todo using the default LogReg (check options which is the most suited for multi-class case)
         # http://scikit-learn.org/stable/modules/generated/sklearn.linear_model.LogisticRegression.html
-        self.model = LogisticRegression(random_state=self.seed) # todo place random_state in the parent class
-        self.model.fit(features, labels)
-        self.labels_pred = self.model.predict(features)
-
-        joblib.dump(self.model, self.path)
-
+        self.model = LogisticRegression(random_state=self.seed)
         return super().train(samples, features, labels)
-
-    def load(self):
-        if not self.model:
-            self.model = joblib.load(self.path)
-
-        super().load()
-
-    def test(self, samples, features, labels):
-        self.load()
-        samples = self.process_samples(samples)
-        self.labels_pred = self.model.predict(features)
-
-        return super().test(samples, features, labels)
-
-    def classify(self, features):
-        self.load()
-        self.labels_pred = self.model.predict(features)
-        self.prob_pred = np.max(self.model.predict_proba(features), axis=1)
-        return super().classify(features)
