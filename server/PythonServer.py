@@ -22,19 +22,19 @@ class PythonServer(object):
 
     def train_classifier(self, model_name, model_type, feature_type, samples, labels):
         # samples = self.choose_samples(samples)
-        samples = self.choose_features(model_name,feature_type, samples)
+        samples = self.choose_features(model_name, feature_type, samples)
         model = self.choose_model(model_name, model_type, feature_type)
         return model.train(samples, labels)
 
     def test_classifier(self, model_name, model_type, feature_type, samples, labels):
         samples = self.choose_samples(samples, True)
-        features = self.choose_features(feature_type, samples)
+        features = self.choose_features(model_name, feature_type, samples)
         model = self.choose_model(model_name, model_type, feature_type)
         return model.prediction(features, test = True, labels = labels, samples=samples)
 
     def classify_sentences(self, model_name, model_type, feature_type, samples):
         samples = self.choose_samples(samples, True)
-        features = self.choose_features(feature_type, samples)
+        features = self.choose_features(model_name, feature_type, samples)
         model = self.choose_model(model_name, model_type, feature_type)
         return model.prediction(features)
 
@@ -78,6 +78,7 @@ class PythonServer(object):
             Embedding_model  = Embeddings.Embeddings(model_name, 100)
             return Embedding_model.encode_samples(samples), Embedding_model.keras_embeddings_layer().input_dim
         else:
+            print('no feature engineering!')
             return samples # no change/manipulation
 
     def train_embeddings(self, model_name, dimension, sents):
