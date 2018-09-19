@@ -7,7 +7,8 @@ from py_files.models.SVM.SVMClassifier import SVMClassifier
 from py_files.models.RandomForest.RandForestClassifier import RandForestClassifier
 from py_files.models.NaiveBayes.NaiveBayesClassifier import NaiveBayesClassifier
 from py_files.models.LSTM.LSTMClassifier import LSTMClassifier
-from py_files.models.classifier import NeuralNet, CNN
+from py_files.models.NeuralNet.NeuralNetClassifier import NeuralNetClassifier
+from py_files.models.classifier import CNN
 from py_files.Preprocess.NLP_preprocess import process_sent
 from py_files.models.Vectorizer.Vectorizer import Vectorizer
 from py_files.models.Embeddings.Embeddings import Embeddings
@@ -56,7 +57,7 @@ class PythonServer(object):
         elif(model_type == 'LSTM'):
             return LSTMClassifier(model_name, feature_type)
         elif(model_type == "NeuralNet"):
-            return NeuralNet(model_name, feature_type)
+            return NeuralNetClassifier(model_name, feature_type)
         elif(model_type == "CNN"):
             return CNN(model_name, feature_type)
         else:

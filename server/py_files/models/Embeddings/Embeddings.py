@@ -46,7 +46,7 @@ class Embeddings(object):
             print('Embeddings: error: unable to load model')
 
     # for integration into other ML/DL models
-    def keras_embeddings_layer(self, trainable = False):
+    def keras_embeddings_layer(self, trainable=False):
         self.load()
         embeddings = self.model.wv.get_keras_embedding(train_embeddings = trainable)
         print('input dimension of the Embeddings layer (vocab size):', embeddings.input_dim)

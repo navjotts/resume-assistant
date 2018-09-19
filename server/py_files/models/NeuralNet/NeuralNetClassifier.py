@@ -2,7 +2,7 @@ import os
 import numpy as np
 
 from keras.models import Sequential
-from keras.layers import LSTM, Dense, Dropout
+from keras.layers import Dense, Dropout, Flatten
 from keras.preprocessing.sequence import pad_sequences
 from sklearn.preprocessing import LabelEncoder
 from keras.utils import to_categorical
@@ -10,7 +10,7 @@ from keras.utils import to_categorical
 from py_files.models.Embeddings.Embeddings import Embeddings
 from py_files.models.KerasSentenceClassifier import KerasSentenceClassifier
 
-class LSTMClassifier(KerasSentenceClassifier):
+class NeuralNetClassifier(KerasSentenceClassifier):
     def __init__(self, name, feature_type):
         super().__init__(name, feature_type)
         self.path = os.path.join(os.path.dirname(os.path.abspath(__file__)), 'trained', name + '_' + feature_type)
@@ -21,10 +21,12 @@ class LSTMClassifier(KerasSentenceClassifier):
 
         model = Sequential()
         model.add(Embeddings(self.name, 100).keras_embeddings_layer())
-        model.add(LSTM(100))
-        model.add(Dropout(0.2))
-        model.add(Dense(32, activation='relu'))
-        model.add(Dropout(0.2))
+        model.add(Flatten())
+        model.add(Dense(1024, activation='relu'))
+        model.add(Dropout(0.5))
+        model.add(Dense(64, activation='relu'))
+        model.add(Dense(16, activation='relu'))
+        model.add(Dropout(0.4))
         model.add(Dense(self.num_classes, activation='softmax'))
         model.compile(loss='categorical_crossentropy', optimizer='adam', metrics=['accuracy'])
         print(model.summary())
