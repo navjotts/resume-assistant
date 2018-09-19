@@ -15,13 +15,14 @@ class FastTextClassifier(SentenceClassifier):
     def words_to_sents(self, samples):
         return [(' ').join(s) for s in samples]
 
-    # todo features is not getting used here as samples == featurs (that hints that the feature creation should be called from the model classes)
+    # todo features is not really getting used here as samples == features (that hints that the feature creation should be called from the model classes)
     def train(self, samples, features, labels):
         samples = self.words_to_sents(samples)
+        features = self.words_to_sents(features)
 
         fd, labelPath = tempfile.mkstemp()
         try:
-            self.generate_data_file(labelPath, samples, labels)
+            self.generate_data_file(labelPath, features, labels)
             print('Training started ...')
             self.model = fastText.train_supervised(labelPath, epoch=30, wordNgrams=2)
             print('Training ended ...')
@@ -49,11 +50,12 @@ class FastTextClassifier(SentenceClassifier):
 
         super().load()
 
-    # todo features is not getting used here as samples == featurs (that hints that the feature creation should be called from the model classes)
+    # todo features is not really getting used here as samples == features (that hints that the feature creation should be called from the model classes)
     def test(self, samples, features, labels):
         self.load()
         samples = self.words_to_sents(samples)
-        pred, prob = self.model.predict(list(samples))
+        features = self.words_to_sents(features)
+        pred, prob = self.model.predict(list(features))
         self.labels_pred = [each[0][len('__label__'):] for each in pred]
 
         return super().test(samples, features, labels)

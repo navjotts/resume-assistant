@@ -262,8 +262,8 @@ app.get('/analyze/:resumeFile/:jobFile', async function (req, res, next) {
 
         var samples = [];
         sentences.forEach(sent => samples.push(sent)); // TODO use concat
-        // var labelsPredicted = await PythonConnector.invoke('classify_sentences', 'resumes', 'FastText', 'None', samples);
-        var labelsPredicted = await PythonConnector.invoke('classify_sentences', 'resumes', 'LogisticRegression', 'tf-idf', samples);
+        var labelsPredicted = await PythonConnector.invoke('classify_sentences', 'resumes', 'FastText', 'None', samples);
+        // var labelsPredicted = await PythonConnector.invoke('classify_sentences', 'resumes', 'LogisticRegression', 'tf-idf', samples);
 
         console.assert(labelsPredicted.length == samples.length);
         var data = []
