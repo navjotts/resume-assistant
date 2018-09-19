@@ -31,7 +31,12 @@ class Vectorizer(object):
         if not self.model:
             print('Vectorizer: error: unable to load model')
 
+
+    def process_samples(self, samples):
+        return [(' ').join(s) for s in samples]
+
     def vectors(self, samples, retrain):
+        samples = self.process_samples(samples)
         if retrain:
             self.train(samples)
 

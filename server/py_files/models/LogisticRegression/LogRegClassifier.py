@@ -10,7 +10,12 @@ class LogRegClassifier(SentenceClassifier):
         super().__init__(name, feature_type)
         self.path = os.path.join(os.path.dirname(os.path.abspath(__file__)), 'trained', name + '_' + feature_type + '.pkl')
 
+    def process_samples(self, samples):
+        return [(' ').join(s) for s in samples]
+
     def train(self, samples, features, labels):
+        samples = self.process_samples(samples)
+
         # todo using the default LogReg (check options which is the most suited for multi-class case)
         # http://scikit-learn.org/stable/modules/generated/sklearn.linear_model.LogisticRegression.html
         self.model = LogisticRegression(random_state=42) # todo place random_state in the parent class
@@ -29,6 +34,7 @@ class LogRegClassifier(SentenceClassifier):
 
     def test(self, samples, features, labels):
         self.load()
+        samples = self.process_samples(samples)
         self.labels_pred = self.model.predict(features)
 
         return super().test(samples, features, labels)
