@@ -40,9 +40,6 @@ class PythonServer(object):
         model = self.choose_model(model_name, model_type, feature_type)
         return model.classify(features)
 
-    def test_sentence_classifier(self, name, path, samples, labels):
-        FastTextClassifier.test(self, samples, labels)
-
     # helper function to choose the appropriate class based on the model details provided
     def choose_model(self, model_name, model_type, feature_type):
         if model_type == 'FastText':
