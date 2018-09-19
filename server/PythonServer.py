@@ -2,8 +2,10 @@ import zerorpc
 
 from py_files.Spacy import Spacy
 from py_files.models.FastText.FastTextClassifier import FastTextClassifier
-from py_files.models.classifier import SVM, LogisticRegression, RandomForest, NaiveBayes, LSTM, NeuralNet, CNN
+from py_files.models.LogisticRegression.LogRegClassifier import LogRegClassifier
+from py_files.models.classifier import SVM, RandomForest, NaiveBayes, LSTM, NeuralNet, CNN
 from py_files.Preprocess.NLP_preprocess import train_d2v,process_sent,SK_TFIDF_train, SK_TFIDF_predict,process_sentences, integer_sequence
+from py_files.models.Vectorizer.Vectorizer import Vectorizer
 from py_files.models.Embeddings import Embeddings
 
 class PythonServer(object):
@@ -21,22 +23,22 @@ class PythonServer(object):
         return sents
 
     def train_classifier(self, model_name, model_type, feature_type, samples, labels):
-        # samples = self.choose_samples(samples)
-        samples = self.choose_features(model_name,feature_type, samples)
+        samples = self.choose_samples(samples, True)
+        features = self.choose_features(model_name, feature_type, samples, True)
         model = self.choose_model(model_name, model_type, feature_type)
-        return model.train(samples, labels)
+        return model.train(samples, features, labels)
 
     def test_classifier(self, model_name, model_type, feature_type, samples, labels):
         samples = self.choose_samples(samples, True)
-        features = self.choose_features(feature_type, samples)
+        features = self.choose_features(model_name, feature_type, samples, False)
         model = self.choose_model(model_name, model_type, feature_type)
-        return model.prediction(features, test = True, labels = labels, samples=samples)
+        return model.test(samples, features, labels)
 
     def classify_sentences(self, model_name, model_type, feature_type, samples):
         samples = self.choose_samples(samples, True)
-        features = self.choose_features(feature_type, samples)
+        features = self.choose_features(model_name, feature_type, samples, False)
         model = self.choose_model(model_name, model_type, feature_type)
-        return model.prediction(features)
+        return model.classify(features)
 
     def test_sentence_classifier(self, name, path, samples, labels):
         FastTextClassifier.test(self, samples, labels)
@@ -46,7 +48,7 @@ class PythonServer(object):
         if model_type == 'FastText':
             return FastTextClassifier(self)
         elif model_type == 'LogisticRegression':
-            return LogisticRegression(model_name, feature_type)
+            return LogRegClassifier(model_name, feature_type)
         elif model_type == 'RandomForest':
             return RandomForest(model_name, feature_type)
         elif model_type == 'SVM':
@@ -69,9 +71,9 @@ class PythonServer(object):
         return samples
 
     # helper function to choose the appropriate feature vectorization based on the feature details provided
-    def choose_features(self,model_name, feature_type, samples):
-        if feature_type == 'tf-idf':
-            return SK_TFIDF_predict(samples)
+    def choose_features(self, model_name, feature_type, samples, retrain):
+        if feature_type in ['tf-idf', 'bow']:
+            return Vectorizer(model_name, feature_type).vectors(samples, retrain).toarray()
         elif feature_type == 'sentence-embeddings':
             return process_sent(samples)
         elif feature_type == 'keras-embeddings':

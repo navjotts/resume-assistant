@@ -43,7 +43,7 @@ class Embeddings(object):
             self.model = KeyedVectors.load_word2vec_format(self.path, binary = False)
 
         if not self.model:
-            print('error: unable to load model')
+            print('Embeddings: error: unable to load model')
 
     # for integration into other ML/DL models
     def keras_embeddings_layer(self, trainable = False):

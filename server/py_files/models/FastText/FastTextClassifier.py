@@ -8,7 +8,7 @@ from py_files.AccuracyAnalysis import AccuracyAnalysis
 class FastTextClassifier(object):
     def __init__(self, name):
         self.name = name
-        self.path = os.path.join(os.path.dirname(os.path.abspath(__file__)), 'weights', 'resumes')
+        self.path = os.path.join(os.path.dirname(os.path.abspath(__file__)), 'trained', 'resumes')
         self.models = {}
 
     def train(self, samples, labels):
@@ -54,8 +54,7 @@ class FastTextClassifier(object):
 
         return {'score': score, 'report': report, 'misclassifications': misclassifications}
 
-    # todo rename to predcit or classify
-    def prediction(self, samples_true, test=False, labels="None", samples = "None"):
+    def classify(self, samples_true, test=False, labels="None", samples = "None"):
         if test:
             return self.test(samples, labels)
 
