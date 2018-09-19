@@ -2,7 +2,7 @@ import os
 import numpy as np
 
 from keras.models import Sequential
-from keras.layers import LSTM, Dense, Dropout
+from keras.layers import LSTM, Dense, Dropout, Embedding
 from keras.preprocessing.sequence import pad_sequences
 from sklearn.preprocessing import LabelEncoder
 from keras.utils import to_categorical
@@ -17,14 +17,16 @@ class LSTMClassifier(KerasSentenceClassifier):
 
     def train(self, samples, features, labels):
         max_length = max([len(s) for s in samples]) # todo think: might be a costly step if huge data, may be it should just be a constant (100)
-        x_train = pad_sequences(features, maxlen=max_length, padding='post')
+        x_train = pad_sequences(features, maxlen=100, padding='post')
+
+        embedding_vecs = Embeddings(self.name, 100).vectors()
+        vocab_size = embedding_vecs.shape[0]
 
         model = Sequential()
-        model.add(Embeddings(self.name, 100).keras_embeddings_layer())
-        model.add(LSTM(100))
-        model.add(Dropout(0.2))
+        model.add(Embedding(vocab_size ,100, input_length = 100, trainable =True, weights = [embedding_vecs] ))
+        model.add(LSTM(50))
         model.add(Dense(32, activation='relu'))
-        model.add(Dropout(0.2))
+        model.add(Dropout(0.3))
         model.add(Dense(self.num_classes, activation='softmax'))
         model.compile(loss='categorical_crossentropy', optimizer='adam', metrics=['accuracy'])
         print(model.summary())
@@ -33,7 +35,7 @@ class LSTMClassifier(KerasSentenceClassifier):
         numeric_labels = LabelEncoder().fit_transform(labels)
         y_train = to_categorical(numeric_labels, self.num_classes)
 
-        self.model.fit(x_train, y_train, epochs=10, batch_size=32, verbose=2)
+        self.model.fit(x_train, y_train, epochs=100, batch_size=128, verbose=1)
         loss, self.accuracy = self.model.evaluate(x_train, y_train)
         print('accuracy:', self.accuracy)
 
