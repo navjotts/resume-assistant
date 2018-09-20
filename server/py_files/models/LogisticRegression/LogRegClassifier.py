@@ -1,6 +1,5 @@
 import os
 
-from sklearn.externals import joblib
 from sklearn.linear_model import LogisticRegression
 
 from py_files.models.SklearnSentenceClassifier import SklearnSentenceClassifier

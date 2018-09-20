@@ -1,5 +1,6 @@
 import os
 import numpy as np
+
 from sklearn.externals import joblib
 
 from py_files.models.SentenceClassifier import SentenceClassifier
