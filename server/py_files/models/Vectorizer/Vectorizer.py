@@ -19,9 +19,9 @@ class Vectorizer(object):
             return CountVectorizer()
 
     def train(self, samples):
-        vectorizer = self.create_vectorizer()
-        trained = vectorizer.fit(samples)
-        joblib.dump(trained, self.path)
+        self.model = self.create_vectorizer()
+        self.model.fit(samples)
+        joblib.dump(self.model, self.path)
 
     # loads the model from local (if needed)
     def load(self):
