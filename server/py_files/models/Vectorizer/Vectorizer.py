@@ -32,6 +32,7 @@ class Vectorizer(object):
             print('Vectorizer: error: unable to load model')
 
 
+    # SKLearn's Vectorizers take sents as input
     def words_to_sents(self, samples):
         return [(' ').join(s) for s in samples]
 
