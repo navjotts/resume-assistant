@@ -29,9 +29,11 @@ class SentenceClassifier(object):
         # build the model and populate `self.labels_pred` in subclasses
         score = AccuracyAnalysis.score(self, labels, self.labels_pred)
         report = AccuracyAnalysis.report(self, labels, self.labels_pred)
+        confusion_matrix = AccuracyAnalysis.confusion_matrix(self, labels, self.labels_pred)
+        print(confusion_matrix)
         misclassifications = AccuracyAnalysis.misclassifications(self, labels, self.labels_pred, samples)
 
-        return {'score': score, 'report': report, 'misclassifications': misclassifications}
+        return {'score': score, 'report': report, 'confusion_matrix': confusion_matrix, 'misclassifications': misclassifications}
 
     def classify(self, features):
         # build the model and populate `self.labels_pred` and `self.prob_pred` in subclasses

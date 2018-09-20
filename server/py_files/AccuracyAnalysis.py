@@ -35,7 +35,7 @@ class AccuracyAnalysis(object):
         '''
         return classification_report(y_true, y_predict, digits = 3)
 
-    def confu_matrix(self, y_true, y_predict):
+    def confusion_matrix(self, y_true, y_predict):
         '''
             returns an sklearn confusion matrix
         '''
