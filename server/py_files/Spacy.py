@@ -7,8 +7,13 @@ nlp.max_length = 2000000 # todo check this limit
 
 class Spacy(object):
     def anonymize_token(self, t):
-        if t.like_email: # todo bring in Human Names as well
-            return 'X'*len(t.text)
+        if t.like_email:
+            return t.shape_
+
+        # todo we need a better way - this is also hiding some tools names which we need in our analysis (eg: Docker, Jenkins etc)
+        # if t.ent_type_ == 'PERSON':
+        #     return t.shape_
+
         return t.text
 
     # todo: case to check Cc @Antonio - how does the search function behaves if there are more than 1 matches (what happens if there are 2 phone numbers in 1 sentence)
