@@ -1,8 +1,8 @@
 import re
 
 import spacy
-import en_core_web_lg
-nlp = en_core_web_lg.load()
+import en_core_web_sm
+nlp = en_core_web_sm.load()
 nlp.max_length = 2000000 # todo check this limit
 
 class Spacy(object):
