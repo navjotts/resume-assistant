@@ -6,6 +6,7 @@ from keras.layers import LSTM, Dense, Dropout, Embedding
 from keras.preprocessing.sequence import pad_sequences
 from sklearn.preprocessing import LabelEncoder
 from keras.utils import to_categorical
+from sklearn.utils import class_weight
 
 from py_files.models.Embeddings.Embeddings import Embeddings
 from py_files.models.KerasSentenceClassifier import KerasSentenceClassifier
@@ -29,17 +30,24 @@ class LSTMClassifier(KerasSentenceClassifier):
         model = Sequential()
         model.add(Embedding(vocab_size ,100, input_length = 100, trainable =True, weights = [embedding_vecs] ))
         model.add(LSTM(50))
-        model.add(Dense(32, activation='relu'))
+        model.add(Dense(16, activation='relu'))
         model.add(Dropout(0.3))
+        model.add(Dense(32, activation='relu'))
+        model.add(Dense(8, activation='relu'))
         model.add(Dense(self.num_classes, activation='softmax'))
         model.compile(loss='categorical_crossentropy', optimizer='adam', metrics=['accuracy'])
         print(model.summary())
         self.model = model
 
         numeric_labels = LabelEncoder().fit_transform(labels)
+
+        class_weights = class_weight.compute_class_weight('balanced',
+                                                 np.unique(numeric_labels),
+                                                 numeric_labels)
+
         y_train = to_categorical(numeric_labels, self.num_classes)
 
-        self.model.fit(x_train, y_train, epochs=100, batch_size=128, verbose=1)
+        self.model.fit(x_train, y_train,validation_split=0.05, epochs=20, batch_size=128, verbose=2, shuffle=True, class_weight=class_weights)
         loss, self.accuracy = self.model.evaluate(x_train, y_train)
         print('accuracy:', self.accuracy)
 

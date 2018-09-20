@@ -2,10 +2,12 @@ import os
 import numpy as np
 
 from keras.models import Sequential
+from keras.optimizers import adam
 from keras.layers import LSTM, Dense, Dropout, Embedding, Conv1D, MaxPool1D, Flatten
 from keras.preprocessing.sequence import pad_sequences
 from sklearn.preprocessing import LabelEncoder
 from keras.utils import to_categorical
+from sklearn.utils import class_weight
 
 from py_files.models.Embeddings.Embeddings import Embeddings
 from py_files.models.KerasSentenceClassifier import KerasSentenceClassifier
@@ -35,7 +37,9 @@ class CNNClassifier(KerasSentenceClassifier):
         model.add(Conv1D(128, 5, activation='relu',data_format='channels_first',padding = 'valid', strides = 2))
         model.add(MaxPool1D(50))
         model.add(Flatten())
-        model.add(Dense(16, activation='relu'))
+        model.add(Dense(64, activation='relu'))
+        model.add(Dropout(0.5))
+        model.add(Dense(32, activation='relu'))
         model.add(Dropout(0.5))
         model.add(Dense(5, activation='softmax'))
         model.compile(loss='categorical_crossentropy', optimizer='adam', metrics=['acc'])
@@ -43,9 +47,14 @@ class CNNClassifier(KerasSentenceClassifier):
         self.model = model
 
         numeric_labels = LabelEncoder().fit_transform(labels)
+
+        class_weights = class_weight.compute_class_weight('balanced',
+                                            np.unique(numeric_labels),
+                                            numeric_labels)
+
         y_train = to_categorical(numeric_labels, self.num_classes)
 
-        self.model.fit(x_train, y_train, epochs=100, batch_size=128, verbose=1)
+        self.model.fit(x_train, y_train,validation_split=0.05, epochs=200, batch_size=128, verbose=1, shuffle=True, class_weight=class_weights)
         loss, self.accuracy = self.model.evaluate(x_train, y_train)
         print('accuracy:', self.accuracy)
 
@@ -63,7 +72,9 @@ class CNNClassifier(KerasSentenceClassifier):
         numeric_labels = LabelEncoder().fit_transform(labels)
         y_test = to_categorical(numeric_labels, self.num_classes)
 
-        self.model.compile(loss='categorical_crossentropy', optimizer='adam', metrics=['accuracy'])
+        optimizer = adam(lr=0.001)
+
+        self.model.compile(loss='categorical_crossentropy', optimizer=optimizer, metrics=['accuracy'])
         loss, self.accuracy = self.model.evaluate(x_test, y_test)
         print('accuracy:', self.accuracy)
 

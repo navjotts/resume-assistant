@@ -6,6 +6,7 @@ from keras.layers import Dense, Dropout, Flatten, Embedding
 from keras.preprocessing.sequence import pad_sequences
 from sklearn.preprocessing import LabelEncoder
 from keras.utils import to_categorical
+from sklearn.utils import class_weight
 
 from py_files.models.Embeddings.Embeddings import Embeddings
 from py_files.models.KerasSentenceClassifier import KerasSentenceClassifier
@@ -19,8 +20,6 @@ class NeuralNetClassifier(KerasSentenceClassifier):
         #not sure we can use this max length if the length is diff than trained model is expecting then it will crash
         # max_length = max([len(s) for s in samples]) # todo think: might be a costly step if huge data, may be it should just be a constant (100)
         x_train = pad_sequences(features, maxlen=100, padding='post')
-
-
 
         model = Sequential()
         if(self.feature_type == 'word-embeddings'):
@@ -42,9 +41,14 @@ class NeuralNetClassifier(KerasSentenceClassifier):
         self.model = model
 
         numeric_labels = LabelEncoder().fit_transform(labels)
+
+        class_weights = class_weight.compute_class_weight('balanced',
+                                                 np.unique(numeric_labels),
+                                                 numeric_labels)
+
         y_train = to_categorical(numeric_labels, self.num_classes)
 
-        self.model.fit(x_train, y_train, epochs=100, batch_size=32, verbose=2)
+        self.model.fit(x_train, y_train,validation_split=0.05, epochs=200, batch_size=128, verbose=1, shuffle=True, class_weight=class_weights)
         loss, self.accuracy = self.model.evaluate(x_train, y_train)
         print('accuracy:', self.accuracy)
 
