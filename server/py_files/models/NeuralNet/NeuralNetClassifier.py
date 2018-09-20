@@ -8,6 +8,8 @@ from sklearn.preprocessing import LabelEncoder
 from keras.utils import to_categorical
 from sklearn.utils import class_weight
 
+from py_files.models.Vectorizer.Vectorizer import Vectorizer
+
 from py_files.models.Embeddings.Embeddings import Embeddings
 from py_files.models.KerasSentenceClassifier import KerasSentenceClassifier
 
@@ -15,6 +17,7 @@ class NeuralNetClassifier(KerasSentenceClassifier):
     def __init__(self, name, feature_type):
         super().__init__(name, feature_type)
         self.path = os.path.join(os.path.dirname(os.path.abspath(__file__)), 'trained', name + '_' + feature_type)
+        self.num_inputs = Vectorizer(name, feature_type).num_inputs()
 
     def train(self, samples, features, labels):
         #not sure we can use this max length if the length is diff than trained model is expecting then it will crash
@@ -29,7 +32,7 @@ class NeuralNetClassifier(KerasSentenceClassifier):
             model.add(Flatten())
             model.add(Dense(128, activation='relu'))
         else:
-            model.add(Dense(128, activation='relu', input_dim = input_shape[1]))
+            model.add(Dense(128, activation='relu', input_dim = self.num_inputs))
 
         model.add(Dropout(0.5))
         model.add(Dense(64, activation='relu'))
@@ -46,7 +49,7 @@ class NeuralNetClassifier(KerasSentenceClassifier):
                                                  np.unique(numeric_labels),
                                                  numeric_labels)
 
-        y_train = to_categorical(numeric_labels, self.num_classes)
+        y_train = to_categorical(numeric_labels)
 
         self.model.fit(x_train, y_train,validation_split=0.05, epochs=200, batch_size=128, verbose=1, shuffle=True, class_weight=class_weights)
         loss, self.accuracy = self.model.evaluate(x_train, y_train)
