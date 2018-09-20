@@ -1,7 +1,6 @@
 import os
 import numpy as np
-
-from sklearn.externals import joblib
+import pickle
 
 from py_files.models.SentenceClassifier import SentenceClassifier
 
@@ -18,13 +17,13 @@ class SklearnSentenceClassifier(SentenceClassifier):
         self.model.fit(features, labels)
         self.labels_pred = self.model.predict(features)
 
-        joblib.dump(self.model, self.path)
+        pickle.dump(self.model, open(self.path, 'wb'))
 
         return super().train(samples, features, labels)
 
     def load(self):
         if not self.model:
-            self.model = joblib.load(self.path)
+            self.model = pickle.load(open(self.path, 'rb'))
 
         super().load()
 
