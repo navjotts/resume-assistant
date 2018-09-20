@@ -22,10 +22,7 @@ class LSTMClassifier(KerasSentenceClassifier):
 
         embedding_size = 100
         if self.feature_type == 'word-embeddings':
-            # not sure we can use this max length if the length is diff than trained model is expecting then it will crash
-            # max_length = max([len(s) for s in samples]) # todo think: might be a costly step if huge data, may be it should just be a constant (100)
-            max_length = 100
-            x_train = pad_sequences(features, maxlen=max_length, padding='post')
+            x_train = pad_sequences(features, maxlen=100, padding='post')
             pretrained_embeddings = Embeddings(self.name, embedding_size).vectors()
             vocab_size = pretrained_embeddings.shape[0]
             model.add(Embedding(input_dim=vocab_size, output_dim=embedding_size, weights=[pretrained_embeddings]))
@@ -66,8 +63,7 @@ class LSTMClassifier(KerasSentenceClassifier):
 
         if(self.feature_type != 'word-embeddings'):
             raise Exception('LSTM model is only configured for word-embeddings at the moment please train wiht word embeddings')
-        #not sure we can use this max length if the length is diff than trained model is expecting then it will crash
-        # max_length = max([len(s) for s in samples]) # todo think: might be a costly step if huge data, may be it should just be a constant (100)
+
         x_test = pad_sequences(features, maxlen=100, padding='post')
 
         numeric_labels = LabelEncoder().fit_transform(labels)

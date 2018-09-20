@@ -22,8 +22,6 @@ class NeuralNetClassifier(KerasSentenceClassifier):
     def train(self, samples, labels):
         features = self.choose_features(samples, True)
 
-        #not sure we can use this max length if the length is diff than trained model is expecting then it will crash
-        # max_length = max([len(s) for s in samples]) # todo think: might be a costly step if huge data, may be it should just be a constant (100)
         x_train = pad_sequences(features, maxlen=100, padding='post')
 
         model = Sequential()
@@ -66,8 +64,6 @@ class NeuralNetClassifier(KerasSentenceClassifier):
         self.load()
         features = self.choose_features(samples)
 
-        #not sure we can use this max length if the length is diff than trained model is expecting then it will crash
-        # max_length = max([len(s) for s in samples]) # todo think: might be a costly step if huge data, may be it should just be a constant (100)
         x_test = pad_sequences(features, maxlen=100, padding='post')
 
         numeric_labels = LabelEncoder().fit_transform(labels)
