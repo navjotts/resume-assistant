@@ -19,7 +19,9 @@ class NeuralNetClassifier(KerasSentenceClassifier):
         self.path = os.path.join(os.path.dirname(os.path.abspath(__file__)), 'trained', name + '_' + feature_type)
         self.num_inputs = Vectorizer(name, feature_type).num_inputs()
 
-    def train(self, samples, features, labels):
+    def train(self, samples, labels):
+        features = self.choose_features(samples, True)
+
         #not sure we can use this max length if the length is diff than trained model is expecting then it will crash
         # max_length = max([len(s) for s in samples]) # todo think: might be a costly step if huge data, may be it should just be a constant (100)
         x_train = pad_sequences(features, maxlen=100, padding='post')
@@ -55,10 +57,11 @@ class NeuralNetClassifier(KerasSentenceClassifier):
         loss, self.accuracy = self.model.evaluate(x_train, y_train)
         print('accuracy:', self.accuracy)
 
-        return super().train(samples, features, labels)
+        return super().train(samples, labels)
 
-    def test(self, samples, features, labels):
+    def test(self, samples, labels):
         self.load()
+        features = self.choose_features(samples, False)
 
         #not sure we can use this max length if the length is diff than trained model is expecting then it will crash
         # max_length = max([len(s) for s in samples]) # todo think: might be a costly step if huge data, may be it should just be a constant (100)
@@ -73,10 +76,12 @@ class NeuralNetClassifier(KerasSentenceClassifier):
 
         # self.labels_pred = self.model.predict(x_test)
         # print(self.labels_pred)
-        # return super().test(samples, features, labels)
+        # return super().test(samples, labels)
 
-        return super().test(samples, features, labels)
+        return super().test(samples, labels)
 
-    def classify(self, features):
+    def classify(self, samples):
+        self.load()
+        features = self.choose_features(samples, False)
         # todo
-        pass
+        return super().classify(samples)

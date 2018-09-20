@@ -17,7 +17,8 @@ class CNNClassifier(KerasSentenceClassifier):
         super().__init__(name, feature_type)
         self.path = os.path.join(os.path.dirname(os.path.abspath(__file__)), 'trained', name + '_' + feature_type)
 
-    def train(self, samples, features, labels):
+    def train(self, samples, labels):
+        features = self.choose_features(samples, True)
 
         if(self.feature_type != 'word-embeddings'):
             raise Exception('CNN model is only configured for word-embeddings at the moment please train wiht word embeddings')
@@ -58,10 +59,11 @@ class CNNClassifier(KerasSentenceClassifier):
         loss, self.accuracy = self.model.evaluate(x_train, y_train)
         print('accuracy:', self.accuracy)
 
-        return super().train(samples, features, labels)
+        return super().train(samples, labels)
 
-    def test(self, samples, features, labels):
+    def test(self, samples, labels):
         self.load()
+        features = self.choose_features(samples, False)
 
         if(self.feature_type != 'word-embeddings'):
             raise Exception('CNN model is only configured for word-embeddings at the moment please train wiht word embeddings')
@@ -82,8 +84,10 @@ class CNNClassifier(KerasSentenceClassifier):
         # print(self.labels_pred)
         # return super().test(samples, features, labels)
 
-        return super().test(samples, features, labels)
+        return super().test(samples, labels)
 
-    def classify(self, features):
+    def classify(self, samples):
+        self.load()
+        features = self.choose_features(samples, False)
         # todo
-        pass
+        return super().classify(samples)

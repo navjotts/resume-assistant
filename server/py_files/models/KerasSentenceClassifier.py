@@ -4,12 +4,14 @@ from keras.models import model_from_json, load_model
 import simplejson
 
 from py_files.models.SentenceClassifier import SentenceClassifier
+from py_files.models.Vectorizer.Vectorizer import Vectorizer
+from py_files.models.Embeddings.Embeddings import Embeddings
 
 class KerasSentenceClassifier(SentenceClassifier):
     def __init__(self, name, feature_type):
         super().__init__(name, feature_type)
 
-    def train(self, samples, features, labels):
+    def train(self, samples, labels):
         # create the model and in subclasses
         if not os.path.exists(self.path):
             os.makedirs(self.path)
@@ -38,9 +40,17 @@ class KerasSentenceClassifier(SentenceClassifier):
 
         super().load()
 
-    def test(self, samples, features, labels):
+    def test(self, samples, labels):
         # todo consolidate with AccuracyAnalysis => super().test()
         return self.accuracy
 
-    def classify(self, features):
-        return super().classify(features)
+    def classify(self, samples):
+        return super().classify(samples)
+
+    def choose_features(self, samples, retrain):
+        if self.feature_type in ['tf-idf', 'bow']:
+            return Vectorizer(self.name, self.feature_type).vectors(samples, retrain).todense()
+        elif self.feature_type == 'word-embeddings':
+            return Embeddings(self.name, 100).encode_samples(samples)
+        else:
+            return samples # no change/manipulation

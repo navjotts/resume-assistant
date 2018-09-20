@@ -9,13 +9,8 @@ class FastTextClassifier(SentenceClassifier):
         super().__init__(name, feature_type)
         self.path = os.path.join(os.path.dirname(os.path.abspath(__file__)), 'trained', name + '.bin')
 
-    def words_to_sents(self, samples):
-        return [(' ').join(s) for s in samples]
-
-    # todo features is not really getting used here as samples == features (that hints that the feature creation should be called from the model classes)
-    def train(self, samples, features, labels):
-        samples = self.words_to_sents(samples)
-        features = self.words_to_sents(features)
+    def train(self, samples, labels):
+        features = self.choose_features(samples, False)
 
         fd, labelPath = tempfile.mkstemp()
         try:
@@ -47,24 +42,25 @@ class FastTextClassifier(SentenceClassifier):
 
         super().load()
 
-    # todo features is not really getting used here as samples == features (that hints that the feature creation should be called from the model classes)
-    def test(self, samples, features, labels):
+    def test(self, samples, labels):
         self.load()
-        samples = self.words_to_sents(samples)
-        features = self.words_to_sents(features)
+        features = self.choose_features(samples, False)
         pred, prob = self.model.predict(list(features))
         self.labels_pred = [each[0][len('__label__'):] for each in pred]
 
-        return super().test(samples, features, labels)
+        return super().test(samples, labels)
 
-    def classify(self, features):
+    def classify(self, samples):
         self.load()
-        features = self.words_to_sents(features)
-        pred, prob = self.model.predict(list(samples_true))
+        features = self.choose_features(samples, False)
+        pred, prob = self.model.predict(list(features))
         self.labels_pred = [each[0][len('__label__'):] for each in pred]
         self.prob_pred = [each[0] for each in prob]
 
-        return super().classify(features)
+        return super().classify(samples)
+
+    def choose_features(self, samples, retrain):
+        return self.words_to_sents(samples)
 
     def generate_data_file(self, file, samples, labels):
         text = ''

@@ -9,6 +9,6 @@ class NaiveBayesClassifier(SklearnSentenceClassifier):
         super().__init__(name, feature_type)
         self.path = os.path.join(os.path.dirname(os.path.abspath(__file__)), 'trained', name + '_' + feature_type + '.pkl')
 
-    def train(self, samples, features, labels):
+    def train(self, samples, labels):
         self.model = MultinomialNB() # todo Cross Valdiation
-        return super().train(samples, features, labels)
+        return super().train(samples, labels)
