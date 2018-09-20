@@ -83,10 +83,6 @@ class PythonServer(object):
         embeddings = Embeddings(model_name, dimension)
         embeddings.words_coordinates(reduced_dimension)
 
-    def embeddings_layer(self, model_name, dimension):
-        embeddings = Embeddings(model_name, dimension)
-        return embeddings.keras_embeddings_layer()
-
     def encode_samples(self, model_name, dimension, samples):
         embeddings = Embeddings(model_name, dimension)
         return embeddings.encode_samples(samples)
