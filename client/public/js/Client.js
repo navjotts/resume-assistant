@@ -200,8 +200,10 @@ function fireTrainingOrTesting(trainOrTest, modelName) {
 
     console.log(`${trainOrTest} (dataset, model, feature): (${datasetName}, ${modelType}, ${featureType})`);
 
+    const TIMEOUT = 60*60; // in seconds (training can take a long time depending on the model)
     $.ajax({
         url: `http://localhost:3000/training/${trainOrTest}/${datasetName}/${modelName}/${modelType}/${featureType}`,
+        timeout: TIMEOUT*1000,
         success: function(response) {
             var output = "";
 

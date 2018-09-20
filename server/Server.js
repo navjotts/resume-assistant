@@ -261,13 +261,14 @@ app.get('/analyze/:resumeFile/:jobFile', async function (req, res, next) {
         var sentences = await PythonConnector.invoke('sentences_from_file_lines', tempFilePath);
 
         var samples = [];
-        sentences.forEach(sent => samples.push(sent.join(' ')));
+        sentences.forEach(sent => samples.push(sent)); // TODO use concat
         var labelsPredicted = await PythonConnector.invoke('classify_sentences', 'resumes', 'FastText', 'None', samples);
+        // var labelsPredicted = await PythonConnector.invoke('classify_sentences', 'resumes', 'LogisticRegression', 'tf-idf', samples);
 
         console.assert(labelsPredicted.length == samples.length);
         var data = []
         samples.forEach((sent, index) => data.push({
-            sentence: sent,
+            sentence: sent.join(' '),
             label: labelsPredicted[index][0] === 'EXPERIENCE' ? 'WORK EXPERIENCE' : labelsPredicted[index][0],
             confidence: Math.round(labelsPredicted[index][1] * 1000) / 10
         }));
