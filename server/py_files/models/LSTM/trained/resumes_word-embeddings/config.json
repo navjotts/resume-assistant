@@ -5,10 +5,10 @@
             "class_name": "Embedding",
             "config": {
                 "name": "embedding_1",
-                "trainable": false,
+                "trainable": true,
                 "batch_input_shape": [
                     null,
-                    null
+                    100
                 ],
                 "dtype": "float32",
                 "input_dim": 6047,
@@ -25,7 +25,7 @@
                 "activity_regularizer": null,
                 "embeddings_constraint": null,
                 "mask_zero": false,
-                "input_length": null
+                "input_length": 100
             }
         },
         {
@@ -38,7 +38,7 @@
                 "go_backwards": false,
                 "stateful": false,
                 "unroll": false,
-                "units": 100,
+                "units": 50,
                 "activation": "tanh",
                 "recurrent_activation": "hard_sigmoid",
                 "use_bias": true,
@@ -76,16 +76,6 @@
             }
         },
         {
-            "class_name": "Dropout",
-            "config": {
-                "name": "dropout_1",
-                "trainable": true,
-                "rate": 0.2,
-                "noise_shape": null,
-                "seed": null
-            }
-        },
-        {
             "class_name": "Dense",
             "config": {
                 "name": "dense_1",
@@ -116,9 +106,9 @@
         {
             "class_name": "Dropout",
             "config": {
-                "name": "dropout_2",
+                "name": "dropout_1",
                 "trainable": true,
-                "rate": 0.2,
+                "rate": 0.3,
                 "noise_shape": null,
                 "seed": null
             }
@@ -152,6 +142,6 @@
             }
         }
     ],
-    "keras_version": "2.1.5",
+    "keras_version": "2.2.0",
     "backend": "tensorflow"
 }

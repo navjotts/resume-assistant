@@ -33,6 +33,7 @@ class KerasSentenceClassifier(SentenceClassifier):
             loaded_model.load_weights(os.path.join(self.path, 'model_weights.h5'))
             self.model = loaded_model
             print('Loaded model from disk...')
+            print(self.path)
 
         super().load()
 

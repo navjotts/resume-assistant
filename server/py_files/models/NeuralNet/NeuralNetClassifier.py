@@ -2,7 +2,7 @@ import os
 import numpy as np
 
 from keras.models import Sequential
-from keras.layers import Dense, Dropout, Flatten
+from keras.layers import Dense, Dropout, Flatten, Embedding
 from keras.preprocessing.sequence import pad_sequences
 from sklearn.preprocessing import LabelEncoder
 from keras.utils import to_categorical
@@ -16,13 +16,22 @@ class NeuralNetClassifier(KerasSentenceClassifier):
         self.path = os.path.join(os.path.dirname(os.path.abspath(__file__)), 'trained', name + '_' + feature_type)
 
     def train(self, samples, features, labels):
-        max_length = max([len(s) for s in samples]) # todo think: might be a costly step if huge data, may be it should just be a constant (100)
-        x_train = pad_sequences(features, maxlen=max_length, padding='post')
+        #not sure we can use this max length if the length is diff than trained model is expecting then it will crash
+        # max_length = max([len(s) for s in samples]) # todo think: might be a costly step if huge data, may be it should just be a constant (100)
+        x_train = pad_sequences(features, maxlen=100, padding='post')
+
+
 
         model = Sequential()
-        model.add(Embeddings(self.name, 100).keras_embeddings_layer())
-        model.add(Flatten())
-        model.add(Dense(1024, activation='relu'))
+        if(self.feature_type == 'word-embeddings'):
+            embedding_vecs = Embeddings(self.name, 100).vectors()
+            vocab_size = embedding_vecs.shape[0]
+            model.add(Embedding(vocab_size,100,input_length = 100, trainable =True, weights = [embedding_vecs] ))
+            model.add(Flatten())
+            model.add(Dense(128, activation='relu'))
+        else:
+            model.add(Dense(128, activation='relu', input_dim = input_shape[1]))
+
         model.add(Dropout(0.5))
         model.add(Dense(64, activation='relu'))
         model.add(Dense(16, activation='relu'))
@@ -35,7 +44,7 @@ class NeuralNetClassifier(KerasSentenceClassifier):
         numeric_labels = LabelEncoder().fit_transform(labels)
         y_train = to_categorical(numeric_labels, self.num_classes)
 
-        self.model.fit(x_train, y_train, epochs=10, batch_size=32, verbose=2)
+        self.model.fit(x_train, y_train, epochs=100, batch_size=32, verbose=2)
         loss, self.accuracy = self.model.evaluate(x_train, y_train)
         print('accuracy:', self.accuracy)
 
@@ -44,8 +53,9 @@ class NeuralNetClassifier(KerasSentenceClassifier):
     def test(self, samples, features, labels):
         self.load()
 
-        max_length = max([len(s) for s in samples]) # todo think: might be a costly step if huge data, may be it should just be a constant (100)
-        x_test = pad_sequences(features, maxlen=max_length, padding='post')
+        #not sure we can use this max length if the length is diff than trained model is expecting then it will crash
+        # max_length = max([len(s) for s in samples]) # todo think: might be a costly step if huge data, may be it should just be a constant (100)
+        x_test = pad_sequences(features, maxlen=100, padding='post')
 
         numeric_labels = LabelEncoder().fit_transform(labels)
         y_test = to_categorical(numeric_labels, self.num_classes)
