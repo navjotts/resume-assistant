@@ -47,7 +47,7 @@ class KerasSentenceClassifier(SentenceClassifier):
     def classify(self, samples):
         return super().classify(samples)
 
-    def choose_features(self, samples, retrain):
+    def choose_features(self, samples, retrain=False):
         if self.feature_type in ['tf-idf', 'bow']:
             return Vectorizer(self.name, self.feature_type).vectors(samples, retrain).todense()
         elif self.feature_type == 'word-embeddings':

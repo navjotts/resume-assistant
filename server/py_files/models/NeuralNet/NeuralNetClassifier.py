@@ -64,7 +64,7 @@ class NeuralNetClassifier(KerasSentenceClassifier):
 
     def test(self, samples, labels):
         self.load()
-        features = self.choose_features(samples, False)
+        features = self.choose_features(samples)
 
         #not sure we can use this max length if the length is diff than trained model is expecting then it will crash
         # max_length = max([len(s) for s in samples]) # todo think: might be a costly step if huge data, may be it should just be a constant (100)
@@ -84,6 +84,6 @@ class NeuralNetClassifier(KerasSentenceClassifier):
 
     def classify(self, samples):
         self.load()
-        features = self.choose_features(samples, False)
+        features = self.choose_features(samples)
         # todo
         return super().classify(samples)

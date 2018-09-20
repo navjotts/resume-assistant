@@ -10,7 +10,7 @@ class FastTextClassifier(SentenceClassifier):
         self.path = os.path.join(os.path.dirname(os.path.abspath(__file__)), 'trained', name + '.bin')
 
     def train(self, samples, labels):
-        features = self.choose_features(samples, False)
+        features = self.choose_features(samples)
 
         fd, labelPath = tempfile.mkstemp()
         try:
@@ -44,7 +44,7 @@ class FastTextClassifier(SentenceClassifier):
 
     def test(self, samples, labels):
         self.load()
-        features = self.choose_features(samples, False)
+        features = self.choose_features(samples)
         pred, prob = self.model.predict(list(features))
         self.labels_pred = [each[0][len('__label__'):] for each in pred]
 
@@ -52,14 +52,14 @@ class FastTextClassifier(SentenceClassifier):
 
     def classify(self, samples):
         self.load()
-        features = self.choose_features(samples, False)
+        features = self.choose_features(samples)
         pred, prob = self.model.predict(list(features))
         self.labels_pred = [each[0][len('__label__'):] for each in pred]
         self.prob_pred = [each[0] for each in prob]
 
         return super().classify(samples)
 
-    def choose_features(self, samples, retrain):
+    def choose_features(self, samples, retrain=False):
         return self.words_to_sents(samples)
 
     def generate_data_file(self, file, samples, labels):

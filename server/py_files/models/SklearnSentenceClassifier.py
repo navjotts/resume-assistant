@@ -28,20 +28,20 @@ class SklearnSentenceClassifier(SentenceClassifier):
 
     def test(self, samples, labels):
         self.load()
-        features = self.choose_features(samples, False)
+        features = self.choose_features(samples)
         self.labels_pred = self.model.predict(features)
 
         return super().test(samples, labels)
 
     def classify(self, samples):
         self.load()
-        features = self.choose_features(samples, False)
+        features = self.choose_features(samples)
         self.labels_pred = self.model.predict(features)
         self.prob_pred = np.max(self.model.predict_proba(features), axis=1)
 
         return super().classify(samples)
 
-    def choose_features(self, samples, retrain):
+    def choose_features(self, samples, retrain=False):
         if self.feature_type in ['tf-idf', 'bow']:
             return Vectorizer(self.name, self.feature_type).vectors(samples, retrain).toarray()
         elif self.feature_type == 'word-embeddings':

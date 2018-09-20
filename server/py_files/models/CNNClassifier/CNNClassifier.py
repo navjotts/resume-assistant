@@ -63,7 +63,7 @@ class CNNClassifier(KerasSentenceClassifier):
 
     def test(self, samples, labels):
         self.load()
-        features = self.choose_features(samples, False)
+        features = self.choose_features(samples)
 
         if(self.feature_type != 'word-embeddings'):
             raise Exception('CNN model is only configured for word-embeddings at the moment please train wiht word embeddings')
@@ -88,6 +88,6 @@ class CNNClassifier(KerasSentenceClassifier):
 
     def classify(self, samples):
         self.load()
-        features = self.choose_features(samples, False)
+        features = self.choose_features(samples)
         # todo
         return super().classify(samples)
