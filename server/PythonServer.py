@@ -87,7 +87,7 @@ class PythonServer(object):
         embeddings = Embeddings(model_name, dimension)
         return embeddings.encode_samples(samples)
 
-# print(Embeddings('resumes', 100).vectors()) # for testing other classes directly (comment out the below zerorps server if you do this)
+# print(Embeddings('resumes', 100).vectors()) # for testing other classes directly (comment out the below zerorpc server if you do this)
 
 try:
     s = zerorpc.Server(PythonServer())

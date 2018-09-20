@@ -1,6 +1,5 @@
 import os
 
-from sklearn.externals import joblib
 from sklearn.svm import LinearSVC
 
 from py_files.models.SklearnSentenceClassifier import SklearnSentenceClassifier

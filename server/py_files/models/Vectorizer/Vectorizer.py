@@ -1,7 +1,8 @@
 import os
+
 from sklearn.feature_extraction.text import TfidfVectorizer
 from sklearn.feature_extraction.text import CountVectorizer
-from sklearn.externals import joblib
+import pickle
 
 class Vectorizer(object):
     def __init__(self, name, vec_type):
@@ -18,14 +19,14 @@ class Vectorizer(object):
             return CountVectorizer()
 
     def train(self, samples):
-        vectorizer = self.create_vectorizer()
-        trained = vectorizer.fit(samples)
-        joblib.dump(trained, self.path)
+        self.model = self.create_vectorizer()
+        self.model.fit(samples)
+        pickle.dump(self.model, open(self.path, 'wb'))
 
     # loads the model from local (if needed)
     def load(self):
         if not self.model:
-            self.model = joblib.load(self.path)
+            self.model = pickle.load(open(self.path, 'rb'))
 
         if not self.model:
             print('Vectorizer: error: unable to load model')
