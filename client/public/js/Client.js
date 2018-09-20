@@ -145,6 +145,8 @@ function summary(modelName) {
                         var trace = {
                             x: models,
                             y: scoreValues,
+                            text: scoreValues,
+                            textposition: 'auto',
                             name: scoreType,
                             type: 'bar'
                         };
@@ -153,7 +155,27 @@ function summary(modelName) {
 
                     var layout = {
                         barmode: 'group',
-                        title: stage + ' Dataset'
+                        title: stage + ' Dataset',
+                        titlefont:{
+                            family: 'Droid Sans Mono',
+                            size: 40,
+                            color: '#008000'
+                        },
+                        xaxis: {
+                            title: 'Models',
+                            titlefont: {
+                                family: 'Droid Sans Mono',
+                                size: 25
+                            },
+                        },
+                        yaxis: {
+                            title: 'Accuracy Percentage',
+                            range: [0,101],
+                            titlefont: {
+                                family: 'Droid Sans Mono',
+                                size: 25
+                            },
+                        },
                     };
                     plots.push({divId, data, layout});
                 }
@@ -276,7 +298,6 @@ function selectedDataset(modelName) {
     return dataset;
 }
 
-
 function selectDashboardTab(selectedTab) {
     ['resumes_tab', 'jobs_tab', 'comparison_tab'].forEach(tab => {
         if (selectedTab == tab) {
@@ -303,7 +324,52 @@ function trainEmbeddings() {
 }
 
 function visualizeEmbeddings() {
-    alert('wip');
+    //alert('wip');
+ 
+    var myPlot = document.getElementById('embeddings_visualization'),
+    d3 = Plotly.d3,
+    N = 12,
+    x1 = d3.range(N).map( d3.random.normal() ),
+    x2 = d3.range(N).map( d3.random.normal() ),
+    x3 = d3.range(N).map( d3.random.normal() ),
+    y1 = d3.range(N).map( d3.random.normal() ),
+    y2 = d3.range(N).map( d3.random.normal() ),
+    y3 = d3.range(N).map( d3.random.normal() ),
+    months = ['January', 'February', 'March', 'April',
+              'May', 'June', 'July', 'August',
+              'September', 'October', 'November', 'December']
+    data = [{ x: x1, y: y1, text: months, type: 'scatter', name: '2014', hoverinfo: 'text+x+y',
+              mode: 'markers', marker: {color: 'rgba(200, 50, 100, .7)', size: 16}
+            },
+            { x: x2, y: y2, text: months, type: 'scatter', name: '2015', hoverinfo: 'text+x+y',
+             mode: 'markers', marker: {color: 'rgba(120, 20, 130, .7)', size: 16}
+            },
+            { x: x3, y: y3, text: months, type: 'scatter', name: '2016', hoverinfo: 'text+x+y',
+             mode: 'markers', marker: {color: 'rgba(10, 180, 180, .8)', size: 16}
+            }];
+    layout = {
+        autosize: false,
+        width: 500,
+        height: 500,
+        hovermode:'closest',
+        title:'Display Hover Info for Related Points',
+        xaxis:{zeroline:false, hoverformat: '.2r'},
+        yaxis:{zeroline:false, hoverformat: '.2r'}
+     };
+
+Plotly.newPlot('embeddings_visualization', data, layout);
+
+myPlot.on('plotly_hover', function (eventdata){
+    var points = eventdata.points[0],
+        pointNum = points.pointNumber;
+
+    Plotly.Fx.hover('myDiv',[
+        { curveNumber:0, pointNumber:pointNum },
+        { curveNumber:1, pointNumber:pointNum },
+        { curveNumber:2, pointNumber:pointNum },
+    ]);
+});
+ 
 }
 
 function generateEmbeddingsCoordinates() {
