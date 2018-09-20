@@ -49,13 +49,10 @@ class FastTextClassifier(object):
 
         score = AccuracyAnalysis.score(self, labels, labels_pred)
         report = AccuracyAnalysis.report(self, labels, labels_pred)
-        confusion_matrix = AccuracyAnalysis.confu_matrix(self, labels, labels_pred)
-        print('> ********* CoNFuSioN MaTRiX ************ <')
-        print(confusion_matrix)
         misclassifications = AccuracyAnalysis.misclassifications(self, labels, labels_pred, samples)
         # todo : it seems like some of the pred_label are empty ==> please check Cc @darwin (we can check with if each['pred_label'] is empty string inside the for loop `for each in misclassifications`)
 
-        return {'score': score, 'report': report, 'misclassifications': misclassifications, 'confusion_matrix': confusion_matrix}
+        return {'score': score, 'report': report, 'misclassifications': misclassifications}
 
     # todo rename to predcit or classify
     def prediction(self, samples_true, test=False, labels="None", samples="None"):
