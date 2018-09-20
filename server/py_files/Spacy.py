@@ -1,28 +1,20 @@
 import re
 
 import spacy
-import en_core_web_lg  # Changed from en*_sm to en*_lg because it is easier to identify names.
+import en_core_web_lg
 nlp = en_core_web_lg.load()
 nlp.max_length = 2000000 # todo check this limit
 
 class Spacy(object):
     def anonymize_token(self, t):
-        if t.like_email: # todo bring in Human Names as well
-            return t.shape
+        if t.like_email:
+            return t.shape_
+
+        # todo we need a better way - this is also hiding some tools names which we need in our analysis (eg: Docker, Jenkins etc)
+        # if t.ent_type_ == 'PERSON':
+        #     return t.shape_
+
         return t.text
-
-    def anonymize_name(self, text):
-        doc = nlp(text)
-        spans = list(doc.ents)
-
-        for span in spans:
-            span.merge()
-
-        for person in filter(lambda w: w.ent_type_ == 'PERSON', doc):
-            sentence = str(text)
-            text =  sentence.replace(str(person), (len(str(person))*'X'))
-
-        return text
 
     # todo: case to check Cc @Antonio - how does the search function behaves if there are more than 1 matches (what happens if there are 2 phone numbers in 1 sentence)
     def anonymize_phone_number(self, text):
@@ -50,7 +42,6 @@ class Spacy(object):
 
     def tokenize(self, text, drop_stop_words):
         tokens = []
-        text = Spacy.anonymize_name(self, text)
         text = Spacy.anonymize_phone_number(self, text)
         for t in nlp(str(text)):
             if not t.is_space and not (drop_stop_words and t.is_stop):
