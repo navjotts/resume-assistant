@@ -2,8 +2,16 @@ import zerorpc
 
 from py_files.Spacy import Spacy
 from py_files.models.FastText.FastTextClassifier import FastTextClassifier
-from py_files.models.classifier import SVM, LogisticRegression, RandomForest, NaiveBayes, LSTM, NeuralNet, CNN
-from py_files.Preprocess.NLP_preprocess import train_d2v,process_sent,SK_TFIDF_train, SK_TFIDF_predict,process_sentences, integer_sequence
+from py_files.models.LogisticRegression.LogRegClassifier import LogRegClassifier
+from py_files.models.SVM.SVMClassifier import SVMClassifier
+from py_files.models.RandomForest.RandForestClassifier import RandForestClassifier
+from py_files.models.NaiveBayes.NaiveBayesClassifier import NaiveBayesClassifier
+from py_files.models.LSTM.LSTMClassifier import LSTMClassifier
+from py_files.models.NeuralNet.NeuralNetClassifier import NeuralNetClassifier
+from py_files.models.CNNClassifier.CNNClassifier import CNNClassifier
+from py_files.models.classifier import CNN
+from py_files.Preprocess.NLP_preprocess import process_sent
+from py_files.models.Vectorizer.Vectorizer import Vectorizer
 from py_files.models.Embeddings.Embeddings import Embeddings
 
 class PythonServer(object):
@@ -21,64 +29,50 @@ class PythonServer(object):
         return sents
 
     def train_classifier(self, model_name, model_type, feature_type, samples, labels):
-        # samples = self.choose_samples(samples)
-        samples = self.choose_features(model_name, feature_type, samples)
+        features = self.choose_features(model_name, feature_type, samples, True)
         model = self.choose_model(model_name, model_type, feature_type)
-        return model.train(samples, labels)
+        return model.train(samples, features, labels)
 
     def test_classifier(self, model_name, model_type, feature_type, samples, labels):
-        samples = self.choose_samples(samples, True)
-        features = self.choose_features(model_name, feature_type, samples)
+        features = self.choose_features(model_name, feature_type, samples, False)
         model = self.choose_model(model_name, model_type, feature_type)
-        return model.prediction(features, test = True, labels = labels, samples=samples)
+        return model.test(samples, features, labels)
 
     def classify_sentences(self, model_name, model_type, feature_type, samples):
-        samples = self.choose_samples(samples, True)
-        features = self.choose_features(model_name, feature_type, samples)
+        features = self.choose_features(model_name, feature_type, samples, False)
         model = self.choose_model(model_name, model_type, feature_type)
-        return model.prediction(features)
-
-    def test_sentence_classifier(self, name, path, samples, labels):
-        FastTextClassifier.test(self, samples, labels)
+        return model.classify(features)
 
     # helper function to choose the appropriate class based on the model details provided
     def choose_model(self, model_name, model_type, feature_type):
         if model_type == 'FastText':
-            return FastTextClassifier(self)
+            return FastTextClassifier(model_name, feature_type)
         elif model_type == 'LogisticRegression':
-            return LogisticRegression(model_name, feature_type)
-        elif model_type == 'RandomForest':
-            return RandomForest(model_name, feature_type)
+            return LogRegClassifier(model_name, feature_type)
         elif model_type == 'SVM':
-            return SVM(model_name, feature_type)
+            return SVMClassifier(model_name, feature_type)
+        elif model_type == 'RandomForest':
+            return RandForestClassifier(model_name, feature_type)
         elif model_type == 'NaiveBayes':
-            return NaiveBayes(model_name, feature_type)
-        elif(model_type == "LSTM"):
-            return LSTM(model_name, feature_type)
+            return NaiveBayesClassifier(model_name, feature_type)
+        elif(model_type == 'LSTM'):
+            return LSTMClassifier(model_name, feature_type)
         elif(model_type == "NeuralNet"):
-            return NeuralNet(model_name, feature_type)
+            return NeuralNetClassifier(model_name, feature_type)
         elif(model_type == "CNN"):
-            return CNN(model_name, feature_type)
+            return CNNClassifier(model_name, feature_type)
         else:
             raise Exception('Please enter a valid model')
 
-    # todo clean this up
-    def choose_samples(self, samples, combine_to_sents=False):
-        if combine_to_sents:
-            return [(' ').join(s) for s in samples]
-        return samples
-
     # helper function to choose the appropriate feature vectorization based on the feature details provided
-    def choose_features(self,model_name, feature_type, samples):
-        if feature_type == 'tf-idf':
-            return SK_TFIDF_predict(samples)
+    def choose_features(self, model_name, feature_type, samples, retrain):
+        if feature_type in ['tf-idf', 'bow']:
+            return Vectorizer(model_name, feature_type).vectors(samples, retrain).toarray()
         elif feature_type == 'sentence-embeddings':
             return process_sent(samples)
-        elif feature_type == 'keras-embeddings':
-            embeddings  = Embeddings(model_name, 100)
-            return embeddings.encode_samples(samples), embeddings.keras_embeddings_layer().input_dim
+        elif feature_type == 'word-embeddings':
+            return Embeddings(model_name, 100).encode_samples(samples)
         else:
-            print('no feature engineering!')
             return samples # no change/manipulation
 
     def train_embeddings(self, model_name, dimension, sents):
@@ -88,10 +82,6 @@ class PythonServer(object):
     def generate_embeddings_coordinates(self, model_name, dimension, reduced_dimension):
         embeddings = Embeddings(model_name, dimension)
         embeddings.words_coordinates(reduced_dimension)
-
-    def embeddings_layer(self, model_name, dimension):
-        embeddings = Embeddings(model_name, dimension)
-        return embeddings.keras_embeddings_layer()
 
     def encode_samples(self, model_name, dimension, samples):
         embeddings = Embeddings(model_name, dimension)

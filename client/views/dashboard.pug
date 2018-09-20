@@ -42,9 +42,21 @@ html
                         input(type='radio', name='resumesModelType', value='FastText')
                         label(class='model-labels')='FastText'
                         <br/>
+                        input(type='radio', name='resumesModelType', value='LSTM')
+                        label(class='model-labels')='LSTM'
+                        <br/>
+                        input(type='radio', name='resumesModelType', value='NeuralNet')
+                        label(class='model-labels')='Neural Network'
+                        <br/>
+                        input(type='radio', name='resumesModelType', value='CNN')
+                        label(class='model-labels')='Convelutional Neural Network'
+                        <br/>
                     <br/>
                     label(class='dashboard_form_header_label')='Select Feature'
                     form(class='dashboard_form', name='resumesFeatureForm')
+                        input(type='radio', name='resumesFeatureType', value='bow')
+                        label(class='model-labels')='BoW'
+                        <br/>
                         input(type='radio', name='resumesFeatureType', value='tf-idf')
                         label(class='model-labels')='tf-idf'
                         <br/>

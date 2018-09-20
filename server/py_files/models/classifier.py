@@ -27,7 +27,7 @@ class BaseClassifier():
 
     # traing the model on the given samples and labels.
     # input the whole data set, this method will split into train and test
-    def train(self,samples,labels):
+    def train(self, samples, features, labels):
         """
         Given a list of samples and labels this method will do a trai/test split and
         train the modeol on that data.
@@ -54,7 +54,7 @@ class BaseClassifier():
         # return {'Accuracy': round(score*100,2) , 'Predicitons': [self.model.predict(vec.reshape(1,-1)) for vec in samples], 'Labels': labels}
         return {'score': score, 'report': report, 'misclassifications': misclassifications}
 
-    def prediction(self, vecs, Load_best=True, model_path=None, test=False, labels="None", samples = 'None'):
+    def classify(self, vecs, Load_best=True, model_path=None, test=False, labels="None", samples = 'None'):
         """
         Input a list of vectors, these vectors will all get a predicted class from the loaded modelself.
         If you want to test the model without using train set test to True and supply labels.
@@ -146,7 +146,7 @@ class NaiveBayes(BaseClassifier):
 import numpy
 from keras.models import Sequential
 from keras.layers import Dense, Flatten, Input, Dropout, Conv1D, MaxPool1D, Embedding, AvgPool1D
-from keras.layers import LSTM as long_short_term_memory 
+from keras.layers import LSTM as long_short_term_memory
 from keras.preprocessing.sequence import pad_sequences
 from sklearn.preprocessing import LabelEncoder
 from keras.utils import np_utils
@@ -172,9 +172,9 @@ class DeepClassifier():
         ## create the acutal model
         self.model = None
 
-    def train(self,samples,labels):
-        
-        if(self.feature_type == 'keras-embeddings'):
+    def train(self, samples, features, labels):
+
+        if(self.feature_type == 'word-embeddings'):
             self.compile(samples[1])
             max_length = 100
             samples = pad_sequences(samples[0], maxlen=max_length, padding='post')
@@ -210,7 +210,7 @@ class DeepClassifier():
         score = self.model.evaluate(x_test,y_test)
         print(score)
         print("On test data, this model was %.2f %% accurate.\n\n" %(score[1]*100))
-        
+
         #save model weights
         self.path = self.path + str(self.model_type)+ '_' + str(self.feature_type) + '_' + str(self.name) + "_" + str(int(score[1]*100)) + ".json"
         model_json = self.model.to_json()
@@ -260,7 +260,7 @@ class NeuralNet(DeepClassifier):
 
     def compile(self, input_shape):
         model = Sequential()
-        if(self.feature_type == 'keras-embeddings'):
+        if(self.feature_type == 'word-embeddings'):
             Embedding_model  = Embeddings.Embeddings(self.name, 100)
             embedding_vecs = Embedding_model.vectors()
             model.add(Embedding(input_shape,100,input_length = 100, trainable =True, weights = [embedding_vecs] ))
@@ -270,19 +270,19 @@ class NeuralNet(DeepClassifier):
             model.add(Dense(128, activation='relu', input_dim = input_shape[1]))
         model.add(Dropout(0.5))
         model.add(Dense(64, activation='relu'))
-        # model.add(Dropout(0.3))     
+        # model.add(Dropout(0.3))
         # model.add(Dense(512, activation='relu'))
-        # model.add(Dropout(0.3))     
+        # model.add(Dropout(0.3))
         # model.add(Dense(256, activation='relu'))
-        # model.add(Dropout(0.3))     
-        # model.add(Dense(64, activation='relu')) 
-        # model.add(Dropout(0.3))       
+        # model.add(Dropout(0.3))
+        # model.add(Dense(64, activation='relu'))
+        # model.add(Dropout(0.3))
         # model.add(Dense(32, activation='relu'))
-        # model.add(Dropout(0.3))     
+        # model.add(Dropout(0.3))
         # model.add(Dense(32, activation='relu'))
-        # model.add(Dropout(0.5))     
+        # model.add(Dropout(0.5))
         model.add(Dense(16, activation='relu'))
-        model.add(Dropout(0.4))        
+        model.add(Dropout(0.4))
         model.add(Dense(5, activation='softmax'))
         model.compile(loss='categorical_crossentropy', optimizer='adam', metrics=['accuracy'])
         print(model.summary())
@@ -306,14 +306,14 @@ class CNN(DeepClassifier):
         model.add(Embedding(input_shape,100,input_length = 100, trainable =True, weights = [embedding_vecs] ))
         model.add(Conv1D(256, 5, activation='relu',data_format='channels_first', padding = 'valid', strides = 4))
         model.add(MaxPool1D(5))
-        model.add(Dropout(0.3))  
+        model.add(Dropout(0.3))
         model.add(Conv1D(128, 5, activation='relu',data_format='channels_first',padding = 'valid', strides = 2))
         model.add(AvgPool1D(50))
         model.add(Flatten())
         # model.add(Dense(256, activation='relu'))
         # model.add(Dense(32, activation='relu'))
         model.add(Dense(16, activation='relu'))
-        model.add(Dropout(0.5))      
+        model.add(Dropout(0.5))
         model.add(Dense(5, activation='softmax'))
         model.compile(loss='categorical_crossentropy', optimizer='adam', metrics=['acc'])
         print(model.summary())
