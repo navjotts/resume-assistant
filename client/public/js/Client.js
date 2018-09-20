@@ -309,6 +309,9 @@ function visualizeEmbeddings() {
             console.log(response);
             console.log('1st word:', response[0]['word'], response[0]['xcoord'], response[0]['ycoord']);
             // TODO populate plotly
+            var output = "<div class=\"result_header\">WORD EMBEDDINGS</div><div id=\"embeddings_plot\" style=\"margin:20px;\">HERE WILL COME THE PLOTLY GRAPH</div>";
+            //Plotly.newPlot('embeddings_plot', data, layout);
+            $('#embeddings_visualization').html(output);
         },
         error: function(response) {
             console.log('error in trainEmbeddings()', response);
