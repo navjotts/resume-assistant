@@ -235,7 +235,7 @@ app.get('/training/embeddings/visualize/:dimension', async function (req, res, n
     var dimension = req.params.dimension;
     try {
         var embeddingsFilePath = path.join(__dirname, 'py_files', 'models', 'Embeddings', 'trained', 'embeddings' + dimension + `d.csv`);
-        var coordinates = [] // [{word, xcoord, ycoord}, ...]
+        var coordinates = []
         var embeddingsFileContent = fs.readFileSync(embeddingsFilePath).toString().split('\n');
         for (var i = 1; i <= embeddingsFileContent.length; i++) {
             var rowEntry = embeddingsFileContent[i];
@@ -244,7 +244,8 @@ app.get('/training/embeddings/visualize/:dimension', async function (req, res, n
                 coordinates.push({
                     'word': rowDetails[1],
                     'xcoord': rowDetails[2],
-                    'ycoord': rowDetails[3]
+                    'ycoord': rowDetails[3],
+                    'coords': rowDetails.slice(2) // use this 'coords' for 3D plotting
                 });
             }
         }

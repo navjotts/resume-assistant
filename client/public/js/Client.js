@@ -323,6 +323,18 @@ function trainEmbeddings() {
     });
 }
 
+// the server will now return an array of {'word', 'xcoord', 'ycoord', 'coords'}
+// I have added this new parameter 'coords' => this is an array of whatever coordinates the file has (2 coordinates for embeddings2d.csv, 2 coordinates for embeddings3d.csv)
+// so for 2D, 'coords' will be [Number1, Number2] (where Number1 cooresponds to 'xcoord', Number2 cooresponds to 'ycoord')
+// and for 3D, 'coords' will be [Number1, Number2, Number3] (where Number1 cooresponds to 'xcoord', Number2 cooresponds to 'ycoord', Number3 cooresponds to 'zcoord')
+// -----------------------------------------------------------------------------------------------------------------------------
+// Note: I have left the 'xcoord', 'ycoord' inside {'word', 'xcoord', 'ycoord', 'coords'} to not break your stuff => but ultimately we ll remove those, and the format would just be {'word', 'coords'}
+// -----------------------------------------------------------------------------------------------------------------------------
+// for now, finish 2D graph using the keys 'xcoord' and 'ycoord', then convert that code to use 'coords'
+// (the xcoordinate will just be item['coords'][0], and the ycoordinate will be item['coords'][1])
+// -----------------------------------------------------------------------------------------------------------------------------
+// then extend the code to start supporting 3D
+// (the zcoordinate will similarly be item['coords'][2])
 function visualizeEmbeddings() {
     var dimension = 2;
     $.ajax({
