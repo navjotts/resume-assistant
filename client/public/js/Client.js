@@ -340,6 +340,7 @@ function visualize3dEmbeddings() {
         success: function(response) {
             var output = "<div id=\"embeddings_plot\" style=\"margin:20px;\"></div>";
             $('#embeddings_visualization').html(output);
+            // TODO
             console.log(response);
         },
         error: function(response) {
@@ -404,9 +405,11 @@ function visualize2dEmbeddings() {
 }
 
 function generateEmbeddingsCoordinates() {
-    var dimension = 3;
+    var dimension = 2;
+    const TIMEOUT = 60*60; // in seconds (training can take a long time depending on the model)
     $.ajax({
         url: `http://localhost:3000/training/embeddings/generatecoordinates/${dimension}`,
+        timeout: TIMEOUT*1000,
         success: function(response) {
             console.log(response);
         },

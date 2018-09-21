@@ -110,7 +110,7 @@ class Embeddings(object):
             words_and_coords.append((word,) + tuple(coords))
 
         print('words_and_coords', len(words_and_coords))
-        points = pd.DataFrame(words_and_coords, columns=["word", "x", "y"])
+        points = pd.DataFrame(words_and_coords)
         print(points.head(10))
 
         outout_file = os.path.join(os.path.dirname(os.path.abspath(__file__)), 'trained', 'embeddings' + str(dimension) + 'd.csv')
