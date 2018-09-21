@@ -406,7 +406,7 @@ app.get('/analyze/:resumeFile/:jobFile', async function (req, res, next) {
             console.log('score', Math.max(...scores));
             data.push({
                 sentence: resumeSent.join(' '),
-                score: Math.round(Math.max(...scores) * 1000) / 10
+                score: Math.round(Math.max(...scores) * 0.8 * 1000) / 10
             });
         }
 
