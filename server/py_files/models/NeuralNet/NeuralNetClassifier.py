@@ -60,6 +60,7 @@ class NeuralNetClassifier(KerasSentenceClassifier):
         loss, self.accuracy = self.model.evaluate(x_train, y_train)
         print('accuracy:', self.accuracy)
 
+        self.labels_pred = LabelEncoder().decode(self.model.predict(x_test))
         return super().train(samples, labels)
 
     def test(self, samples, labels):
@@ -70,15 +71,14 @@ class NeuralNetClassifier(KerasSentenceClassifier):
         # max_length = max([len(s) for s in samples]) # todo think: might be a costly step if huge data, may be it should just be a constant (100)
         x_test = pad_sequences(features, maxlen=100, padding='post')
 
-        numeric_labels = LabelEncoder().fit_transform(labels)
-        y_test = to_categorical(numeric_labels, self.num_classes)
+
+        y_test = LabelEncoder().encode_catigorical(labels)
 
         self.model.compile(loss='categorical_crossentropy', optimizer='adam', metrics=['accuracy'])
         loss, self.accuracy = self.model.evaluate(x_test, y_test)
         print('accuracy:', self.accuracy)
-        # self.labels_pred = self.model.predict(x_test)
+        self.labels_pred = LabelEncoder().decode(self.model.predict_classes(x_test))
         # print(self.labels_pred)
-        # return super().test(samples, labels)
 
         return super().test(samples, labels)
 
