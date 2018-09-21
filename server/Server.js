@@ -379,23 +379,33 @@ app.get('/analyze/:resumeFile/:jobFile', async function (req, res, next) {
             }
             jobsData[label].push(sent);
         });
-        console.log(jobsData);
 
         var data = [];
 
         for (var i = 0; i < resumeSamples.length; i++) {
             resumeSent = resumeSamples[i];
-            console.log('resumeSent:', resumeSent.join(' '));
-            var resumeLabel = resumeLabelsPredicted[i][0];
-            var jobSents = jobsData[resumeLabel];
+            if (resumeSent) {
+                console.log('resumeSent:', resumeSent.join(' '));
+                var resumeLabel = resumeLabelsPredicted[i][0];
+                var scores = [];
 
-            var scores = [];
-            for (var j = 0; j < jobSents.length; j++) {
-                var jobSent = jobSents[i];
-                console.log('jobSent:', jobSent.join(' '));
-                // var score = await PythonConnector.invoke('sentence_similarity', 'resumes_jobs', 100, resumeSent, jobSent);
-                // var score = await PythonConnector.invoke('sentence_similarity', 'resumes_jobs', 100, resumeSent.join(' '), jobSent.join(' '));
-                console.log('score:', score);
+                if (resumeLabel == 'OTHERS') {
+                    scores.push(100.0);
+                }
+                else {
+                    var jobSents = jobsData[resumeLabel];
+                    for (var j = 0; j < jobSents.length; j++) {
+                        var jobSent = jobSents[j];
+                        console.log('jobSent:', jobSent.join(' '));
+                        // var score = await PythonConnector.invoke('sentence_similarity', 'resumes_jobs', 100, resumeSent, jobSent);
+                        // var score = await PythonConnector.invoke('sentence_similarity', 'resumes_jobs', 100, resumeSent.join(' '), jobSent.join(' '));
+                        var score = Math.random();
+                        console.log('score:', score);
+                        scores.push(score*100);
+                    }
+                }
+
+                console.log('scores', scores);
             }
         }
 
