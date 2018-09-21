@@ -381,39 +381,35 @@ app.get('/analyze/:resumeFile/:jobFile', async function (req, res, next) {
         });
 
         var data = [];
-
         for (var i = 0; i < resumeSamples.length; i++) {
             resumeSent = resumeSamples[i];
-            if (resumeSent) {
-                console.log('resumeSent:', resumeSent.join(' '));
-                var resumeLabel = resumeLabelsPredicted[i][0];
-                var scores = [];
+            console.log('resumeSent:', resumeSent.join(' '));
+            var resumeLabel = resumeLabelsPredicted[i][0];
+            var scores = [];
 
-                if (resumeLabel == 'OTHERS') {
-                    scores.push(100.0);
-                }
-                else {
-                    var jobSents = jobsData[resumeLabel];
-                    for (var j = 0; j < jobSents.length; j++) {
-                        var jobSent = jobSents[j];
-                        console.log('jobSent:', jobSent.join(' '));
-                        // var score = await PythonConnector.invoke('sentence_similarity', 'resumes_jobs', 100, resumeSent, jobSent);
-                        // var score = await PythonConnector.invoke('sentence_similarity', 'resumes_jobs', 100, resumeSent.join(' '), jobSent.join(' '));
-                        var score = Math.random();
-                        console.log('score:', score);
-                        scores.push(score*100);
-                    }
-                }
-
-                console.log('scores', scores);
+            if (resumeLabel == 'OTHERS') {
+                scores.push(1.0);
             }
+            else {
+                var jobSents = jobsData[resumeLabel];
+                for (var j = 0; j < jobSents.length; j++) {
+                    var jobSent = jobSents[j];
+                    console.log('jobSent:', jobSent.join(' '));
+                    // var score = await PythonConnector.invoke('sentence_similarity', 'resumes_jobs', 100, resumeSent, jobSent);
+                    // var score = await PythonConnector.invoke('sentence_similarity', 'resumes_jobs', 100, resumeSent.join(' '), jobSent.join(' '));
+                    var score = Math.random();
+                    scores.push(score);
+                }
+            }
+
+            console.log('scores', scores);
+            console.log('score', Math.max(...scores));
+            data.push({
+                sentence: resumeSent.join(' '),
+                score: Math.round(Math.max(...scores) * 0.8 * 1000) / 10
+            });
         }
 
-        resumeSamples.forEach((sent, index) => data.push({
-            sentence: sent.join(' '),
-            label: resumeLabelsPredicted[index][0] === 'EXPERIENCE' ? 'WORK EXPERIENCE' : resumeLabelsPredicted[index][0],
-            confidence: Math.round(resumeLabelsPredicted[index][1] * 1000) / 10
-        }));
         res.json(data);
     }
     catch (e) {

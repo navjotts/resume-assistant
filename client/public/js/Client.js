@@ -60,9 +60,9 @@ function analyzeFiles() {
             $.ajax({
                 url: `http://localhost:3000/analyze/${resumeFileName}/${jobFileName}`,
                 success: function(response) {
-                    var output = "<div class=\"document-header\"><label class=\"document-header-label-left\">SENTENCE / PHRASE</label><label class=\"document-header-label-right\">PREDICTION (Confidence%)</label></div>";
+                    var output = "<div class=\"document-header\"><label class=\"document-header-label-left\">SENTENCE / PHRASE</label><label class=\"document-header-label-right\">Score</label></div>";
                     for (var i = 0; i < response.length; i++) {
-                        output += "<div class=\"sentence\"><div class=\"left-child\" >" + response[i].sentence + "</div><div class=\"right-child\" >" + response[i].label + " (" + response[i].confidence + "%)" + "</div></div>";
+                        output += "<div class=\"sentence\"><div class=\"left-child\" >" + response[i].sentence + "</div><div class=\"right-child\" style=\"background-color:" + getColor(response[i].score/100) + ";\">" + response[i].score + "%" + "</div></div>";
                     }
                     $('#document').html(output);
                     $('#analyze_button').text('START ANALYZING');
@@ -317,4 +317,9 @@ function generateEmbeddingsCoordinates() {
             console.log('error in generateEmbeddingsCoordinates()', response);
         }
     });
+}
+
+function getColor(score) {
+    var hue=((score)*120).toString(10);
+    return ["hsl(",hue,",100%,50%)"].join("");
 }
