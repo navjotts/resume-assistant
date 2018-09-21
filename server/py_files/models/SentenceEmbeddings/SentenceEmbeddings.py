@@ -1,6 +1,7 @@
 import os
 import multiprocessing
 import gensim.models.doc2vec as d2v
+from scipy import spatial
 
 import logging
 logging.basicConfig(format='%(asctime)s : %(levelname)s : %(message)s', level=logging.INFO)
@@ -54,5 +55,8 @@ class SentenceEmbeddings(object):
 
     def similarity(self, sent1, sent2):
         self.load()
-        print('similarity:', self.model.wv.similarity(sent1, sent2))
-        return self.model.wv.similarity(sent1, sent2)
+        print(sent1, '\n\n\n', sent2)
+        # print('similarity:', self.model.docvecs.n_similarity(sent1,sent2))
+        vec1 = self.model.infer_vector(sent1)
+        vec2 = self.model.infer_vector(sent2)
+        return spatial.distance.cosine(vec1,vec2)
