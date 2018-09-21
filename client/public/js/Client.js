@@ -346,7 +346,7 @@ function visualize3dEmbeddings() {
 
             Plotly.d3.csv('https://raw.githubusercontent.com/plotly/datasets/master/3d-scatter.csv', function(err, rows){
                 function unpack(rows, key) {
-                    return rows.map(function(row) 
+                    return rows.map(function(row)
                     { return row[key]; });
                 }
 
@@ -373,7 +373,7 @@ function visualize3dEmbeddings() {
             }];
 
             var trace1 = {
-            x:unpack(rows, 'x1'),  y: unpack(rows, 'y1'), z: unpack(rows, 'z1'), 
+            x:unpack(rows, 'x1'),  y: unpack(rows, 'y1'), z: unpack(rows, 'z1'),
             mode: 'markers',
             marker: {
             size: 12,
@@ -386,7 +386,7 @@ function visualize3dEmbeddings() {
             type: 'scatter3d'
             };
             var trace2 = {
-            x:unpack(rows, 'x2'),  y: unpack(rows, 'y2'), z: unpack(rows, 'z2'), 
+            x:unpack(rows, 'x2'),  y: unpack(rows, 'y2'), z: unpack(rows, 'z2'),
             mode: 'markers',
             marker: {
             color: 'rgb(127, 127, 127)',
@@ -494,4 +494,13 @@ function generateEmbeddingsCoordinates() {
             console.log('error in generateEmbeddingsCoordinates()', response);
         }
     });
+}
+
+function generateColor() {
+    var score = 0.8 // change this to test
+    // TODO color generation logic ..
+    // color value has to be divided into 3 regions: it goes from 0 for red, to becoming yellow-ish at around 0.3, to becoming greenish at 0.7 to full green at 1.0
+    color = '#ff0000';
+    var output = "<div style=\"margin:20px; background-color:" + color + ";\">TEST</div>";
+    $('#embeddings_visualization').html(output);
 }
