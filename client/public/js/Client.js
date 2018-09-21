@@ -292,7 +292,7 @@ function selectDashboardTab(selectedTab) {
 
 function trainEmbeddings() {
     $.ajax({
-        url: `http://localhost:3000/training/embeddings/train`,
+        url: `http://localhost:3000/training/sentenceembeddings/train`,
         success: function(response) {
             console.log(response);
         },
