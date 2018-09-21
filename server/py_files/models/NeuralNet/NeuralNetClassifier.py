@@ -4,8 +4,7 @@ import numpy as np
 from keras.models import Sequential
 from keras.layers import Dense, Dropout, Flatten, Embedding
 from keras.preprocessing.sequence import pad_sequences
-# from sklearn.preprocessing import LabelEncoder
-from keras.utils import to_categorical
+from keras.optimizers import adam
 from sklearn.utils import class_weight
 
 from py_files.models.Vectorizer.Vectorizer import Vectorizer
@@ -55,7 +54,9 @@ class NeuralNetClassifier(KerasSentenceClassifier):
 
         y_train = LabelEncoder().encode_catigorical(labels)
 
-        self.model.fit(x_train, y_train, validation_split=0.05, epochs=20, batch_size=4, verbose=1, shuffle=True, class_weight=class_weights)
+        optimizer = adam(lr=0.00075)
+
+        self.model.fit(x_train, y_train, validation_split=0.05, epochs=10, batch_size=2, verbose=2, shuffle=True, class_weight=class_weights)
         loss, self.accuracy = self.model.evaluate(x_train, y_train)
         print('accuracy:', self.accuracy)
 
