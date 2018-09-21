@@ -145,6 +145,8 @@ function summary(modelName) {
                         var trace = {
                             x: models,
                             y: scoreValues,
+                            text: scoreValues,
+                            textposition: 'auto',
                             name: scoreType,
                             type: 'bar'
                         };
@@ -153,7 +155,27 @@ function summary(modelName) {
 
                     var layout = {
                         barmode: 'group',
-                        title: stage + ' Dataset'
+                        title: stage + ' Dataset',
+                        titlefont:{
+                            family: 'Droid Sans Mono',
+                            size: 40,
+                            color: 'black'
+                        },
+                        xaxis: {
+                            title: 'Model',
+                            titlefont: {
+                                family: 'Droid Sans Mono',
+                                size: 25
+                            },
+                        },
+                        yaxis: {
+                            title: 'Accuracy',
+                            range: [0,101],
+                            titlefont: {
+                                family: 'Droid Sans Mono',
+                                size: 25
+                            },
+                        },
                     };
                     plots.push({divId, data, layout});
                 }
@@ -276,7 +298,6 @@ function selectedDataset(modelName) {
     return dataset;
 }
 
-
 function selectDashboardTab(selectedTab) {
     ['resumes_tab', 'jobs_tab', 'comparison_tab'].forEach(tab => {
         if (selectedTab == tab) {
@@ -302,16 +323,170 @@ function trainEmbeddings() {
     });
 }
 
-function visualizeEmbeddings() {
-    alert('wip');
+function visualize3dEmbeddings() {
+    var dimension = 3;
+    $.ajax({
+        url: `http://localhost:3000/training/embeddings/visualize/${dimension}`,
+        success: function(response) {
+            var output = "<div id=\"embeddings_plot\" style=\"margin:20px;\"></div>";
+            $('#embeddings_visualization').html(output);
+            // TODO
+            console.log(response);
+            console.log('3d Graph Data')
+
+
+            Plotly.d3.csv('https://raw.githubusercontent.com/plotly/datasets/master/3d-scatter.csv', function(err, rows){
+                function unpack(rows, key) {
+                    return rows.map(function(row)
+                    { return row[key]; });
+                }
+
+            words = [];
+            var xcoords = [];
+            var ycoords = [];
+            var zcoords = [];
+            response.forEach(item => {
+                /* The if statement underneath is a hack, the value was throwing off the
+                 proportions of the 3d embedding graph */
+                if(item['word'] === '\"19'){
+                    return;
+                };
+                words.push(item['word']);
+                xcoords.push(item['coords'][0]);
+                ycoords.push(item['coords'][1]);
+                zcoords.push(item['coords'][2]);
+            });
+
+            data = [{
+                x: xcoords,
+                y: ycoords,
+                z: zcoords,
+                text: words,
+                type: 'scatter3d',
+                name: '3D Embeddings',
+                hoverinfo: 'text',
+                mode: 'markers',
+                marker: {color: xcoords, opacity: 0.75, size: 3
+                }
+            }];
+
+            var layout = {
+                title: '3D Word Embeddings',
+                titlefont:{
+                    family: 'Droid Sans Mono',
+                    size: 40,
+                    color: 'black'
+                },
+                dragmode: true,
+                width: 1200,
+                height: 1200,
+                hovermode:'closest',
+                scene:{
+                	xaxis: {
+                	 backgroundcolor: "#FFFFFF",
+                	 gridcolor: "#E9E9E9",
+                	 showbackground: true,
+                     zerolinecolor: "rgb(255, 255, 255)",
+                	},
+                    yaxis: {
+                     backgroundcolor: "#FFFFFF",
+                     gridcolor: "#E9E9E9",
+                     showbackground: true,
+                     zerolinecolor: "rgb(255, 255, 255)",
+                    },
+                    zaxis: {
+                     backgroundcolor: "#FFFFFF",
+                     gridcolor: "#E9E9E9",
+                     showbackground: true,
+                     zerolinecolor: "rgb(255, 255, 255)",
+                    }}
+            };
+            Plotly.newPlot('embeddings_plot', data, layout);
+        });
+        },
+        error: function(response) {
+            console.log('error in trainEmbeddings()', response);
+        }
+    });
+}
+
+function visualize2dEmbeddings() {
+    var dimension = 2;
+    $.ajax({
+        url: `http://localhost:3000/training/embeddings/visualize/${dimension}`,
+        success: function(response) {
+            var output = "<div id=\"embeddings_plot\" style=\"margin:20px;\"></div>";
+            $('#embeddings_visualization').html(output);
+            console.log(response)
+            console.log('Inside 2d graph')
+
+            words = [];
+            var xcoords = [];
+            var ycoords = [];
+            response.forEach(item => {
+
+                words.push(item['word']);
+                xcoords.push(item['coords'][0]);
+                ycoords.push(item['coords'][1]);
+            });
+
+            data = [{
+                x: xcoords,
+                y: ycoords,
+                text: words,
+                type: 'scatter',
+                name: 'Embeddings',
+                hoverinfo: 'text',
+                mode: 'markers',
+                marker: {color: xcoords, opacity: 0.6, size: 14,
+                    line: {
+                        color: 'rgb(231, 99, 250)',
+                         width: 0.7
+                        }
+                }
+            }];
+
+            layout = {
+                title: '2D Word Embeddings',
+                titlefont:{
+                    family: 'Droid Sans Mono',
+                    size: 40,
+                    color: 'black'
+                },
+                autosize: false,
+                width: 1200,
+                height: 1200,
+                hovermode:'closest',
+                xaxis:{zeroline:false, hoverformat: '.2r'},
+                yaxis:{zeroline:false, hoverformat: '.2r'}
+            };
+
+            Plotly.newPlot('embeddings_plot', data, layout);
+
+            var plot = document.getElementById('embeddings_plot');
+            plot.on('plotly_hover', function (eventdata){
+            var points = eventdata.points[0],
+                pointNum = points.pointNumber;
+                Plotly.Fx.hover('embeddings_plot',[
+                    {curveNumber:0, pointNumber:pointNum}
+                ]);
+            });
+        },
+        error: function(response) {
+            console.log('error in trainEmbeddings()', response);
+        }
+    });
 }
 
 function generateEmbeddingsCoordinates() {
     var dimension = 2;
+    const TIMEOUT = 60*60; // in seconds (training can take a long time depending on the model)
     $.ajax({
         url: `http://localhost:3000/training/embeddings/generatecoordinates/${dimension}`,
+        timeout: TIMEOUT*1000,
         success: function(response) {
-            console.log(response);
+            console.log(response)
+
         },
         error: function(response) {
             console.log('error in generateEmbeddingsCoordinates()', response);
