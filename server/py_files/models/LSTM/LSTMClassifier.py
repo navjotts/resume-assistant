@@ -5,7 +5,6 @@ from keras.models import Sequential
 from keras.layers import LSTM, Dense, Dropout, Embedding
 from keras.preprocessing.sequence import pad_sequences
 from py_files.models.SentenceLabelEncoder import LabelEncoder
-from keras.utils import to_categorical
 from sklearn.utils import class_weight
 
 from py_files.models.Embeddings.Embeddings import Embeddings
