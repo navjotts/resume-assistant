@@ -397,7 +397,7 @@ function visualizeEmbeddings() {
                 yaxis:{zeroline:false, hoverformat: '.2r'}
                 };
 
-            console.log('SAMPLE DATA---');
+            console.log('SAMPLE DATA');
             console.log(data)
             Plotly.newPlot('embeddings_plot', data, layout);
 
