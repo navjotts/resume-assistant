@@ -340,21 +340,17 @@ function visualizeEmbeddings() {
     $.ajax({
         url: `http://localhost:3000/training/embeddings/visualize/${dimension}`,
         success: function(response) {
-            var output = "<div class=\"result_header\">WORD EMBEDDINGS</div><div id=\"embeddings_plot\" style=\"margin:20px;\"></div>";
+            var output = "<div id=\"embeddings_plot\" style=\"margin:20px;\"></div>";
             $('#embeddings_visualization').html(output);
 
-            var d3 = Plotly.d3;
-            var N = 1470;
+            words = [];
             var xcoords = [];
             var ycoords = [];
-            var colors = [];
-            words = [];
-            for (var i=0; i<N; i++) {
-                words.push(response[i]['word']);
-                xcoords.push(response[i]['coords'][0]);
-                ycoords.push(response[i]['coords'][1]);
-                colors.push(i);
-            }
+            response.forEach(item => {
+                words.push(item['word']);
+                xcoords.push(item['coords'][0]);
+                ycoords.push(item['coords'][1]);
+            });
 
             data = [{
                 x: xcoords,
@@ -364,25 +360,23 @@ function visualizeEmbeddings() {
                 name: 'Embeddings',
                 hoverinfo: 'text',
                 mode: 'markers',
-                marker: {color:colors, size: 16}}];
+                marker: {color: 'rgba(200, 50, 100, .7)', size: 16}
+            }];
 
             layout = {
                 autosize: false,
                 width: 1200,
                 height: 1200,
                 hovermode:'closest',
-                title:'2D Word Proximity',
+                title:'2D Word Embeddings',
                 xaxis:{zeroline:false, hoverformat: '.2r'},
                 yaxis:{zeroline:false, hoverformat: '.2r'}
-                };
+            };
 
-            console.log('SAMPLE DATA');
-            console.log(data)
             Plotly.newPlot('embeddings_plot', data, layout);
 
-            // hovering code
-            var myPlot = document.getElementById('embeddings_plot');
-            myPlot.on('plotly_hover', function (eventdata){
+            var plot = document.getElementById('embeddings_plot');
+            plot.on('plotly_hover', function (eventdata){
             var points = eventdata.points[0],
                 pointNum = points.pointNumber;
                 Plotly.Fx.hover('embeddings_plot',[
