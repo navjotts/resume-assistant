@@ -67,5 +67,6 @@ class SentenceEmbeddings(object):
             elif new < 0:
                 new = 0
 
+            new = new * 0.75
             scores.append(new)
         return scores

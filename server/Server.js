@@ -383,7 +383,6 @@ app.get('/analyze/:resumeFile/:jobFile', async function (req, res, next) {
         var data = [];
         for (var i = 0; i < resumeSamples.length; i++) {
             resumeSent = resumeSamples[i];
-            console.log('resumeSent:', resumeSent.join(' '));
             var resumeLabel = resumeLabelsPredicted[i][0];
             var scores = [];
 
@@ -395,8 +394,6 @@ app.get('/analyze/:resumeFile/:jobFile', async function (req, res, next) {
                 scores = await PythonConnector.invoke('sentence_similarity', 'resumes_jobs', 100, resumeSent, jobSents);
             }
 
-            console.log('scores', scores);
-            console.log('score', Math.max(...scores));
             data.push({
                 sentence: resumeSent.join(' '),
                 score: Math.round(Math.max(...scores) * 1000) / 10
