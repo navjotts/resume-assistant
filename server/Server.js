@@ -291,19 +291,29 @@ app.get('/analyze/:resumeFile/:jobFile', async function (req, res, next) {
 
         var tempFilePath = path.join(__dirname, 'uploads', resumeFileName.split('.')[0] + '.txt');
         fs.writeFileSync(tempFilePath, text);
-        var sentences = await PythonConnector.invoke('sentences_from_file_lines', tempFilePath);
+        var resumeSentences = await PythonConnector.invoke('sentences_from_file_lines', tempFilePath);
 
-        var samples = [];
-        sentences.forEach(sent => samples.push(sent)); // TODO use concat
-        var labelsPredicted = await PythonConnector.invoke('classify_sentences', 'resumes', 'FastText', 'None', samples);
-        // var labelsPredicted = await PythonConnector.invoke('classify_sentences', 'resumes', 'LogisticRegression', 'tf-idf', samples);
+        var resumeSamples = [];
+        resumeSentences.forEach(sent => resumeSamples.push(sent)); // TODO use concat
+        var resumeLabelsPredicted = await PythonConnector.invoke('classify_sentences', 'resumes', 'FastText', 'None', resumeSamples);
+        console.assert(resumeLabelsPredicted.length == resumeSamples.length);
 
-        console.assert(labelsPredicted.length == samples.length);
+        var jobFile = fs.readFileSync(jobFilePath);
+        var jobSentences = await PythonConnector.invoke('sentences', jobFile);
+
+        var jobSamples = [];
+        jobSentences.forEach(sent => jobSamples.push(sent)); // TODO use concat
+        var jobLabelsPredicted = await PythonConnector.invoke('classify_sentences', 'jobs', 'FastText', 'None', jobSamples);
+        console.assert(jobLabelsPredicted.length == jobSamples.length);
+        jobSamples.forEach((sent, index) => {
+            console.log(sent.join(' '), '===', jobLabelsPredicted[index][0])
+        });
+
         var data = []
-        samples.forEach((sent, index) => data.push({
+        resumeSamples.forEach((sent, index) => data.push({
             sentence: sent.join(' '),
-            label: labelsPredicted[index][0] === 'EXPERIENCE' ? 'WORK EXPERIENCE' : labelsPredicted[index][0],
-            confidence: Math.round(labelsPredicted[index][1] * 1000) / 10
+            label: resumeLabelsPredicted[index][0] === 'EXPERIENCE' ? 'WORK EXPERIENCE' : resumeLabelsPredicted[index][0],
+            confidence: Math.round(resumeLabelsPredicted[index][1] * 1000) / 10
         }));
         res.json(data);
     }
