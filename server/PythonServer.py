@@ -12,10 +12,10 @@ from py_files.models.CNNClassifier.CNNClassifier import CNNClassifier
 from py_files.models.Embeddings.Embeddings import Embeddings
 
 class PythonServer(object):
-    def sentences(self, text):
-        return Spacy.sentences(self, text, False)
+    def sentences(self, text, drop_stop=False, drop_punct=False):
+        return Spacy.sentences(self, text, drop_stop, drop_punct)
 
-    def sentences_from_file_lines(self, filepath, drop_stop = False, drop_punct = False):
+    def sentences_from_file_lines(self, filepath, drop_stop=False, drop_punct=False):
         sents = []
         with open(filepath, encoding = 'utf8') as f:
             for line in f:

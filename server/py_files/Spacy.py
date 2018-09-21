@@ -24,16 +24,35 @@ class Spacy(object):
 
         return text
 
-    def sentences(self, text, drop_stop):
+    def sentences(self, text, drop_stop, drop_punct):
         sents = []
         sentence = []
+        tokens = []
         for t in nlp(str(text)):
-            if t.is_sent_start:
-                if len(sentence) > 0:
+            if len(tokens) > 0:
+                # todo 1. need all bullet characters
+                # todo 2. should shift to replacing beforehand only
+                prev_has_bullet = tokens[-1]['text'].encode('utf-8') == b'\xc2\xb7'
+                if prev_has_bullet and len(sentence) > 0:
                     sents.append(sentence)
-                sentence = []
+                    sentence = []
+
+            if len(tokens) > 0 and t.is_sent_start:
+                prev_has_lf = '\n' in tokens[-1]['trailing_whitespace']
+                prev_has_punct = re.match("\.|\!|\?|\:|\;|\¡|\¿", tokens[-1]['text'])
+                if prev_has_lf or prev_has_punct and len(sentence) > 0:
+                    sents.append(sentence)
+                    sentence = []
+
+            if len(tokens) > 0 and t.is_space:
+                tokens[-1]['trailing_whitespace'] += t.text
+
             if not t.is_space and not (drop_stop and t.is_stop):
-                sentence.append(Spacy.anonymize_token(self, t))
+                text = Spacy.anonymize_token(self, t)
+                tokens.append({'text': text, 'trailing_whitespace': t.whitespace_})
+                is_bullet = text.encode('utf-8') == b'\xc2\xb7'
+                if not is_bullet:
+                    sentence.append(text)
 
         if len(sents) == 0 and len(sentence) > 0:
             sents.append(sentence)
