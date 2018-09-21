@@ -324,35 +324,29 @@ function trainEmbeddings() {
 }
 
 function visualizeEmbeddings() {
-    //alert('wip');
     $.ajax({
         url: `http://localhost:3000/training/embeddings/visualize`,
         success: function(response) {
-            // TODO populate plotly
             var output = "<div class=\"result_header\">WORD EMBEDDINGS</div><div id=\"embeddings_plot\" style=\"margin:20px;\">HERE WILL COME THE PLOTLY GRAPH</div>";
-            //Plotly.newPlot('embeddings_plot', data, layout);
-            var words = Object.keys(response);
             var data = [];
 
-            words.forEach(word => {
-                if (word.length) {
-                    var word_embedding = response[word]['word']
-                    var xcoord = Number(response[word]['xcoord'])
-                    var ycoord = Number(response[word]['ycoord'])
-                    var trace = {
-                        x: xcoord,
-                        y: ycoord,
-                        text: word_embedding,
-                        textposition: 'auto',
-                       // mode: 'markers+text',
-                        type: 'scatter'
-                    };
+            response.forEach(item => {
+                var word = item['word']
+                var xcoord = Number(item['xcoord'])
+                var ycoord = Number(item['ycoord'])
+                var point = {
+                    x: xcoord,
+                    y: ycoord,
+                    text: word,
+                    type: 'scatter',
+                    mode: 'markers',
+                    marker: {color: 'rgba(200, 50, 100, .7)', size: 16}
                 };
 
-                data.push(trace);
-                console.log(trace)
+                data.push(point);
             });
 
+            console.log(data);
             var layout = {
                 autosize: false,
                 width: 900,
@@ -365,15 +359,15 @@ function visualizeEmbeddings() {
                     range: [-100, 100]
                 }
             };
-            
+
             $('#embeddings_visualization').html(output);
-            Plotly.newPlot('embeddings_visualization', data, layout);
+            Plotly.newPlot('embeddings_plot', data, layout);
         },
         error: function(response) {
             console.log('error in trainEmbeddings()', response);
         }
-    });   
- 
+    });
+
 //    var myPlot = document.getElementById('embeddings_visualization'),
 //    d3 = Plotly.d3,
 //    N = 120,
@@ -386,15 +380,15 @@ function visualizeEmbeddings() {
 //    months = ['January', 'February', 'March', 'April',
 //              'May', 'June', 'July', 'August',
 //              'September', 'October', 'November', 'December']
-//    data = [{ x: x1, y: y1, text: months, type: 'scatter', name: '2014', hoverinfo: 'text+x+y',
-//              mode: 'markers', marker: {color: 'rgba(200, 50, 100, .7)', size: 16}
-//            },
-//            { x: x2, y: y2, text: months, type: 'scatter', name: '2015', hoverinfo: 'text+x+y',
-//             mode: 'markers', marker: {color: 'rgba(120, 20, 130, .7)', size: 16}
-//            },
-//            { x: x3, y: y3, text: months, type: 'scatter', name: '2016', hoverinfo: 'text+x+y',
-//             mode: 'markers', marker: {color: 'rgba(10, 180, 180, .8)', size: 16}
-//            }];
+    //    data = [{ x: x1, y: y1, text: months, type: 'scatter', name: '2014', hoverinfo: 'text+x+y',
+    //              mode: 'markers', marker: {color: 'rgba(200, 50, 100, .7)', size: 16}
+    //            },
+    //            { x: x2, y: y2, text: months, type: 'scatter', name: '2015', hoverinfo: 'text+x+y',
+    //             mode: 'markers', marker: {color: 'rgba(120, 20, 130, .7)', size: 16}
+    //            },
+    //            { x: x3, y: y3, text: months, type: 'scatter', name: '2016', hoverinfo: 'text+x+y',
+    //             mode: 'markers', marker: {color: 'rgba(10, 180, 180, .8)', size: 16}
+    //            }];
 //    layout = {
 //        autosize: false,
 //        width: 1000,
@@ -418,7 +412,7 @@ function visualizeEmbeddings() {
 //        { curveNumber:2, pointNumber:pointNum },
 //    ]);
 //});
- 
+
 }
 
 function generateEmbeddingsCoordinates() {
