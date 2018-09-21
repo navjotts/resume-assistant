@@ -10,6 +10,7 @@ from py_files.models.LSTM.LSTMClassifier import LSTMClassifier
 from py_files.models.NeuralNet.NeuralNetClassifier import NeuralNetClassifier
 from py_files.models.CNNClassifier.CNNClassifier import CNNClassifier
 from py_files.models.Embeddings.Embeddings import Embeddings
+from py_files.models.SentenceEmbeddings.SentenceEmbeddings import SentenceEmbeddings
 
 class PythonServer(object):
     def sentences(self, text, drop_stop=False, drop_punct=False):
@@ -61,6 +62,14 @@ class PythonServer(object):
     def train_embeddings(self, model_name, dimension, sents):
         embeddings = Embeddings(model_name, dimension)
         embeddings.train(sents)
+
+    def train_sent_embeddings(self, model_name, dimension, sents):
+        sent_embeddings = SentenceEmbeddings(model_name, dimension)
+        sent_embeddings.train(sents)
+
+    def sentence_similarity(self, model_name, dimension, sent1, sent2):
+        sent_embeddings = SentenceEmbeddings(model_name, dimension)
+        return sent_embeddings.similarity(sent1, sent2)
 
     def generate_embeddings_coordinates(self, model_name, dimension, reduced_dimension):
         embeddings = Embeddings(model_name, dimension)

@@ -209,12 +209,77 @@ app.get('/training/summary', async function (req, res, next) {
     }
 });
 
+function sampleSet(destFolder, fileName) {
+    if (destFolder === 'jobs') {
+        if (fileName.includes('google')) {
+            return true;
+        }
+
+        if (fileName.includes('dice')) {
+            return Math.floor((Math.random()*100)+1) === 100 ? true : false;
+        }
+
+        return Math.floor((Math.random()*100)+1) === 100 ? true : false;
+    }
+
+    return true;
+}
+
+// TODO combine with '/training/embeddings/train'
+app.get('/training/sentenceembeddings/train', async function (req, res, next) {
+    console.log(req.url);
+    try {
+        var sents = [];
+
+        var srcFolder = 'resumes-txt';
+        console.log(`Collecting sentences from ${srcFolder}...`);
+        var srcDir = path.join(__dirname, 'data', srcFolder);
+        var files = fs.readdirSync(srcDir);
+
+        for (var i = 0; i < files.length; i++) {
+            var fileName = files[i];
+            if (fileName.split('.').pop() === 'txt') {
+                console.log(`#${i} Collecting sentences for: ${fileName}`);
+                var sentences = await PythonConnector.invoke('sentences_from_file_lines', path.join(srcDir, fileName), false, false); // TODO need to think on stop, punct
+                sents = sents.concat(sentences);
+            }
+        }
+        console.log('total sents', sents.length);
+
+        var srcFolder = 'jobs-txt';
+        console.log(`Collecting sentences from ${srcFolder}...`);
+        var srcDir = path.join(__dirname, 'data', srcFolder);
+        var files = fs.readdirSync(srcDir);
+
+        for (var i = 0; i < files.length; i++) {
+            var fileName = files[i];
+            if (fileName.split('.').pop() === 'txt') {
+                if (!sampleSet('jobs', fileName)) {
+                    continue;
+                }
+
+                console.log(`#${i} Collecting sentences for: ${fileName}`);
+                var sentences = await PythonConnector.invoke('sentences', fs.readFileSync(path.join(srcDir, fileName)).toString(), false, false); // TODO need to think on stop, punct
+                sents = sents.concat(sentences);
+            }
+        }
+
+        console.log('total sents', sents.length);
+        console.log(sents[sents.length-1]);
+        await PythonConnector.invoke('train_sent_embeddings', 'resumes_jobs', 100, sents);
+        res.json(200);
+    }
+    catch (e) {
+        console.log('error in /training/embeddings', e);
+        res.send(404);
+    }
+});
+
 app.get('/training/embeddings/train', async function (req, res, next) {
     console.log(req.url);
     try {
         var sents = [];
-        name = 'resumes'; // TODO add jobs also
-        var srcFolder = 'resumes-txt';
+        var srcFolder = 'resumes-txt'; // TODO add jobs also
         console.log(`Collecting sentences from ${srcFolder}...`);
         var srcDir = path.join(__dirname, 'data', srcFolder);
         var files = fs.readdirSync(srcDir);
@@ -291,20 +356,60 @@ app.get('/analyze/:resumeFile/:jobFile', async function (req, res, next) {
 
         var tempFilePath = path.join(__dirname, 'uploads', resumeFileName.split('.')[0] + '.txt');
         fs.writeFileSync(tempFilePath, text);
-        var sentences = await PythonConnector.invoke('sentences_from_file_lines', tempFilePath);
+        var resumeSentences = await PythonConnector.invoke('sentences_from_file_lines', tempFilePath);
 
-        var samples = [];
-        sentences.forEach(sent => samples.push(sent)); // TODO use concat
-        var labelsPredicted = await PythonConnector.invoke('classify_sentences', 'resumes', 'FastText', 'None', samples);
-        // var labelsPredicted = await PythonConnector.invoke('classify_sentences', 'resumes', 'LogisticRegression', 'tf-idf', samples);
+        var resumeSamples = [];
+        resumeSentences.forEach(sent => resumeSamples.push(sent)); // TODO use concat
+        var resumeLabelsPredicted = await PythonConnector.invoke('classify_sentences', 'resumes', 'FastText', 'None', resumeSamples);
+        console.assert(resumeLabelsPredicted.length == resumeSamples.length);
 
-        console.assert(labelsPredicted.length == samples.length);
-        var data = []
-        samples.forEach((sent, index) => data.push({
-            sentence: sent.join(' '),
-            label: labelsPredicted[index][0] === 'EXPERIENCE' ? 'WORK EXPERIENCE' : labelsPredicted[index][0],
-            confidence: Math.round(labelsPredicted[index][1] * 1000) / 10
-        }));
+        var jobFile = fs.readFileSync(jobFilePath).toString();
+        var jobSentences = await PythonConnector.invoke('sentences', jobFile);
+
+        var jobSamples = [];
+        jobSentences.forEach(sent => jobSamples.push(sent)); // TODO use concat
+        var jobLabelsPredicted = await PythonConnector.invoke('classify_sentences', 'jobs', 'FastText', 'None', jobSamples);
+        console.assert(jobLabelsPredicted.length == jobSamples.length);
+
+        var jobsData = {};
+        jobSamples.forEach((sent, index) => {
+            var label = jobLabelsPredicted[index][0];
+            if (!jobsData[label]) {
+                jobsData[label] = [];
+            }
+            jobsData[label].push(sent);
+        });
+
+        var data = [];
+        for (var i = 0; i < resumeSamples.length; i++) {
+            resumeSent = resumeSamples[i];
+            console.log('resumeSent:', resumeSent.join(' '));
+            var resumeLabel = resumeLabelsPredicted[i][0];
+            var scores = [];
+
+            if (resumeLabel == 'OTHERS') {
+                scores.push(1.0);
+            }
+            else {
+                var jobSents = jobsData[resumeLabel];
+                for (var j = 0; j < jobSents.length; j++) {
+                    var jobSent = jobSents[j];
+                    console.log('jobSent:', jobSent.join(' '));
+                    // var score = await PythonConnector.invoke('sentence_similarity', 'resumes_jobs', 100, resumeSent, jobSent);
+                    // var score = await PythonConnector.invoke('sentence_similarity', 'resumes_jobs', 100, resumeSent.join(' '), jobSent.join(' '));
+                    var score = Math.random();
+                    scores.push(score);
+                }
+            }
+
+            console.log('scores', scores);
+            console.log('score', Math.max(...scores));
+            data.push({
+                sentence: resumeSent.join(' '),
+                score: Math.round(Math.max(...scores) * 0.8 * 1000) / 10
+            });
+        }
+
         res.json(data);
     }
     catch (e) {

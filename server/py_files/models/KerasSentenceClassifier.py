@@ -22,6 +22,7 @@ class KerasSentenceClassifier(SentenceClassifier):
         # self.model.save_weights(os.path.join(self.path, 'model_weights.h5'))
         self.model.save(self.path + '/model_weights.h5')
         print('Saved model to disk...')
+        return super().train(samples, labels)
 
         # todo consolidate with AccuracyAnalysis => super().train()
         return self.accuracy
@@ -41,7 +42,9 @@ class KerasSentenceClassifier(SentenceClassifier):
         super().load()
 
     def test(self, samples, labels):
-        # todo consolidate with AccuracyAnalysis => super().test()
+        return super().train(samples, labels)
+
+        # todo consolidate with AccuracyAnalysis => super().train()
         return self.accuracy
 
     def classify(self, samples):

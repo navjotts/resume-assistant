@@ -60,9 +60,9 @@ function analyzeFiles() {
             $.ajax({
                 url: `http://localhost:3000/analyze/${resumeFileName}/${jobFileName}`,
                 success: function(response) {
-                    var output = "<div class=\"document-header\"><label class=\"document-header-label-left\">SENTENCE / PHRASE</label><label class=\"document-header-label-right\">PREDICTION (Confidence%)</label></div>";
+                    var output = "<div class=\"document-header\"><label class=\"document-header-label-left\">SENTENCE / PHRASE</label><label class=\"document-header-label-right\">Score</label></div>";
                     for (var i = 0; i < response.length; i++) {
-                        output += "<div class=\"sentence\"><div class=\"left-child\" >" + response[i].sentence + "</div><div class=\"right-child\" >" + response[i].label + " (" + response[i].confidence + "%)" + "</div></div>";
+                        output += "<div class=\"sentence\"><div class=\"left-child\" >" + response[i].sentence + "</div><div class=\"right-child\" style=\"background-color:" + getColor(response[i].score/100) + ";\">" + response[i].score + "%" + "</div></div>";
                     }
                     $('#document').html(output);
                     $('#analyze_button').text('START ANALYZING');
@@ -313,7 +313,7 @@ function selectDashboardTab(selectedTab) {
 
 function trainEmbeddings() {
     $.ajax({
-        url: `http://localhost:3000/training/embeddings/train`,
+        url: `http://localhost:3000/training/sentenceembeddings/train`,
         success: function(response) {
             console.log(response);
         },
@@ -391,13 +391,13 @@ function visualize3dEmbeddings() {
                 	 gridcolor: "rgb(255, 255, 255)",
                 	 showbackground: true,
                      zerolinecolor: "rgb(255, 255, 255)",
-                	}, 
+                	},
                     yaxis: {
                      backgroundcolor: "rgb(230, 200,230)",
                      gridcolor: "rgb(255, 255, 255)",
                      showbackground: true,
                      zerolinecolor: "rgb(255, 255, 255)",
-                    }, 
+                    },
                     zaxis: {
                      backgroundcolor: "rgb(230, 230,200)",
                      gridcolor: "rgb(255, 255, 255)",
@@ -493,18 +493,7 @@ function generateEmbeddingsCoordinates() {
     });
 }
 
-function generateColor() {
-    var score = 0.1 // change this to test
-    console.log(score, " This is the score")
-    function getColor(value){
-        //value from 0 to 1
-        var hue=((value)*120).toString(10);
-        return ["hsl(",hue,",100%,50%)"].join("");
-    }
-    // TODO color generation logic ..
-    // color value has to be divided into 3 regions: it goes from 0 for red, to becoming yellow-ish at around 0.3, to becoming greenish at 0.7 to full green at 1.0
-    color = getColor(score)
-    console.log(color)
-    var output = "<div style=\"margin:20px; background-color:" + color + ";\">TEST</div>";
-    $('#embeddings_visualization').html(output);
+function getColor(score) {
+    var hue=((score)*120).toString(10);
+    return ["hsl(",hue,",100%,50%)"].join("");
 }
