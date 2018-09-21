@@ -5,7 +5,7 @@ from py_files.AccuracyAnalysis import AccuracyAnalysis
 
 class SentenceClassifier(object):
     def __init__(self, name, feature_type):
-        self.num_classes = 5
+        self.num_classes = 4
         self.name = name
         self.feature_type = feature_type
         self.model = None # todo should be a dict => so that we can hold more than 1 models in memory together
@@ -29,9 +29,10 @@ class SentenceClassifier(object):
         # build the model and populate `self.labels_pred` in subclasses
         score = AccuracyAnalysis.score(self, labels, self.labels_pred)
         report = AccuracyAnalysis.report(self, labels, self.labels_pred)
+        confusion_matrix = AccuracyAnalysis.confusion_matrix(self, labels, self.labels_pred)
         misclassifications = AccuracyAnalysis.misclassifications(self, labels, self.labels_pred, self.words_to_sents(samples))
 
-        return {'score': score, 'report': report, 'misclassifications': misclassifications}
+        return {'score': score, 'report': report, 'confusion_matrix': confusion_matrix, 'misclassifications': misclassifications}
 
     def classify(self, samples):
         # build the model and populate `self.labels_pred` and `self.prob_pred` in subclasses
