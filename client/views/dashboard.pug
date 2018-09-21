@@ -132,8 +132,13 @@ html
                         type='button',
                         onclick='trainEmbeddings()')='Train'
                     button(class='train_test_button',
+                        style='width:120px;',
                         type='button',
-                        onclick='visualizeEmbeddings()')='Visualize'
+                        onclick='visualize2dEmbeddings()')='Visualize 2D'
+                    button(class='train_test_button',
+                        style='width:120px;',
+                        type='button',
+                        onclick='visualize3dEmbeddings()')='Visualize 3D'
                     div(id='embeddings_visualization', class='results')
             div(class='center' style='padding-bottom: 200px;')
                 div(class='title')
