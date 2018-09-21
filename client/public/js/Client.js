@@ -323,27 +323,47 @@ function trainEmbeddings() {
     });
 }
 
-function visualizeEmbeddings() {
+// the server now returns an array of {'word', 'coords'}
+// I have removed the old 'xcoord', 'ycoord'
+// and I have added this new parameter 'coords' => this is an array of whatever coordinates the file has (2 coordinates for embeddings2d.csv, 2 coordinates for embeddings3d.csv)
+// so for 2D, 'coords' will be [Number1, Number2] (where Number1 cooresponds to 'xcoord', Number2 cooresponds to 'ycoord')
+// and for 3D, 'coords' will be [Number1, Number2, Number3] (where Number1 cooresponds to 'xcoord', Number2 cooresponds to 'ycoord', Number3 cooresponds to 'zcoord')
+// -----------------------------------------------------------------------------------------------------------------------------
+// once done with 2D, extend the code to start supporting 3D
+// (the xcoordinate will be item['coords'][0], and the ycoordinate will be item['coords'][1])
+// (the zcoordinate will similarly be item['coords'][2])
+function visualize3dEmbeddings() {
+    var dimension = 3;
+    alert('wip');
+    $.ajax({
+        url: `http://localhost:3000/training/embeddings/visualize/${dimension}`,
+        success: function(response) {
+            var output = "<div id=\"embeddings_plot\" style=\"margin:20px;\"></div>";
+            $('#embeddings_visualization').html(output);
+            console.log(response);
+        },
+        error: function(response) {
+            console.log('error in trainEmbeddings()', response);
+        }
+    });
+}
+
+function visualize2dEmbeddings() {
     var dimension = 2;
     $.ajax({
         url: `http://localhost:3000/training/embeddings/visualize/${dimension}`,
         success: function(response) {
-
-            var output = "<div class=\"result_header\">WORD EMBEDDINGS</div><div id=\"embeddings_plot\" style=\"margin:20px;\"></div>";
+            var output = "<div id=\"embeddings_plot\" style=\"margin:20px;\"></div>";
             $('#embeddings_visualization').html(output);
 
-            var d3 = Plotly.d3;
-            var N = 1470;
+            words = [];
             var xcoords = [];
             var ycoords = [];
-            var colors = [];
-            words = [];
-            for (var i=0; i<N; i++) {
-                words.push(response[i]['word']);
-                xcoords.push(response[i]['xcoord']);
-                ycoords.push(response[i]['ycoord']);
-                colors.push(i);
-            }
+            response.forEach(item => {
+                words.push(item['word']);
+                xcoords.push(item['coords'][0]);
+                ycoords.push(item['coords'][1]);
+            });
 
             data = [{
                 x: xcoords,
@@ -353,23 +373,23 @@ function visualizeEmbeddings() {
                 name: 'Embeddings',
                 hoverinfo: 'text',
                 mode: 'markers',
-                marker: {color:colors, size: 16}}];
+                marker: {color: 'rgba(200, 50, 100, .7)', size: 16}
+            }];
 
             layout = {
                 autosize: false,
                 width: 1200,
                 height: 1200,
                 hovermode:'closest',
-                title:'2D Word Proximity',
+                title:'2D Word Embeddings',
                 xaxis:{zeroline:false, hoverformat: '.2r'},
                 yaxis:{zeroline:false, hoverformat: '.2r'}
-                };
+            };
 
             Plotly.newPlot('embeddings_plot', data, layout);
 
-            // hovering code
-            var myPlot = document.getElementById('embeddings_plot');
-            myPlot.on('plotly_hover', function (eventdata){
+            var plot = document.getElementById('embeddings_plot');
+            plot.on('plotly_hover', function (eventdata){
             var points = eventdata.points[0],
                 pointNum = points.pointNumber;
                 Plotly.Fx.hover('embeddings_plot',[

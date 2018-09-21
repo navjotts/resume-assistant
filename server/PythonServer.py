@@ -9,6 +9,7 @@ from py_files.models.NaiveBayes.NaiveBayesClassifier import NaiveBayesClassifier
 from py_files.models.LSTM.LSTMClassifier import LSTMClassifier
 from py_files.models.NeuralNet.NeuralNetClassifier import NeuralNetClassifier
 from py_files.models.CNNClassifier.CNNClassifier import CNNClassifier
+from py_files.models.Embeddings.Embeddings import Embeddings
 from py_files.models.classifier import CNN
 from py_files.Preprocess.NLP_preprocess import process_sent
 
