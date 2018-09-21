@@ -355,6 +355,11 @@ function visualize3dEmbeddings() {
             var ycoords = [];
             var zcoords = [];
             response.forEach(item => {
+                /* The if statement underneath is a hack, the value was throwing off the
+                 proportions of the 3d embedding graph */
+                if(item['word'] === '\"19'){
+                    return;
+                };
                 words.push(item['word']);
                 xcoords.push(item['coords'][0]);
                 ycoords.push(item['coords'][1]);
@@ -366,54 +371,40 @@ function visualize3dEmbeddings() {
                 y: ycoords,
                 z: zcoords,
                 text: words,
-                type: 'scatter',
+                type: 'scatter3d',
                 name: '3D Embeddings',
                 hoverinfo: 'text',
                 mode: 'markers',
-                marker: {color: xcoords, opacity: 0.75, size: 14,
-                    line: {
-                        color: 'rgb(231, 99, 250)',
-                         width: 0.7
-                        }
+                marker: {color: xcoords, opacity: 0.75, size: 14
                 }
             }];
 
-            var trace1 = {
-            x:unpack(rows, 'x1'),  y: unpack(rows, 'y1'), z: unpack(rows, 'z1'),
-            mode: 'markers',
-            marker: {
-            size: 12,
-            line: {
-                color: 'rgba(217, 217, 217, 0.14)',
-                width: 0.5
-            },
-            opacity: 0.8
-            },
-            type: 'scatter3d'
-            };
-            var trace2 = {
-            x:unpack(rows, 'x2'),  y: unpack(rows, 'y2'), z: unpack(rows, 'z2'),
-            mode: 'markers',
-            marker: {
-            color: 'rgb(127, 127, 127)',
-            size: 12,
-            symbol: 'circle',
-            line: {
-                color: 'rgb(204, 204, 204)',
-                width: 1
-            },
-            opacity: 0.9
-            },
-            type: 'scatter3d'
-            };
             var layout = {
-                dragmode: false,
-                margin: {
-                l: 0,
-                r: 0,
-                b: 0,
-                t: 0
-            }};
+                dragmode: true,
+                width: 1200,
+                height: 1200,
+                hovermode:'closest',
+                title:'3D Word Embeddings',
+                scene:{
+                	xaxis: {
+                	 backgroundcolor: "rgb(200, 200, 230)",
+                	 gridcolor: "rgb(255, 255, 255)",
+                	 showbackground: true,
+                     zerolinecolor: "rgb(255, 255, 255)",
+                	}, 
+                    yaxis: {
+                     backgroundcolor: "rgb(230, 200,230)",
+                     gridcolor: "rgb(255, 255, 255)",
+                     showbackground: true,
+                     zerolinecolor: "rgb(255, 255, 255)",
+                    }, 
+                    zaxis: {
+                     backgroundcolor: "rgb(230, 230,200)",
+                     gridcolor: "rgb(255, 255, 255)",
+                     showbackground: true,
+                     zerolinecolor: "rgb(255, 255, 255)",
+                    }}
+            };
             Plotly.newPlot('embeddings_plot', data, layout);
         });
         },
@@ -437,6 +428,7 @@ function visualize2dEmbeddings() {
             var xcoords = [];
             var ycoords = [];
             response.forEach(item => {
+
                 words.push(item['word']);
                 xcoords.push(item['coords'][0]);
                 ycoords.push(item['coords'][1]);
