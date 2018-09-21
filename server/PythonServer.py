@@ -48,11 +48,11 @@ class PythonServer(object):
             return RandForestClassifier(model_name, feature_type)
         elif model_type == 'NaiveBayes':
             return NaiveBayesClassifier(model_name, feature_type)
-        elif(model_type == 'LSTM'):
+        elif model_type == 'LSTM':
             return LSTMClassifier(model_name, feature_type)
-        elif(model_type == "NeuralNet"):
+        elif model_type == 'NeuralNet':
             return NeuralNetClassifier(model_name, feature_type)
-        elif(model_type == "CNN"):
+        elif model_type == 'CNN':
             return CNNClassifier(model_name, feature_type)
         else:
             raise Exception('Please enter a valid model')
