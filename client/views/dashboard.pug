@@ -131,6 +131,12 @@ html
                             onclick='test("' + 'jobs' + '")')='Test'
                     div(id='jobs_results', class='results')
                 div(id='comparison_tab_content', class='no-display')
+                    label(class='dashboard_form_header_label')='Select Model'
+                    form(class='dashboard_form', name='comparisonModelForm')
+                        input(type='radio', name='comparisonModelType', value='Baseline')
+                        label(class='model-labels')='Baseline'
+                        <br/>
+                    <br/>
                     button(class='train_test_button',
                             type='button')='Train'
                     button(class='train_test_button',
