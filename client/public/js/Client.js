@@ -375,7 +375,7 @@ function visualize3dEmbeddings() {
                 name: '3D Embeddings',
                 hoverinfo: 'text',
                 mode: 'markers',
-                marker: {color: xcoords, opacity: 0.75, size: 14
+                marker: {color: xcoords, opacity: 0.9, size: 4
                 }
             }];
 
@@ -387,19 +387,19 @@ function visualize3dEmbeddings() {
                 title:'3D Word Embeddings',
                 scene:{
                 	xaxis: {
-                	 backgroundcolor: "rgb(200, 200, 230)",
+                	 backgroundcolor: "rgb(74,178,127)",
                 	 gridcolor: "rgb(255, 255, 255)",
                 	 showbackground: true,
                      zerolinecolor: "rgb(255, 255, 255)",
                 	},
                     yaxis: {
-                     backgroundcolor: "rgb(230, 200,230)",
+                     backgroundcolor: "rgb(74,178,127)",
                      gridcolor: "rgb(255, 255, 255)",
                      showbackground: true,
                      zerolinecolor: "rgb(255, 255, 255)",
                     },
                     zaxis: {
-                     backgroundcolor: "rgb(230, 230,200)",
+                     backgroundcolor: "rgb(74,178,127)",
                      gridcolor: "rgb(255, 255, 255)",
                      showbackground: true,
                      zerolinecolor: "rgb(255, 255, 255)",
@@ -442,7 +442,7 @@ function visualize2dEmbeddings() {
                 name: 'Embeddings',
                 hoverinfo: 'text',
                 mode: 'markers',
-                marker: {color: xcoords, opacity: 0.75, size: 14,
+                marker: {color: xcoords, opacity: 0.6, size: 14,
                     line: {
                         color: 'rgb(231, 99, 250)',
                          width: 0.7
