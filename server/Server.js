@@ -181,6 +181,7 @@ app.get('/training/:trainOrTest/:dataset/:modelName/:modelType/:featureType', as
         console.log(`Starting ${trainOrTest}ing on data size of (samples, labels): (${data.samples.length}, ${data.labels.length})`);
 
         var result = await PythonConnector.invoke(method, modelName, modelType, featureType, data.samples, data.labels);
+        console.log(`Finished ${trainOrTest}ing.`);
         res.json(result);
     }
     catch (e) {
