@@ -54,7 +54,7 @@ function sampleSet(destFolder, fileName) {
         }
 
         if (fileName.includes('dice')) {
-            return Math.floor((Math.random()*100)+1) === 100 ? true : false;
+            return Math.floor((Math.random()*100)+1) === 500 ? true : false;
         }
 
         return Math.floor((Math.random()*100)+1) === 100 ? true : false;
@@ -64,7 +64,7 @@ function sampleSet(destFolder, fileName) {
 }
 
 async function generate() {
-    await generateDB('resumes-txt', 'resumes', 'sentences_from_file_lines');
+    // await generateDB('resumes-txt', 'resumes', 'sentences_from_file_lines');
     await generateDB('jobs-txt', 'jobs', 'sentences');
 }
 
