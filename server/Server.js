@@ -298,16 +298,24 @@ app.get('/analyze/:resumeFile/:jobFile', async function (req, res, next) {
         var resumeLabelsPredicted = await PythonConnector.invoke('classify_sentences', 'resumes', 'FastText', 'None', resumeSamples);
         console.assert(resumeLabelsPredicted.length == resumeSamples.length);
 
-        var jobFile = fs.readFileSync(jobFilePath);
+        var jobFile = fs.readFileSync(jobFilePath).toString();
         var jobSentences = await PythonConnector.invoke('sentences', jobFile);
 
         var jobSamples = [];
         jobSentences.forEach(sent => jobSamples.push(sent)); // TODO use concat
         var jobLabelsPredicted = await PythonConnector.invoke('classify_sentences', 'jobs', 'FastText', 'None', jobSamples);
         console.assert(jobLabelsPredicted.length == jobSamples.length);
+
+        var jobsData = {};
         jobSamples.forEach((sent, index) => {
-            console.log(sent.join(' '), '===', jobLabelsPredicted[index][0])
+            var label = jobLabelsPredicted[index][0];
+            var sentence = sent.join(' ');
+            if (!jobsData[label]) {
+                jobsData[label] = [];
+            }
+            jobsData[label].push(sentence);
         });
+        console.log(jobsData);
 
         var data = []
         resumeSamples.forEach((sent, index) => data.push({
