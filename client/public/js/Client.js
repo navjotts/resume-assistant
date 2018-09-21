@@ -62,7 +62,7 @@ function analyzeFiles() {
                 success: function(response) {
                     var output = "<div class=\"document-header\"><label class=\"document-header-label-left\">SENTENCE / PHRASE</label><label class=\"document-header-label-right\">PREDICTION (Confidence%)</label></div>";
                     for (var i = 0; i < response.length; i++) {
-                        output += "<div class=\"sentence\"><div class=\"left-child\" >" + response[i].sentence + "</div><div class=\"right-child\" >" + response[i].label + " (" + response[i].confidence + "%)" + "</div></div>";
+                        output += "<div class=\"sentence\"><div class=\"left-child\" >" + response[i].sentence + "</div><div class=\"right-child\" >" + response[i].score + "%" + "</div></div>";
                     }
                     $('#document').html(output);
                     $('#analyze_button').text('START ANALYZING');
