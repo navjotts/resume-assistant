@@ -502,7 +502,7 @@ function generateEmbeddingsCoordinates() {
 }
 
 function generateColor() {
-    var score = .1 // change this to test
+    var score = 0.1 // change this to test
     console.log(score, " This is the score")
     function getColor(value){
         //value from 0 to 1
