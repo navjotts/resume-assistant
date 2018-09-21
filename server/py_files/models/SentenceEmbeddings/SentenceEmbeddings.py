@@ -2,6 +2,8 @@ import os
 import multiprocessing
 import gensim.models.doc2vec as d2v
 from scipy import spatial
+from sklearn.metrics.pairwise import cosine_similarity
+import numpy as np
 
 import logging
 logging.basicConfig(format='%(asctime)s : %(levelname)s : %(message)s', level=logging.INFO)
@@ -58,6 +60,12 @@ class SentenceEmbeddings(object):
         # print('similarity:', self.model.docvecs.n_similarity(sent1,sent2))
         scores = []
         for sent in sents2:
-            scores.append(spatial.distance.cosine(self.model.infer_vector(sent1), self.model.infer_vector(sent)))
+            new = spatial.distance.cosine(self.model.infer_vector(sent1), self.model.infer_vector(sent))
+            # new = cosine_similarity(np.array(self.model.infer_vector(sent1)).reshape(1,-1), np.array(self.model.infer_vector(sent)).reshape(1,-1))
+            if new > 1:
+                new = 1
+            elif new < 0:
+                new = 0
 
+            scores.append(new)
         return scores
