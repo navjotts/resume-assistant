@@ -334,13 +334,59 @@ function trainEmbeddings() {
 // (the zcoordinate will similarly be item['coords'][2])
 function visualize3dEmbeddings() {
     var dimension = 3;
-    alert('wip');
     $.ajax({
         url: `http://localhost:3000/training/embeddings/visualize/${dimension}`,
         success: function(response) {
             var output = "<div id=\"embeddings_plot\" style=\"margin:20px;\"></div>";
             $('#embeddings_visualization').html(output);
             console.log(response);
+            console.log('3d Graph Data')
+
+
+            Plotly.d3.csv('https://raw.githubusercontent.com/plotly/datasets/master/3d-scatter.csv', function(err, rows){
+                function unpack(rows, key) {
+                    return rows.map(function(row) 
+                    { return row[key]; });
+                }
+            var trace1 = {
+            x:unpack(rows, 'x1'),  y: unpack(rows, 'y1'), z: unpack(rows, 'z1'), 
+            mode: 'markers',
+            marker: {
+            size: 12,
+            line: {
+                color: 'rgba(217, 217, 217, 0.14)',
+                width: 0.5
+            },
+            opacity: 0.8
+            },
+            type: 'scatter3d'
+            };
+            var trace2 = {
+            x:unpack(rows, 'x2'),  y: unpack(rows, 'y2'), z: unpack(rows, 'z2'), 
+            mode: 'markers',
+            marker: {
+            color: 'rgb(127, 127, 127)',
+            size: 12,
+            symbol: 'circle',
+            line: {
+                color: 'rgb(204, 204, 204)',
+                width: 1
+            },
+            opacity: 0.9
+            },
+            type: 'scatter3d'
+            };
+            var data = [trace1, trace2];
+            var layout = {
+                dragmode: false,
+                margin: {
+                l: 0,
+                r: 0,
+                b: 0,
+                t: 0
+            }};
+            Plotly.newPlot('myDiv', data, layout);
+        });
         },
         error: function(response) {
             console.log('error in trainEmbeddings()', response);
@@ -355,6 +401,8 @@ function visualize2dEmbeddings() {
         success: function(response) {
             var output = "<div id=\"embeddings_plot\" style=\"margin:20px;\"></div>";
             $('#embeddings_visualization').html(output);
+            console.log(response)
+            console.log('Inside 2d graph')
 
             words = [];
             var xcoords = [];
@@ -409,58 +457,7 @@ function generateEmbeddingsCoordinates() {
         url: `http://localhost:3000/training/embeddings/generatecoordinates/${dimension}`,
         success: function(response) {
             console.log(response)
-//            console.log(response);
-//            var output = "<div class=\"result_header\">WORD EMBEDDINGS</div><div id=\"embeddings_plot\" style=\"margin:20px;\"></div>";
-//            $('#embeddings_visualization').html(output);
-//
-//            var d3 = Plotly.d3;
-//            var N = response.length;
-//            var xcoords = [];
-//            var ycoords = [];
-//            var zcoords = [];
-//            var colors = [];
-//            words = [];
-//            for (var i=0; i<N; i++) {
-//                words.push(response[i]['word']);
-//                xcoords.push(response[i]['xcoord']);
-//                ycoords.push(response[i]['ycoord']);
-//                zcoords.push(response[i]['coords'][2]);
-//                colors.push(i);
-//            }
-//
-//            data = [{
-//                x: xcoords,
-//                y: ycoords,
-//                text: words,
-//                type: 'scatter',
-//                name: 'Embeddings',
-//                hoverinfo: 'text',
-//                mode: 'markers',
-//                marker: {color:colors, size: 16}}];
-//
-//            layout = {
-//                autosize: false,
-//                width: 1200,
-//                height: 1200,
-//                hovermode:'closest',
-//                title:'2D Word Proximity',
-//                xaxis:{zeroline:false, hoverformat: '.2r'},
-//                yaxis:{zeroline:false, hoverformat: '.2r'}
-//                };
-//
-//            console.log('SAMPLE DATA');
-//            console.log(data)
-//            Plotly.newPlot('embeddings_plot', data, layout);
-//
-//            // hovering code
-//            var myPlot = document.getElementById('embeddings_plot');
-//            myPlot.on('plotly_hover', function (eventdata){
-//            var points = eventdata.points[0],
-//                pointNum = points.pointNumber;
-//                Plotly.Fx.hover('embeddings_plot',[
-//                    {curveNumber:0, pointNumber:pointNum}
-//                ]);
-//            });
+
         },
         error: function(response) {
             console.log('error in generateEmbeddingsCoordinates()', response);
