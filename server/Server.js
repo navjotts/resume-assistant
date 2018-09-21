@@ -388,25 +388,18 @@ app.get('/analyze/:resumeFile/:jobFile', async function (req, res, next) {
             var scores = [];
 
             if (resumeLabel == 'OTHERS') {
-                scores.push(1.0);
+                scores = [1.0]
             }
             else {
                 var jobSents = jobsData[resumeLabel];
-                for (var j = 0; j < jobSents.length; j++) {
-                    var jobSent = jobSents[j];
-                    console.log('jobSent:', jobSent.join(' '));
-                    // var score = await PythonConnector.invoke('sentence_similarity', 'resumes_jobs', 100, resumeSent, jobSent);
-                    // var score = await PythonConnector.invoke('sentence_similarity', 'resumes_jobs', 100, resumeSent.join(' '), jobSent.join(' '));
-                    var score = Math.random();
-                    scores.push(score);
-                }
+                scores = await PythonConnector.invoke('sentence_similarity', 'resumes_jobs', 100, resumeSent, jobSents);
             }
 
             console.log('scores', scores);
             console.log('score', Math.max(...scores));
             data.push({
                 sentence: resumeSent.join(' '),
-                score: Math.round(Math.max(...scores) * 0.8 * 1000) / 10
+                score: Math.round(Math.max(...scores) * 1000) / 10
             });
         }
 
