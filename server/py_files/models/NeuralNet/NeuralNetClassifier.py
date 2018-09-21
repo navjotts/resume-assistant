@@ -4,8 +4,12 @@ import numpy as np
 from keras.models import Sequential
 from keras.layers import Dense, Dropout, Flatten, Embedding
 from keras.preprocessing.sequence import pad_sequences
-from sklearn.preprocessing import LabelEncoder
+# from sklearn.preprocessing import LabelEncoder
 from keras.utils import to_categorical
+from sklearn.utils import class_weight
+
+from py_files.models.Vectorizer.Vectorizer import Vectorizer
+from py_files.models.SentenceLabelEncoder import LabelEncoder
 
 from py_files.models.Embeddings.Embeddings import Embeddings
 from py_files.models.KerasSentenceClassifier import KerasSentenceClassifier
@@ -15,12 +19,10 @@ class NeuralNetClassifier(KerasSentenceClassifier):
         super().__init__(name, feature_type)
         self.path = os.path.join(os.path.dirname(os.path.abspath(__file__)), 'trained', name + '_' + feature_type)
 
-    def train(self, samples, features, labels):
-        #not sure we can use this max length if the length is diff than trained model is expecting then it will crash
-        # max_length = max([len(s) for s in samples]) # todo think: might be a costly step if huge data, may be it should just be a constant (100)
+    def train(self, samples, labels):
+        features = self.choose_features(samples, True)
+
         x_train = pad_sequences(features, maxlen=100, padding='post')
-
-
 
         model = Sequential()
         if(self.feature_type == 'word-embeddings'):
@@ -30,7 +32,8 @@ class NeuralNetClassifier(KerasSentenceClassifier):
             model.add(Flatten())
             model.add(Dense(128, activation='relu'))
         else:
-            model.add(Dense(128, activation='relu', input_dim = input_shape[1]))
+            num_inputs = Vectorizer(name, feature_type).num_inputs()
+            model.add(Dense(128, activation='relu', input_dim = num_inputs))
 
         model.add(Dropout(0.5))
         model.add(Dense(64, activation='relu'))
@@ -41,20 +44,26 @@ class NeuralNetClassifier(KerasSentenceClassifier):
         print(model.summary())
         self.model = model
 
-        numeric_labels = LabelEncoder().fit_transform(labels)
-        y_train = to_categorical(numeric_labels, self.num_classes)
+        print(labels)
+        numeric_labels = LabelEncoder().encode_numerical(labels)
 
-        self.model.fit(x_train, y_train, epochs=100, batch_size=32, verbose=2)
+        class_weights = class_weight.compute_class_weight('balanced',
+                                                 np.unique(numeric_labels),
+                                                 numeric_labels)
+
+        y_train = LabelEncoder().encode_catigorical(labels)
+        print(y_train)
+
+        self.model.fit(x_train, y_train, validation_split=0.2, epochs=200, batch_size=128, verbose=1, shuffle=True, class_weight=class_weights)
         loss, self.accuracy = self.model.evaluate(x_train, y_train)
         print('accuracy:', self.accuracy)
 
-        return super().train(samples, features, labels)
+        return super().train(samples, labels)
 
-    def test(self, samples, features, labels):
+    def test(self, samples, labels):
         self.load()
+        features = self.choose_features(samples)
 
-        #not sure we can use this max length if the length is diff than trained model is expecting then it will crash
-        # max_length = max([len(s) for s in samples]) # todo think: might be a costly step if huge data, may be it should just be a constant (100)
         x_test = pad_sequences(features, maxlen=100, padding='post')
 
         numeric_labels = LabelEncoder().fit_transform(labels)
@@ -63,13 +72,14 @@ class NeuralNetClassifier(KerasSentenceClassifier):
         self.model.compile(loss='categorical_crossentropy', optimizer='adam', metrics=['accuracy'])
         loss, self.accuracy = self.model.evaluate(x_test, y_test)
         print('accuracy:', self.accuracy)
-
         # self.labels_pred = self.model.predict(x_test)
         # print(self.labels_pred)
-        # return super().test(samples, features, labels)
+        # return super().test(samples, labels)
 
-        return super().test(samples, features, labels)
+        return super().test(samples, labels)
 
-    def classify(self, features):
+    def classify(self, samples):
+        self.load()
+        features = self.choose_features(samples)
         # todo
-        pass
+        return super().classify(samples)

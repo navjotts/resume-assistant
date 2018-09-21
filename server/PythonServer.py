@@ -9,10 +9,6 @@ from py_files.models.NaiveBayes.NaiveBayesClassifier import NaiveBayesClassifier
 from py_files.models.LSTM.LSTMClassifier import LSTMClassifier
 from py_files.models.NeuralNet.NeuralNetClassifier import NeuralNetClassifier
 from py_files.models.CNNClassifier.CNNClassifier import CNNClassifier
-from py_files.models.classifier import CNN
-from py_files.Preprocess.NLP_preprocess import process_sent
-from py_files.models.Vectorizer.Vectorizer import Vectorizer
-from py_files.models.Embeddings.Embeddings import Embeddings
 
 class PythonServer(object):
     def sentences(self, text):
@@ -29,19 +25,16 @@ class PythonServer(object):
         return sents
 
     def train_classifier(self, model_name, model_type, feature_type, samples, labels):
-        features = self.choose_features(model_name, feature_type, samples, True)
         model = self.choose_model(model_name, model_type, feature_type)
-        return model.train(samples, features, labels)
+        return model.train(samples, labels)
 
     def test_classifier(self, model_name, model_type, feature_type, samples, labels):
-        features = self.choose_features(model_name, feature_type, samples, False)
         model = self.choose_model(model_name, model_type, feature_type)
-        return model.test(samples, features, labels)
+        return model.test(samples, labels)
 
     def classify_sentences(self, model_name, model_type, feature_type, samples):
-        features = self.choose_features(model_name, feature_type, samples, False)
         model = self.choose_model(model_name, model_type, feature_type)
-        return model.classify(features)
+        return model.classify(samples)
 
     # helper function to choose the appropriate class based on the model details provided
     def choose_model(self, model_name, model_type, feature_type):
@@ -55,25 +48,14 @@ class PythonServer(object):
             return RandForestClassifier(model_name, feature_type)
         elif model_type == 'NaiveBayes':
             return NaiveBayesClassifier(model_name, feature_type)
-        elif(model_type == 'LSTM'):
+        elif model_type == 'LSTM':
             return LSTMClassifier(model_name, feature_type)
-        elif(model_type == "NeuralNet"):
+        elif model_type == 'NeuralNet':
             return NeuralNetClassifier(model_name, feature_type)
-        elif(model_type == "CNN"):
+        elif model_type == 'CNN':
             return CNNClassifier(model_name, feature_type)
         else:
             raise Exception('Please enter a valid model')
-
-    # helper function to choose the appropriate feature vectorization based on the feature details provided
-    def choose_features(self, model_name, feature_type, samples, retrain):
-        if feature_type in ['tf-idf', 'bow']:
-            return Vectorizer(model_name, feature_type).vectors(samples, retrain).toarray()
-        elif feature_type == 'sentence-embeddings':
-            return process_sent(samples)
-        elif feature_type == 'word-embeddings':
-            return Embeddings(model_name, 100).encode_samples(samples)
-        else:
-            return samples # no change/manipulation
 
     def train_embeddings(self, model_name, dimension, sents):
         embeddings = Embeddings(model_name, dimension)
@@ -87,7 +69,7 @@ class PythonServer(object):
         embeddings = Embeddings(model_name, dimension)
         return embeddings.encode_samples(samples)
 
-# print(Embeddings('resumes', 100).vectors()) # for testing other classes directly (comment out the below zerorps server if you do this)
+# print(Embeddings('resumes', 100).vectors()) # for testing other classes directly (comment out the below zerorpc server if you do this)
 
 try:
     s = zerorpc.Server(PythonServer())

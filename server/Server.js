@@ -178,7 +178,7 @@ app.get('/training/:trainOrTest/:dataset/:modelName/:modelType/:featureType', as
     var featureType = req.params.featureType;
     try {
         var data = collectData(dataset, modelName);
-        console.log(`Starting testing on data size of (samples, labels): (${data.samples.length}, ${data.labels.length})`);
+        console.log(`Starting ${trainOrTest}ing on data size of (samples, labels): (${data.samples.length}, ${data.labels.length})`);
 
         var result = await PythonConnector.invoke(method, modelName, modelType, featureType, data.samples, data.labels);
         res.json(result);
@@ -229,6 +229,32 @@ app.get('/training/embeddings/train', async function (req, res, next) {
         res.send(404);
     }
 });
+
+app.get('/training/embeddings/visualize', async function (req, res, next) {
+    console.log(req.url);
+    try {
+        var embeddingsFilePath = path.join(__dirname, 'py_files', 'models', 'Embeddings', 'trained', 'embeddings2d.csv');
+        var coordinates = [] // [{word, xcoord, ycoord}, ...]
+        var embeddingsFileContent = fs.readFileSync(embeddingsFilePath).toString().split('\n');
+        for (var i = 1; i <= embeddingsFileContent.length; i++) {
+            var rowEntry = embeddingsFileContent[i];
+            if (rowEntry) {
+                var rowDetails = rowEntry.split(',');
+                coordinates.push({
+                    'word': rowDetails[1],
+                    'xcoord': rowDetails[2],
+                    'ycoord': rowDetails[3]
+                });
+            }
+        }
+        res.json(coordinates);
+    }
+    catch (e) {
+        console.log('error in /training/embeddings', e);
+        res.send(404);
+    }
+});
+
 
 app.get('/training/embeddings/generatecoordinates/:dimension', async function (req, res, next) {
     console.log(req.url);
