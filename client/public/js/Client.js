@@ -370,11 +370,15 @@ function visualizeEmbeddings() {
 
             var d3 = Plotly.d3;
             var N = 1470;
-            var xcoords = d3.range(N).map(d3.random.normal());
-            var ycoords = d3.range(N).map(d3.random.normal());
-            words = []
+            var xcoords = [];
+            var ycoords = [];
+            var colors = [];
+            words = [];
             for (var i=0; i<N; i++) {
                 words.push(response[i]['word']);
+                xcoords.push(response[i]['xcoord']);
+                ycoords.push(response[i]['ycoord']);
+                colors.push(i);
             }
 
             data = [{
@@ -383,16 +387,16 @@ function visualizeEmbeddings() {
                 text: words,
                 type: 'scatter',
                 name: 'Embeddings',
-                hoverinfo: 'text+x+y',
+                hoverinfo: 'text',
                 mode: 'markers',
-                marker: {color: 'rgba(200, 50, 100, .7)', size: 16}}];
+                marker: {color:colors, size: 16}}];
 
             layout = {
                 autosize: false,
-                width: 1000,
-                height: 1000,
+                width: 1200,
+                height: 1200,
                 hovermode:'closest',
-                title:'Display Hover Info for Related Points',
+                title:'2D Word Proximity',
                 xaxis:{zeroline:false, hoverformat: '.2r'},
                 yaxis:{zeroline:false, hoverformat: '.2r'}
                 };
