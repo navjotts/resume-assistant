@@ -53,10 +53,11 @@ class SentenceEmbeddings(object):
         if not self.model:
             print('Embeddings: error: unable to load model')
 
-    def similarity(self, sent1, sent2):
+    def similarity(self, sent1, sents2):
         self.load()
-        print(sent1, '\n\n\n', sent2)
         # print('similarity:', self.model.docvecs.n_similarity(sent1,sent2))
-        vec1 = self.model.infer_vector(sent1)
-        vec2 = self.model.infer_vector(sent2)
-        return spatial.distance.cosine(vec1,vec2)
+        scores = []
+        for sent in sents2:
+            scores.append(spatial.distance.cosine(self.model.infer_vector(sent1), self.model.infer_vector(sent)))
+
+        return scores
