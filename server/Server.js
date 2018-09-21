@@ -243,9 +243,7 @@ app.get('/training/embeddings/visualize/:dimension', async function (req, res, n
                 var rowDetails = rowEntry.split(',');
                 coordinates.push({
                     'word': rowDetails[1],
-                    'xcoord': rowDetails[2],
-                    'ycoord': rowDetails[3],
-                    'coords': rowDetails.slice(2) // use this 'coords' for 3D plotting
+                    'coords': rowDetails.slice(2)
                 });
             }
         }

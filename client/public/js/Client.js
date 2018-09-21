@@ -351,8 +351,8 @@ function visualizeEmbeddings() {
             words = [];
             for (var i=0; i<N; i++) {
                 words.push(response[i]['word']);
-                xcoords.push(response[i]['xcoord']);
-                ycoords.push(response[i]['ycoord']);
+                xcoords.push(response[i]['coords'][0]);
+                ycoords.push(response[i]['coords'][1]);
                 colors.push(i);
             }
 
