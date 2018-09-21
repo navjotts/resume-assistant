@@ -325,7 +325,7 @@ function trainEmbeddings() {
 
 // the server now returns an array of {'word', 'coords'}
 // I have removed the old 'xcoord', 'ycoord'
-// and I have added this new parameter 'coords' => this is an array of whatever coordinates the file has (2 coordinates for embeddings2d.csv, 2 coordinates for embeddings3d.csv)
+// and I have added this new parameter 'coords' => this is an array of whatever coordinates the file has (2 coordinates for embeddings2d.csv, 3 coordinates for embeddings3d.csv)
 // so for 2D, 'coords' will be [Number1, Number2] (where Number1 cooresponds to 'xcoord', Number2 cooresponds to 'ycoord')
 // and for 3D, 'coords' will be [Number1, Number2, Number3] (where Number1 cooresponds to 'xcoord', Number2 cooresponds to 'ycoord', Number3 cooresponds to 'zcoord')
 // -----------------------------------------------------------------------------------------------------------------------------
