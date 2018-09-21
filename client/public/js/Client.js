@@ -159,7 +159,7 @@ function summary(modelName) {
                         titlefont:{
                             family: 'Droid Sans Mono',
                             size: 40,
-                            color: '#008000'
+                            color: 'black'
                         },
                         xaxis: {
                             title: 'Model',
@@ -380,11 +380,16 @@ function visualize3dEmbeddings() {
             }];
 
             var layout = {
+                title: '3D Word Embeddings',
+                titlefont:{
+                    family: 'Droid Sans Mono',
+                    size: 40,
+                    color: 'black'
+                },
                 dragmode: true,
                 width: 1200,
                 height: 1200,
                 hovermode:'closest',
-                title:'3D Word Embeddings',
                 scene:{
                 	xaxis: {
                 	 backgroundcolor: "#FFFFFF",
@@ -451,11 +456,16 @@ function visualize2dEmbeddings() {
             }];
 
             layout = {
+                title: '2D Word Embeddings',
+                titlefont:{
+                    family: 'Droid Sans Mono',
+                    size: 40,
+                    color: 'black'
+                },
                 autosize: false,
                 width: 1200,
                 height: 1200,
                 hovermode:'closest',
-                title:'2D Word Embeddings',
                 xaxis:{zeroline:false, hoverformat: '.2r'},
                 yaxis:{zeroline:false, hoverformat: '.2r'}
             };
