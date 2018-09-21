@@ -1,5 +1,5 @@
 import numpy as np
-from sklearn.metrics import precision_recall_fscore_support, f1_score, classification_report
+from sklearn.metrics import precision_recall_fscore_support, f1_score, classification_report, confusion_matrix
 
 class AccuracyAnalysis(object):
     def score(self, y_true, y_predict):
@@ -34,3 +34,9 @@ class AccuracyAnalysis(object):
             returns a text report (string) showing the classification metrics per label
         '''
         return classification_report(y_true, y_predict, digits = 3)
+
+    def confusion_matrix(self, y_true, y_predict):
+        '''
+            returns an sklearn confusion matrix
+        '''
+        return confusion_matrix(y_true, y_predict)
