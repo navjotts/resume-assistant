@@ -9,6 +9,7 @@ from py_files.models.NaiveBayes.NaiveBayesClassifier import NaiveBayesClassifier
 from py_files.models.LSTM.LSTMClassifier import LSTMClassifier
 from py_files.models.NeuralNet.NeuralNetClassifier import NeuralNetClassifier
 from py_files.models.CNNClassifier.CNNClassifier import CNNClassifier
+
 class PythonServer(object):
     def sentences(self, text):
         return Spacy.sentences(self, text, False)
