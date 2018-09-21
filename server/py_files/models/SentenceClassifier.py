@@ -5,7 +5,7 @@ from py_files.AccuracyAnalysis import AccuracyAnalysis
 
 class SentenceClassifier(object):
     def __init__(self, name, feature_type):
-        self.num_classes = 4
+        self.num_classes = 5
         self.name = name
         self.feature_type = feature_type
         self.model = None # todo should be a dict => so that we can hold more than 1 models in memory together

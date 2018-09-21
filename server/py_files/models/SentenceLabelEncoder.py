@@ -15,5 +15,4 @@ class LabelEncoder(object):
        return np.array([self.num_encoder[label] for label in labels])
 
     def decode(self, predicitons):
-        print(predicitons)
-        return np.array([self.decoder[int(prediciton)-1] for prediciton in predicitons])
+        return np.array([self.decoder[int(prediciton)] for prediciton in predicitons])

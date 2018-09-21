@@ -22,18 +22,21 @@ class NeuralNetClassifier(KerasSentenceClassifier):
     def train(self, samples, labels):
         features = self.choose_features(samples, True)
 
-        x_train = pad_sequences(features, maxlen=100, padding='post')
-
         model = Sequential()
-        if(self.feature_type == 'word-embeddings'):
-            embedding_vecs = Embeddings(self.name, 100).vectors()
-            vocab_size = embedding_vecs.shape[0]
-            model.add(Embedding(vocab_size,100,input_length = 100, trainable =True, weights = [embedding_vecs] ))
+        embedding_size = 100
+        if self.feature_type == 'word-embeddings':
+            x_train = pad_sequences(features, maxlen=100, padding='post')
+            pretrained_embeddings = Embeddings(self.name, embedding_size).vectors()
+            vocab_size = pretrained_embeddings.shape[0]
+            model.add(Embedding(vocab_size,100,input_length = 100, trainable =True, weights = [pretrained_embeddings] ))
             model.add(Flatten())
-            model.add(Dense(128, activation='relu'))
+            model.add(Dense(64, activation='relu'))
+        elif self.feature_type in ['tf-idf', 'bow']:
+            x_train = features
+            vocab_size = x_train.shape[1]
+            model.add(Dense(128, activation='relu', input_dim = vocab_size))
         else:
-            num_inputs = Vectorizer(name, feature_type).num_inputs()
-            model.add(Dense(128, activation='relu', input_dim = num_inputs))
+            raise Exception('Please select a valid feature')
 
         model.add(Dropout(0.5))
         model.add(Dense(64, activation='relu'))
@@ -44,7 +47,6 @@ class NeuralNetClassifier(KerasSentenceClassifier):
         print(model.summary())
         self.model = model
 
-        print(labels)
         numeric_labels = LabelEncoder().encode_numerical(labels)
 
         class_weights = class_weight.compute_class_weight('balanced',
@@ -52,30 +54,33 @@ class NeuralNetClassifier(KerasSentenceClassifier):
                                                  numeric_labels)
 
         y_train = LabelEncoder().encode_catigorical(labels)
-        print(y_train)
 
-        self.model.fit(x_train, y_train, validation_split=0.2, epochs=200, batch_size=128, verbose=1, shuffle=True, class_weight=class_weights)
+        self.model.fit(x_train, y_train, validation_split=0.2, epochs=20, batch_size=128, verbose=1, shuffle=True, class_weight=class_weights)
         loss, self.accuracy = self.model.evaluate(x_train, y_train)
         print('accuracy:', self.accuracy)
 
-        self.labels_pred = LabelEncoder().decode(self.model.predict(x_test))
+        self.labels_pred = LabelEncoder().decode(self.model.predict_classes(x_train))
         return super().train(samples, labels)
 
     def test(self, samples, labels):
         self.load()
         features = self.choose_features(samples)
 
-        x_test = pad_sequences(features, maxlen=100, padding='post')
+        if self.feature_type == 'word-embeddings':
+            x_test = pad_sequences(features, maxlen=100, padding='post')
 
+        elif self.feature_type in ['tf-idf', 'bow']:
+            x_test = features
+
+        else:
+            raise Exception('Please select a valid feature')
 
         y_test = LabelEncoder().encode_catigorical(labels)
 
-        self.model.compile(loss='categorical_crossentropy', optimizer='adam', metrics=['accuracy'])
+        # self.model.compile(loss='categorical_crossentropy', optimizer='adam', metrics=['accuracy'])
         loss, self.accuracy = self.model.evaluate(x_test, y_test)
         print('accuracy:', self.accuracy)
         self.labels_pred = LabelEncoder().decode(self.model.predict_classes(x_test))
-        # print(self.labels_pred)
-
         return super().test(samples, labels)
 
     def classify(self, samples):
