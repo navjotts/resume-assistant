@@ -1,9 +1,9 @@
 import numpy as np
 class LabelEncoder(object):
     def __init__(self):
-        self.catigorical_encoder = {'EDUCATION':[1,0,0,0,0],'EXPERIENCE':[0,1,0,0,0],'PROJECT/SKILL':[0,0,1,0,0],'OTHERS':[0,0,0,1,0], '':[0,0,0,0,1]}
-        self.num_encoder =  {'EDUCATION':1,'EXPERIENCE':2,'PROJECT/SKILL':3,'OTHERS':4, '':5}
-        self.decoder = ['EDUCATION','EXPERIENCE','PROJECT/SKILL','OTHERS', '']
+        self.catigorical_encoder = {'EDUCATION':[1,0,0,0],'EXPERIENCE':[0,1,0,0],'PROJECT/SKILL':[0,0,1,0],'OTHERS':[0,0,0,1]}
+        self.num_encoder =  {'EDUCATION':1,'EXPERIENCE':2,'PROJECT/SKILL':3,'OTHERS':4}
+        self.decoder = ['EDUCATION','EXPERIENCE','PROJECT/SKILL','OTHERS']
 
 
     def encode_catigorical(self, labels):

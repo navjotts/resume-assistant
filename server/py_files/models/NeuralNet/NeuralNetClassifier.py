@@ -55,7 +55,7 @@ class NeuralNetClassifier(KerasSentenceClassifier):
 
         y_train = LabelEncoder().encode_catigorical(labels)
 
-        self.model.fit(x_train, y_train, validation_split=0.2, epochs=20, batch_size=128, verbose=1, shuffle=True, class_weight=class_weights)
+        self.model.fit(x_train, y_train, validation_split=0.05, epochs=20, batch_size=4, verbose=1, shuffle=True, class_weight=class_weights)
         loss, self.accuracy = self.model.evaluate(x_train, y_train)
         print('accuracy:', self.accuracy)
 
