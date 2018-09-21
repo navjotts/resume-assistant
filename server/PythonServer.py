@@ -10,8 +10,6 @@ from py_files.models.LSTM.LSTMClassifier import LSTMClassifier
 from py_files.models.NeuralNet.NeuralNetClassifier import NeuralNetClassifier
 from py_files.models.CNNClassifier.CNNClassifier import CNNClassifier
 from py_files.models.Embeddings.Embeddings import Embeddings
-from py_files.models.classifier import CNN
-from py_files.Preprocess.NLP_preprocess import process_sent
 
 class PythonServer(object):
     def sentences(self, text):
@@ -51,11 +49,11 @@ class PythonServer(object):
             return RandForestClassifier(model_name, feature_type)
         elif model_type == 'NaiveBayes':
             return NaiveBayesClassifier(model_name, feature_type)
-        elif(model_type == 'LSTM'):
+        elif model_type == 'LSTM':
             return LSTMClassifier(model_name, feature_type)
-        elif(model_type == "NeuralNet"):
+        elif model_type == 'NeuralNet':
             return NeuralNetClassifier(model_name, feature_type)
-        elif(model_type == "CNN"):
+        elif model_type == 'CNN':
             return CNNClassifier(model_name, feature_type)
         else:
             raise Exception('Please enter a valid model')
