@@ -340,43 +340,6 @@ function visualizeEmbeddings() {
     $.ajax({
         url: `http://localhost:3000/training/embeddings/visualize/${dimension}`,
         success: function(response) {
-            // var output = "<div class=\"result_header\">WORD EMBEDDINGS</div><div id=\"embeddings_plot\" style=\"margin:20px;\">HERE WILL COME THE PLOTLY GRAPH</div>";
-            // var data = [];
-
-            // response.forEach(item => {
-            //     var word = item['word']
-            //     var xcoord = Number(item['xcoord'])
-            //     var ycoord = Number(item['ycoord'])
-            //     var point = {
-            //         x: xcoord,
-            //         y: ycoord,
-            //         text: word,
-            //         type: 'scatter',
-            //         mode: 'markers',
-            //         marker: {color: 'rgba(200, 50, 100, .7)', size: 16}
-            //     };
-
-            //     data.push(point);
-            // });
-
-            // var layout = {
-            //     autosize: false,
-            //     width: 900,
-            //     height: 900,
-            //     title: 'Embeddings',
-            //     xaxis: {
-            //         range: [-100, 100]
-            //     },
-            //     yaxis: {
-            //         range: [-100, 100]
-            //     }
-            // };
-
-            // $('#embeddings_visualization').html(output);
-            // console.log('DATA IS HERE---');
-            // console.log(data);
-            // Plotly.newPlot('embeddings_plot', data, layout);
-
             var output = "<div class=\"result_header\">WORD EMBEDDINGS</div><div id=\"embeddings_plot\" style=\"margin:20px;\"></div>";
             $('#embeddings_visualization').html(output);
 
