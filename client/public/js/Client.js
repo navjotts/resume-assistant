@@ -364,12 +364,18 @@ function visualize3dEmbeddings() {
             data = [{
                 x: xcoords,
                 y: ycoords,
+                z: zcoords,
                 text: words,
                 type: 'scatter',
                 name: '3D Embeddings',
                 hoverinfo: 'text',
                 mode: 'markers',
-                marker: {color: 'rgba(200, 50, 100, .7)', size: 16}
+                marker: {color: xcoords, opacity: 0.75, size: 14,
+                    line: {
+                        color: 'rgb(231, 99, 250)',
+                         width: 0.7
+                        }
+                }
             }];
 
             var trace1 = {
@@ -400,7 +406,6 @@ function visualize3dEmbeddings() {
             },
             type: 'scatter3d'
             };
-            var data = [trace1];
             var layout = {
                 dragmode: false,
                 margin: {
@@ -497,10 +502,17 @@ function generateEmbeddingsCoordinates() {
 }
 
 function generateColor() {
-    var score = 0.8 // change this to test
+    var score = .1 // change this to test
+    console.log(score, " This is the score")
+    function getColor(value){
+        //value from 0 to 1
+        var hue=((value)*120).toString(10);
+        return ["hsl(",hue,",100%,50%)"].join("");
+    }
     // TODO color generation logic ..
     // color value has to be divided into 3 regions: it goes from 0 for red, to becoming yellow-ish at around 0.3, to becoming greenish at 0.7 to full green at 1.0
-    color = '#ff0000';
+    color = getColor(score)
+    console.log(color)
     var output = "<div style=\"margin:20px; background-color:" + color + ";\">TEST</div>";
     $('#embeddings_visualization').html(output);
 }
