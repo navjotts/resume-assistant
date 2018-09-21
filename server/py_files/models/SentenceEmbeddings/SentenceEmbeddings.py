@@ -4,6 +4,7 @@ import gensim.models.doc2vec as d2v
 from scipy import spatial
 from sklearn.metrics.pairwise import cosine_similarity
 import numpy as np
+import math
 
 import logging
 logging.basicConfig(format='%(asctime)s : %(levelname)s : %(message)s', level=logging.INFO)
@@ -59,14 +60,18 @@ class SentenceEmbeddings(object):
         self.load()
         # print('similarity:', self.model.docvecs.n_similarity(sent1,sent2))
         scores = []
+        sent1_dum = self.model.infer_vector(sent1)
+        l2_sent1 = math.sqrt(np.dot(sent1_dum, sent1_dum))
         for sent in sents2:
-            new = spatial.distance.cosine(self.model.infer_vector(sent1), self.model.infer_vector(sent))
-            # new = cosine_similarity(np.array(self.model.infer_vector(sent1)).reshape(1,-1), np.array(self.model.infer_vector(sent)).reshape(1,-1))
-            if new > 1:
-                new = 1
-            elif new < 0:
-                new = 0
+            sent_dum = self.model.infer_vector(sent)
+            l2_sent = math.sqrt(np.dot(sent_dum, sent_dum))
+            score = np.dot(sent1_dum, sent_dum) / (l2_sent1 * l2_sent)
+            # score = spatial.distance.cosine(self.model.infer_vector(sent1), self.model.infer_vector(sent))
+            # score = cosine_similarity(np.array(self.model.infer_vector(sent1)).reshape(1,-1), np.array(self.model.infer_vector(sent)).reshape(1,-1))
+            if score > 1:
+                score = 1
+            elif score < 0:
+                score = 0
 
-            new = new * 0.75
-            scores.append(new)
+            scores.append(score)
         return scores
