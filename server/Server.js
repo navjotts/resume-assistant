@@ -103,7 +103,7 @@ app.get('/training/jobs/:id', function (req, res, next) {
             parentId: parent,
             id: jobId,
             sents: jobData.content,
-            title: 'Job#' + jobId
+            title: fileName
         });
     }
 });
@@ -149,10 +149,16 @@ function collectData(parent, name) {
         var fileName = files[i];
         if (fileName.split('.').pop() === 'json') {
             var docData = JSON.parse(fs.readFileSync(path.join(dbDir, fileName)));
-            docData.content.forEach(each => {
-                samples.push(each.sentence);
-                labels.push(each.label === 'WORK EXPERIENCE' ? 'EXPERIENCE' : each.label); // TODO https://github.com/navjotts/resume-assistant/issues/5
-            });
+            var emptyLabels = docData.content.filter(each => each.label.length==0);
+            if (emptyLabels.length == 0) {
+                docData.content.forEach(each => {
+                    samples.push(each.sentence);
+                    labels.push(each.label === 'WORK EXPERIENCE' ? 'EXPERIENCE' : each.label); // TODO https://github.com/navjotts/resume-assistant/issues/5
+                });
+            }
+            else {
+                console.log('NOT LABELLED!', fileName);
+            }
         }
     }
 
@@ -162,7 +168,7 @@ function collectData(parent, name) {
 app.get('/training/:trainOrTest/:dataset/:modelName/:modelType/:featureType', async function (req, res, next) {
     console.log(req.url);
     var modelName = req.params.modelName;
-    if (modelName != 'resumes') {
+    if (!['resumes', 'jobs'].includes(modelName)) {
         console.log('wip');
         res.send(200);
         return;
@@ -178,7 +184,7 @@ app.get('/training/:trainOrTest/:dataset/:modelName/:modelType/:featureType', as
     var featureType = req.params.featureType;
     try {
         var data = collectData(dataset, modelName);
-        console.log(`Starting ${trainOrTest}ing on data size of (samples, labels): (${data.samples.length}, ${data.labels.length})`);
+        console.log(`Starting ${trainOrTest}ing for ${modelName}, on dataset ${dataset}, data size of (samples, labels): (${data.samples.length}, ${data.labels.length})`);
 
         var result = await PythonConnector.invoke(method, modelName, modelType, featureType, data.samples, data.labels);
         console.log(`Finished ${trainOrTest}ing.`);
@@ -285,19 +291,37 @@ app.get('/analyze/:resumeFile/:jobFile', async function (req, res, next) {
 
         var tempFilePath = path.join(__dirname, 'uploads', resumeFileName.split('.')[0] + '.txt');
         fs.writeFileSync(tempFilePath, text);
-        var sentences = await PythonConnector.invoke('sentences_from_file_lines', tempFilePath);
+        var resumeSentences = await PythonConnector.invoke('sentences_from_file_lines', tempFilePath);
 
-        var samples = [];
-        sentences.forEach(sent => samples.push(sent)); // TODO use concat
-        var labelsPredicted = await PythonConnector.invoke('classify_sentences', 'resumes', 'FastText', 'None', samples);
-        // var labelsPredicted = await PythonConnector.invoke('classify_sentences', 'resumes', 'LogisticRegression', 'tf-idf', samples);
+        var resumeSamples = [];
+        resumeSentences.forEach(sent => resumeSamples.push(sent)); // TODO use concat
+        var resumeLabelsPredicted = await PythonConnector.invoke('classify_sentences', 'resumes', 'FastText', 'None', resumeSamples);
+        console.assert(resumeLabelsPredicted.length == resumeSamples.length);
 
-        console.assert(labelsPredicted.length == samples.length);
+        var jobFile = fs.readFileSync(jobFilePath).toString();
+        var jobSentences = await PythonConnector.invoke('sentences', jobFile);
+
+        var jobSamples = [];
+        jobSentences.forEach(sent => jobSamples.push(sent)); // TODO use concat
+        var jobLabelsPredicted = await PythonConnector.invoke('classify_sentences', 'jobs', 'FastText', 'None', jobSamples);
+        console.assert(jobLabelsPredicted.length == jobSamples.length);
+
+        var jobsData = {};
+        jobSamples.forEach((sent, index) => {
+            var label = jobLabelsPredicted[index][0];
+            var sentence = sent.join(' ');
+            if (!jobsData[label]) {
+                jobsData[label] = [];
+            }
+            jobsData[label].push(sentence);
+        });
+        console.log(jobsData);
+
         var data = []
-        samples.forEach((sent, index) => data.push({
+        resumeSamples.forEach((sent, index) => data.push({
             sentence: sent.join(' '),
-            label: labelsPredicted[index][0] === 'EXPERIENCE' ? 'WORK EXPERIENCE' : labelsPredicted[index][0],
-            confidence: Math.round(labelsPredicted[index][1] * 1000) / 10
+            label: resumeLabelsPredicted[index][0] === 'EXPERIENCE' ? 'WORK EXPERIENCE' : resumeLabelsPredicted[index][0],
+            confidence: Math.round(resumeLabelsPredicted[index][1] * 1000) / 10
         }));
         res.json(data);
     }

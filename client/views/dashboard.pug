@@ -42,14 +42,14 @@ html
                         input(type='radio', name='resumesModelType', value='FastText')
                         label(class='model-labels')='FastText'
                         <br/>
-                        input(type='radio', name='resumesModelType', value='LSTM')
-                        label(class='model-labels')='LSTM'
-                        <br/>
                         input(type='radio', name='resumesModelType', value='NeuralNet')
                         label(class='model-labels')='Neural Network'
                         <br/>
+                        input(type='radio', name='resumesModelType', value='LSTM')
+                        label(class='model-labels')='LSTM'
+                        <br/>
                         input(type='radio', name='resumesModelType', value='CNN')
-                        label(class='model-labels')='Convelutional Neural Network'
+                        label(class='model-labels')='CNN'
                         <br/>
                     <br/>
                     label(class='dashboard_form_header_label')='Select Feature'
@@ -101,6 +101,9 @@ html
                     <br/>
                     label(class='dashboard_form_header_label')='Select Feature'
                     form(class='dashboard_form', name='jobsFeatureForm')
+                        input(type='radio', name='jobsFeatureType', value='bow')
+                        label(class='model-labels')='BoW'
+                        <br/>
                         input(type='radio', name='jobsFeatureType', value='tf-df')
                         label(class='model-labels')='tf-df'
                         <br/>
@@ -109,6 +112,15 @@ html
                         <br/>
                         input(type='radio', name='jobsFeatureType', value='sentence-embeddings')
                         label(class='model-labels')='sentence embeddings'
+                        <br/>
+                    <br/>
+                    label(class='dashboard_form_header_label')='Select Dataset'
+                    form(class='dashboard_form', name='jobsDatasetForm')
+                        input(type='radio', name='jobsDataset', value='DB')
+                        label(class='model-labels')='Training dataset'
+                        <br/>
+                        input(type='radio', name='jobsDataset', value='testDB')
+                        label(class='model-labels')='Test dataset'
                         <br/>
                     <br/>
                     button(class='train_test_button',
