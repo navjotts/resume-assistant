@@ -142,14 +142,14 @@ body {
 
 .left-child {
     flex: 1;
-    flex-basis: 80%;
+    flex-basis: 92%;
     text-align: left;
     vertical-align: middle;
 }
 
 .right-child {
     flex: 1;
-    flex-basis: 20%;
+    flex-basis: 8%;
     text-align: right;
     vertical-align: middle;
 }
