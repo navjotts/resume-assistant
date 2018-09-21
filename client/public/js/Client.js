@@ -349,6 +349,29 @@ function visualize3dEmbeddings() {
                     return rows.map(function(row) 
                     { return row[key]; });
                 }
+
+            words = [];
+            var xcoords = [];
+            var ycoords = [];
+            var zcoords = [];
+            response.forEach(item => {
+                words.push(item['word']);
+                xcoords.push(item['coords'][0]);
+                ycoords.push(item['coords'][1]);
+                zcoords.push(item['coords'][2]);
+            });
+
+            data = [{
+                x: xcoords,
+                y: ycoords,
+                text: words,
+                type: 'scatter',
+                name: '3D Embeddings',
+                hoverinfo: 'text',
+                mode: 'markers',
+                marker: {color: 'rgba(200, 50, 100, .7)', size: 16}
+            }];
+
             var trace1 = {
             x:unpack(rows, 'x1'),  y: unpack(rows, 'y1'), z: unpack(rows, 'z1'), 
             mode: 'markers',
@@ -377,7 +400,7 @@ function visualize3dEmbeddings() {
             },
             type: 'scatter3d'
             };
-            var data = [trace1, trace2];
+            var data = [trace1];
             var layout = {
                 dragmode: false,
                 margin: {
@@ -386,7 +409,7 @@ function visualize3dEmbeddings() {
                 b: 0,
                 t: 0
             }};
-            Plotly.newPlot('myDiv', data, layout);
+            Plotly.newPlot('embeddings_plot', data, layout);
         });
         },
         error: function(response) {
@@ -422,7 +445,12 @@ function visualize2dEmbeddings() {
                 name: 'Embeddings',
                 hoverinfo: 'text',
                 mode: 'markers',
-                marker: {color: 'rgba(200, 50, 100, .7)', size: 16}
+                marker: {color: xcoords, opacity: 0.75, size: 14,
+                    line: {
+                        color: 'rgb(231, 99, 250)',
+                         width: 0.7
+                        }
+                }
             }];
 
             layout = {
