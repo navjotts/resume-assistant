@@ -5,10 +5,10 @@ from keras.models import Sequential
 from keras.optimizers import adam
 from keras.layers import LSTM, Dense, Dropout, Embedding, Conv1D, MaxPool1D, Flatten
 from keras.preprocessing.sequence import pad_sequences
-from sklearn.preprocessing import LabelEncoder
 from keras.utils import to_categorical
 from sklearn.utils import class_weight
 
+from py_files.models.SentenceLabelEncoder import LabelEncoder
 from py_files.models.Embeddings.Embeddings import Embeddings
 from py_files.models.KerasSentenceClassifier import KerasSentenceClassifier
 
@@ -20,17 +20,20 @@ class CNNClassifier(KerasSentenceClassifier):
     def train(self, samples, labels):
         features = self.choose_features(samples, True)
 
-        if(self.feature_type != 'word-embeddings'):
-            raise Exception('CNN model is only configured for word-embeddings at the moment please train wiht word embeddings')
-
-        x_train = pad_sequences(features, maxlen=100, padding='post')
-
-        embedding_vecs = Embeddings(self.name, 100).vectors()
-        vocab_size = embedding_vecs.shape[0]
-
-
         model = Sequential()
-        model.add(Embedding(vocab_size,100,input_length = 100, trainable =True, weights = [embedding_vecs] ))
+        embedding_size = 100
+        if self.feature_type == 'word-embeddings':
+            x_train = pad_sequences(features, maxlen=100, padding='post')
+            pretrained_embeddings = Embeddings(self.name, embedding_size).vectors()
+            vocab_size = pretrained_embeddings.shape[0]
+            model.add(Embedding(vocab_size,100,input_length = 100, trainable =True, weights = [pretrained_embeddings] ))
+        elif self.feature_type in ['tf-idf', 'bow']:
+            x_train = features
+            vocab_size = x_train.shape[1]
+            model.add(Embedding(vocab_size , 100, input_length = vocab_size, trainable =True))
+        else:
+            raise Exception('Please select a valid feature')
+        
         model.add(Conv1D(256, 5, activation='relu',data_format='channels_first', padding = 'valid', strides = 4))
         model.add(MaxPool1D(5))
         model.add(Dropout(0.3))
@@ -46,42 +49,42 @@ class CNNClassifier(KerasSentenceClassifier):
         print(model.summary())
         self.model = model
 
-        numeric_labels = LabelEncoder().fit_transform(labels)
+        numeric_labels = LabelEncoder().encode_numerical(labels)
 
         class_weights = class_weight.compute_class_weight('balanced',
                                             np.unique(numeric_labels),
                                             numeric_labels)
 
-        y_train = to_categorical(numeric_labels, self.num_classes)
+        y_train = LabelEncoder().encode_catigorical(labels)
 
-        self.model.fit(x_train, y_train, validation_split=0.2, epochs=200, batch_size=128, verbose=1, shuffle=True, class_weight=class_weights)
+        self.model.fit(x_train, y_train, validation_split=0.2, epochs=20, batch_size=128, verbose=1, shuffle=True, class_weight=class_weights)
         loss, self.accuracy = self.model.evaluate(x_train, y_train)
         print('accuracy:', self.accuracy)
 
+        self.labels_pred = LabelEncoder().decode(self.model.predict_classes(x_train))
         return super().train(samples, labels)
 
     def test(self, samples, labels):
         self.load()
         features = self.choose_features(samples)
 
-        if(self.feature_type != 'word-embeddings'):
-            raise Exception('CNN model is only configured for word-embeddings at the moment please train wiht word embeddings')
+        if self.feature_type == 'word-embeddings':
+            x_test = pad_sequences(features, maxlen=100, padding='post')
 
-        x_test = pad_sequences(features, maxlen=100, padding='post')
+        elif self.feature_type in ['tf-idf', 'bow']:
+            x_test = features
 
-        numeric_labels = LabelEncoder().fit_transform(labels)
-        y_test = to_categorical(numeric_labels, self.num_classes)
+        else:
+            raise Exception('Please select a valid feature')
 
-        optimizer = adam(lr=0.001)
+        y_test = LabelEncoder().encode_catigorical(labels)
 
-        self.model.compile(loss='categorical_crossentropy', optimizer=optimizer, metrics=['accuracy'])
+        # self.model.compile(loss='categorical_crossentropy', optimizer=optimizer, metrics=['accuracy'])
+        print(y_test)
         loss, self.accuracy = self.model.evaluate(x_test, y_test)
         print('accuracy:', self.accuracy)
 
-        # self.labels_pred = self.model.predict(x_test)
-        # print(self.labels_pred)
-        # return super().test(samples, features, labels)
-
+        self.labels_pred = LabelEncoder().decode(self.model.predict_classes(x_test))
         return super().test(samples, labels)
 
     def classify(self, samples):
