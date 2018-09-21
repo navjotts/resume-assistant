@@ -324,95 +324,97 @@ function trainEmbeddings() {
 }
 
 function visualizeEmbeddings() {
+    var dimension = 2;
     $.ajax({
-        url: `http://localhost:3000/training/embeddings/visualize`,
+        url: `http://localhost:3000/training/embeddings/visualize/${dimension}`,
         success: function(response) {
-            var output = "<div class=\"result_header\">WORD EMBEDDINGS</div><div id=\"embeddings_plot\" style=\"margin:20px;\">HERE WILL COME THE PLOTLY GRAPH</div>";
-            var data = [];
+            // var output = "<div class=\"result_header\">WORD EMBEDDINGS</div><div id=\"embeddings_plot\" style=\"margin:20px;\">HERE WILL COME THE PLOTLY GRAPH</div>";
+            // var data = [];
 
-            response.forEach(item => {
-                var word = item['word']
-                var xcoord = Number(item['xcoord'])
-                var ycoord = Number(item['ycoord'])
-                var point = {
-                    x: xcoord,
-                    y: ycoord,
-                    text: word,
-                    type: 'scatter',
-                    mode: 'markers',
-                    marker: {color: 'rgba(200, 50, 100, .7)', size: 16}
+            // response.forEach(item => {
+            //     var word = item['word']
+            //     var xcoord = Number(item['xcoord'])
+            //     var ycoord = Number(item['ycoord'])
+            //     var point = {
+            //         x: xcoord,
+            //         y: ycoord,
+            //         text: word,
+            //         type: 'scatter',
+            //         mode: 'markers',
+            //         marker: {color: 'rgba(200, 50, 100, .7)', size: 16}
+            //     };
+
+            //     data.push(point);
+            // });
+
+            // var layout = {
+            //     autosize: false,
+            //     width: 900,
+            //     height: 900,
+            //     title: 'Embeddings',
+            //     xaxis: {
+            //         range: [-100, 100]
+            //     },
+            //     yaxis: {
+            //         range: [-100, 100]
+            //     }
+            // };
+
+            // $('#embeddings_visualization').html(output);
+            // console.log('DATA IS HERE---');
+            // console.log(data);
+            // Plotly.newPlot('embeddings_plot', data, layout);
+
+            var output = "<div class=\"result_header\">WORD EMBEDDINGS</div><div id=\"embeddings_plot\" style=\"margin:20px;\"></div>";
+            $('#embeddings_visualization').html(output);
+
+            var d3 = Plotly.d3;
+            var N = 1470;
+            var xcoords = d3.range(N).map(d3.random.normal());
+            var ycoords = d3.range(N).map(d3.random.normal());
+            words = []
+            for (var i=0; i<N; i++) {
+                words.push(response[i]['word']);
+            }
+
+            data = [{
+                x: xcoords,
+                y: ycoords,
+                text: words,
+                type: 'scatter',
+                name: 'Embeddings',
+                hoverinfo: 'text+x+y',
+                mode: 'markers',
+                marker: {color: 'rgba(200, 50, 100, .7)', size: 16}}];
+
+            layout = {
+                autosize: false,
+                width: 1000,
+                height: 1000,
+                hovermode:'closest',
+                title:'Display Hover Info for Related Points',
+                xaxis:{zeroline:false, hoverformat: '.2r'},
+                yaxis:{zeroline:false, hoverformat: '.2r'}
                 };
 
-                data.push(point);
-            });
-
-            console.log(data);
-            var layout = {
-                autosize: false,
-                width: 900,
-                height: 900,
-                title: 'Embeddings',
-                xaxis: {
-                    range: [-100, 100]
-                },
-                yaxis: {
-                    range: [-100, 100]
-                }
-            };
-
-            $('#embeddings_visualization').html(output);
+            console.log('SAMPLE DATA---');
+            console.log(data)
             Plotly.newPlot('embeddings_plot', data, layout);
+
+            // hovering code
+            var myPlot = document.getElementById('embeddings_plot');
+            myPlot.on('plotly_hover', function (eventdata){
+            var points = eventdata.points[0],
+                pointNum = points.pointNumber;
+                Plotly.Fx.hover('embeddings_plot',[
+                    {curveNumber:0, pointNumber:pointNum}
+                ]);
+            });
         },
         error: function(response) {
             console.log('error in trainEmbeddings()', response);
         }
     });
-
-//    var myPlot = document.getElementById('embeddings_visualization'),
-//    d3 = Plotly.d3,
-//    N = 120,
-//    x1 = d3.range(N).map( d3.random.normal() ),
-//    x2 = d3.range(N).map( d3.random.normal() ),
-//    x3 = d3.range(N).map( d3.random.normal() ),
-//    y1 = d3.range(N).map( d3.random.normal() ),
-//    y2 = d3.range(N).map( d3.random.normal() ),
-//    y3 = d3.range(N).map( d3.random.normal() ),
-//    months = ['January', 'February', 'March', 'April',
-//              'May', 'June', 'July', 'August',
-//              'September', 'October', 'November', 'December']
-    //    data = [{ x: x1, y: y1, text: months, type: 'scatter', name: '2014', hoverinfo: 'text+x+y',
-    //              mode: 'markers', marker: {color: 'rgba(200, 50, 100, .7)', size: 16}
-    //            },
-    //            { x: x2, y: y2, text: months, type: 'scatter', name: '2015', hoverinfo: 'text+x+y',
-    //             mode: 'markers', marker: {color: 'rgba(120, 20, 130, .7)', size: 16}
-    //            },
-    //            { x: x3, y: y3, text: months, type: 'scatter', name: '2016', hoverinfo: 'text+x+y',
-    //             mode: 'markers', marker: {color: 'rgba(10, 180, 180, .8)', size: 16}
-    //            }];
-//    layout = {
-//        autosize: false,
-//        width: 1000,
-//        height: 1000,
-//        hovermode:'closest',
-//        title:'Display Hover Info for Related Points',
-//        xaxis:{zeroline:false, hoverformat: '.2r'},
-//        yaxis:{zeroline:false, hoverformat: '.2r'}
-//     };
-//     console.log(data)
-////
-//Plotly.newPlot('embeddings_visualization', data, layout);
-////
-//myPlot.on('plotly_hover', function (eventdata){
-//    var points = eventdata.points[0],
-//        pointNum = points.pointNumber;
-////
-//    Plotly.Fx.hover('embeddings_visualization',[
-//        { curveNumber:0, pointNumber:pointNum },
-//        { curveNumber:1, pointNumber:pointNum },
-//        { curveNumber:2, pointNumber:pointNum },
-//    ]);
-//});
-
 }
 
 function generateEmbeddingsCoordinates() {

@@ -230,10 +230,11 @@ app.get('/training/embeddings/train', async function (req, res, next) {
     }
 });
 
-app.get('/training/embeddings/visualize', async function (req, res, next) {
+app.get('/training/embeddings/visualize/:dimension', async function (req, res, next) {
     console.log(req.url);
+    var dimension = req.params.dimension;
     try {
-        var embeddingsFilePath = path.join(__dirname, 'py_files', 'models', 'Embeddings', 'trained', 'embeddings2d.csv');
+        var embeddingsFilePath = path.join(__dirname, 'py_files', 'models', 'Embeddings', 'trained', 'embeddings' + dimension + `d.csv`);
         var coordinates = [] // [{word, xcoord, ycoord}, ...]
         var embeddingsFileContent = fs.readFileSync(embeddingsFilePath).toString().split('\n');
         for (var i = 1; i <= embeddingsFileContent.length; i++) {
