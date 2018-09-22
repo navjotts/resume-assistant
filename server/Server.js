@@ -392,6 +392,7 @@ app.get('/analyze/:resumeFile/:jobFile', async function (req, res, next) {
             }
             else {
                 var jobSents = jobsData[resumeLabel];
+                // TODO make it 1 single call outside of the loop
                 scores = await PythonConnector.invoke('sentence_similarity', 'resumes_jobs', 100, resumeSent, jobSents);
             }
 
