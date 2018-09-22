@@ -381,26 +381,25 @@ app.get('/analyze/:resumeFile/:jobFile', async function (req, res, next) {
             jobsData[label].push(sent);
         });
 
+        // TODO this goes into a separate model class
+        var sentsToCompare = [];
+        resumeSamples.forEach((resumeSent, index) => {
+            var resumeLabel = resumeLabelsPredicted[index][0];
+            var jobSents = [];
+            if (resumeLabel != 'OTHERS') { // if predicted OTHERS, then we don't really wish to generate a score (as OTHERS is the stuff which doesn't matter for our use-case)
+                jobSents = jobsData[resumeLabel];
+            }
+            sentsToCompare.push({'from': resumeSent, 'to': jobSents});
+        });
+
+        scores = await PythonConnector.invoke('sentence_similarity_score', 'resumes_jobs', 100, sentsToCompare);
         var data = [];
-        for (var i = 0; i < resumeSamples.length; i++) {
-            resumeSent = resumeSamples[i];
-            var resumeLabel = resumeLabelsPredicted[i][0];
-            var scores = [];
-
-            if (resumeLabel == 'OTHERS') {
-                scores = [1.0]
-            }
-            else {
-                var jobSents = jobsData[resumeLabel];
-                // TODO make it 1 single call outside of the loop
-                scores = await PythonConnector.invoke('sentence_similarity', 'resumes_jobs', 100, resumeSent, jobSents);
-            }
-
+        resumeSamples.forEach((sent, index) => {
             data.push({
-                sentence: resumeSent.join(' '),
-                score: Math.round(Math.max(...scores) * 1000) / 10
+                sentence: sent.join(' '),
+                score: Math.round(scores[index] * 1000) / 10
             });
-        }
+        });
 
         res.json(data);
     }

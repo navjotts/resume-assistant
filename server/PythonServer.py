@@ -67,9 +67,9 @@ class PythonServer(object):
         sent_embeddings = SentenceEmbeddings(model_name, dimension)
         sent_embeddings.train(sents)
 
-    def sentence_similarity(self, model_name, dimension, sent1, sents2):
+    def sentence_similarity_score(self, model_name, dimension, sents):
         sent_embeddings = SentenceEmbeddings(model_name, dimension)
-        return sent_embeddings.similarity(sent1, sents2)
+        return sent_embeddings.similarity_score(sents)
 
     def generate_embeddings_coordinates(self, model_name, dimension, reduced_dimension):
         embeddings = Embeddings(model_name, dimension)

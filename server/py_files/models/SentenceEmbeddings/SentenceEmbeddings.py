@@ -53,19 +53,32 @@ class SentenceEmbeddings(object):
         if not self.model:
             print('Embeddings: error: unable to load model')
 
-    def similarity(self, sent1, sents2):
-        self.load()
+    # sents is a list of dicts with 2 keys: 'from' and 'to'
+    # where 'from' is the base sentence we want to compare,
+    # 'to' is a list of sentences we want to compare our from_sentence to
+    # and it returns the best similarity_score the from_sentence can find in its respetive to_sentences
+    # score b/w 0 and 1
+    def similarity_score(self, groups_of_sents):
         scores = []
-        sent1_dum = self.model.infer_vector(sent1)
-        l2_sent1 = math.sqrt(np.dot(sent1_dum, sent1_dum))
-        for sent in sents2:
-            sent_dum = self.model.infer_vector(sent)
-            l2_sent = math.sqrt(np.dot(sent_dum, sent_dum))
-            score = np.dot(sent1_dum, sent_dum) / (l2_sent1 * l2_sent)
-            # score = spatial.distance.cosine(self.model.infer_vector(sent1), self.model.infer_vector(sent))
-            # score = cosine_similarity(np.array(self.model.infer_vector(sent1)).reshape(1,-1), np.array(self.model.infer_vector(sent)).reshape(1,-1))
-            # print('similarity:', self.model.docvecs.n_similarity(sent1, sent))
-            score = 1 if score > 1 else (0 if score < 0 else score)
-            scores.append(score)
+        for group in groups_of_sents:
+            from_sent = group['from']
+            to_sents = group['to']
+            if len(to_sents) == 0:
+                scores.append(1.0) # if nothing to compare to
+            else:
+                self.model = d2v.Doc2Vec.load(self.path) # todo this should not be here (leaving for now to match last demo results)
+                from_sent_dum = self.model.infer_vector(from_sent)
+                from_sent_l2 = math.sqrt(np.dot(from_sent_dum, from_sent_dum))
+                group_scores = []
+                for sent in to_sents:
+                    sent_dum = self.model.infer_vector(sent)
+                    sent_l2 = math.sqrt(np.dot(sent_dum, sent_dum))
+                    score = np.dot(from_sent_dum, sent_dum) / (from_sent_l2 * sent_l2)
+                    # score = spatial.distance.cosine(self.model.infer_vector(from_sent), self.model.infer_vector(sent))
+                    # score = cosine_similarity(np.array(self.model.infer_vector(from_sent)).reshape(1,-1), np.array(self.model.infer_vector(sent)).reshape(1,-1))
+                    # print('similarity:', self.model.docvecs.n_similarity(from_sent, sent))
+                    score = 1 if score > 1 else (0 if score < 0 else score)
+                    group_scores.append(score)
+                scores.append(max(group_scores))
 
         return scores
