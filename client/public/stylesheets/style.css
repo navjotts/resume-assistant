@@ -9,8 +9,8 @@ body {
 .center {
     margin: auto;
     padding: 10px;
-    padding-left:50px;
-    padding-right:50px;
+    padding-left: 50px;
+    padding-right: 50px;
     text-align: center;
     font-size: 14px;
 }
@@ -19,8 +19,8 @@ body {
     text-align: left;
     font-size: 14px;
     padding: 10px 10px 10px 10px;
-    padding-left:20px;
-    padding-right:20px;
+    padding-left: 20px;
+    padding-right: 20px;
     margin: 10px 10px 10px 10px;
 }
 
@@ -51,7 +51,6 @@ body {
     flex: 1;
     width: 0;
     text-align: left;
-    margin-left: 50px;
     text-decoration: underline;
     color: #000;
 }
@@ -60,12 +59,11 @@ body {
     flex: 1;
     width: 0;
     text-align: right;
-    margin-right: 50px;
     text-decoration: underline;
     color: #000;
 }
 
-.training-list {
+.model-list {
     display: flex;
     justify-content: space-between;
     text-align: center;
@@ -74,16 +72,39 @@ body {
     margin-right: 50px;
 }
 
+.model-list-left {
+    flex: 1;
+    width: 0;
+    text-align: left;
+    border-right: 1px solid #F0F0F0;
+}
+
+.model-list-right {
+    flex: 1;
+    width: 0;
+    text-align: right;
+    border-left: 1px solid #F0F0F0;
+}
+
+.training-list {
+    display: flex;
+    justify-content: space-between;
+    text-align: center;
+    margin-top: 20px;
+}
+
 .training-list-left {
     flex: 1;
     width: 0;
     text-align: left;
+    border-right: 1px solid #F0F0F0;
 }
 
 .training-list-right {
     flex: 1;
     width: 0;
     text-align: right;
+    border-left: 1px solid #F0F0F0;
 }
 
 .file-link {
@@ -121,14 +142,14 @@ body {
 
 .left-child {
     flex: 1;
-    width: 0;
+    flex-basis: 92%;
     text-align: left;
     vertical-align: middle;
 }
 
 .right-child {
     flex: 1;
-    width: 0;
+    flex-basis: 8%;
     text-align: right;
     vertical-align: middle;
 }
@@ -186,7 +207,39 @@ button.choose_file_button {
   color: #3a7cc9;
 }
 
+button.dashboard_tab {
+  width: 150px;
+  height: 40px;
+  border-radius: 2px;
+  background-color: #ffffff;
+  border: solid 1px #E1E5E8;
+  font-size: 13px;
+  color: #000000;
+}
+
+button.dashboard_tab_focussed {
+  width: 150px;
+  height: 40px;
+  border-radius: 2px;
+  background-color: #F0F0F0;
+  border: solid 1px #E1E5E8;
+  font-size: 13px;
+  color: #000000;
+}
+
+button.train_test_button {
+    width: 80px;
+    height: 30px;
+    border: solid 1px #282C31;
+    border-radius: 4px;
+    background-color: #282C31;
+    color: #ffffff;
+    margin-right: 20px;
+}
+
 button:focus {outline:0;}
+
+button.train_test_button:hover {background-color: #000000;}
 
 .document {
     margin: auto;
@@ -222,4 +275,64 @@ button:focus {outline:0;}
     padding:8px;
     padding-right:20px;
     color: #3a7cc9;
+}
+
+.model-labels {
+    padding-left: 5px;
+    padding-right: 5px;
+}
+
+.dashboard_form {
+    margin-right: 10px;
+}
+
+.dashboard_tabs {
+    text-align: center;
+}
+
+.dashboard_content {
+    border-top: 1px solid #E1E5E8;
+    text-align: left;
+    padding: 20px;
+}
+
+.dashboard_form_header_label {
+    margin-bottom: 0.5em;
+    font-weight: 500;
+    font-size: 1.25em;
+    line-height: 1.2;
+    border-bottom: 1px solid #000000;
+    padding-bottom: 2px;
+}
+
+.results {
+    margin: 20px 0px 20px 0px;
+    border: 1px solid #E1E5E8;
+    min-height: 40px;
+}
+
+.result_header {
+    margin: 20px 20px 0px 20px;
+    font-size: 16px;
+    font-weight: bold;
+}
+
+table, th, td {
+   border: 1px solid #E1E5E8;
+}
+
+table {
+    margin: 2px 20px 50px 20px;
+    font-size: 14px;
+}
+
+th, td {
+    padding: 10px;
+    text-align: left;
+}
+
+.report {
+    white-space: pre-wrap;
+    padding: 10px;
+    text-align: right;
 }

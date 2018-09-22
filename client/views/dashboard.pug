@@ -1,0 +1,170 @@
+html
+    head
+        title='Dashboard'
+        link(rel='stylesheet', href='https://stackpath.bootstrapcdn.com/bootstrap/4.1.0/css/bootstrap.min.css')
+        link(rel='stylesheet', href='/stylesheets/style.css')
+        script(src='https://code.jquery.com/jquery-3.1.1.min.js')
+        script(src='https://cdn.plot.ly/plotly-latest.min.js')
+        script(src='/js/Client.js')
+    body
+        div(class='container-fluid')
+            div(class='center' style='padding-bottom: 200px;')
+                div(class='title')
+                    p='Dashboard'
+                div(class='dashboard_tabs')
+                    button(id= 'resumes_tab',
+                            class='dashboard_tab_focussed',
+                            type='button',
+                            onclick='selectDashboardTab("' + 'resumes_tab' + '")')='Resumes'
+                    button(id= 'jobs_tab',
+                            class='dashboard_tab',
+                            type='button',
+                            onclick='selectDashboardTab("' + 'jobs_tab' + '")')='Jobs'
+                    button(id= 'comparison_tab',
+                            class='dashboard_tab',
+                            type='button',
+                            onclick='selectDashboardTab("' + 'comparison_tab' + '")')='Comparison'
+                div(id='resumes_tab_content', class='dashboard_content')
+                    label(class='dashboard_form_header_label')='Select Model'
+                    form(class='dashboard_form', name='resumesModelForm')
+                        input(type='radio', name='resumesModelType', value='LogisticRegression')
+                        label(class='model-labels')='Logistic Regression'
+                        <br/>
+                        input(type='radio', name='resumesModelType', value='SVM')
+                        label(class='model-labels')='SVM'
+                        <br/>
+                        input(type='radio', name='resumesModelType', value='RandomForest')
+                        label(class='model-labels')='Random Forest'
+                        <br/>
+                        input(type='radio', name='resumesModelType', value='NaiveBayes')
+                        label(class='model-labels')='Naive Bayes'
+                        <br/>
+                        input(type='radio', name='resumesModelType', value='FastText')
+                        label(class='model-labels')='FastText'
+                        <br/>
+                        input(type='radio', name='resumesModelType', value='NeuralNet')
+                        label(class='model-labels')='Neural Network'
+                        <br/>
+                        input(type='radio', name='resumesModelType', value='LSTM')
+                        label(class='model-labels')='LSTM'
+                        <br/>
+                        input(type='radio', name='resumesModelType', value='CNN')
+                        label(class='model-labels')='CNN'
+                        <br/>
+                    <br/>
+                    label(class='dashboard_form_header_label')='Select Feature'
+                    form(class='dashboard_form', name='resumesFeatureForm')
+                        input(type='radio', name='resumesFeatureType', value='bow')
+                        label(class='model-labels')='BoW'
+                        <br/>
+                        input(type='radio', name='resumesFeatureType', value='tf-idf')
+                        label(class='model-labels')='tf-idf'
+                        <br/>
+                        input(type='radio', name='resumesFeatureType', value='word-embeddings')
+                        label(class='model-labels')='word embeddings'
+                        <br/>
+                        input(type='radio', name='resumesFeatureType', value='sentence-embeddings')
+                        label(class='model-labels')='sentence embeddings'
+                        <br/>
+                    <br/>
+                    label(class='dashboard_form_header_label')='Select Dataset'
+                    form(class='dashboard_form', name='resumesDatasetForm')
+                        input(type='radio', name='resumesDataset', value='DB')
+                        label(class='model-labels')='Training dataset'
+                        <br/>
+                        input(type='radio', name='resumesDataset', value='testDB')
+                        label(class='model-labels')='Test dataset'
+                        <br/>
+                    <br/>
+                    button(class='train_test_button',
+                            type='button',
+                            onclick='train("' + 'resumes' + '")')='Train'
+                    button(class='train_test_button',
+                            type='button',
+                            onclick='test("' + 'resumes' + '")')='Test'
+                    button(class='train_test_button',
+                            type='button',
+                            onclick='summary("' + 'resumes' + '")')='Summary'
+                    div(id='resumes_results', class='results')
+                div(id='jobs_tab_content', class='no-display')
+                    label(class='dashboard_form_header_label')='Select Model'
+                    form(class='dashboard_form', name='jobsModelForm')
+                        input(type='radio', name='jobsModelType', value='LogisticRegression')
+                        label(class='model-labels')='Logistic Regression'
+                        <br/>
+                        input(type='radio', name='jobsModelType', value='SVM')
+                        label(class='model-labels')='SVM'
+                        <br/>
+                        input(type='radio', name='jobsModelType', value='FastText')
+                        label(class='model-labels')='FastText'
+                        <br/>
+                    <br/>
+                    label(class='dashboard_form_header_label')='Select Feature'
+                    form(class='dashboard_form', name='jobsFeatureForm')
+                        input(type='radio', name='jobsFeatureType', value='bow')
+                        label(class='model-labels')='BoW'
+                        <br/>
+                        input(type='radio', name='jobsFeatureType', value='tf-df')
+                        label(class='model-labels')='tf-df'
+                        <br/>
+                        input(type='radio', name='jobsFeatureType', value='word-embeddings')
+                        label(class='model-labels')='word embeddings'
+                        <br/>
+                        input(type='radio', name='jobsFeatureType', value='sentence-embeddings')
+                        label(class='model-labels')='sentence embeddings'
+                        <br/>
+                    <br/>
+                    label(class='dashboard_form_header_label')='Select Dataset'
+                    form(class='dashboard_form', name='jobsDatasetForm')
+                        input(type='radio', name='jobsDataset', value='DB')
+                        label(class='model-labels')='Training dataset'
+                        <br/>
+                        input(type='radio', name='jobsDataset', value='testDB')
+                        label(class='model-labels')='Test dataset'
+                        <br/>
+                    <br/>
+                    button(class='train_test_button',
+                            type='button',
+                            onclick='train("' + 'jobs' + '")')='Train'
+                    button(class='train_test_button',
+                            type='button',
+                            onclick='test("' + 'jobs' + '")')='Test'
+                    div(id='jobs_results', class='results')
+                div(id='comparison_tab_content', class='no-display')
+                    label(class='dashboard_form_header_label')='Select Model'
+                    form(class='dashboard_form', name='comparisonModelForm')
+                        input(type='radio', name='comparisonModelType', value='Baseline')
+                        label(class='model-labels')='Baseline'
+                        <br/>
+                    <br/>
+                    button(class='train_test_button',
+                            type='button')='Train'
+                    button(class='train_test_button',
+                            type='button')='Test'
+                    div(id='comparison_results', class='results')
+            div(class='center' style='padding-bottom: 200px;')
+                div(class='title')
+                    p='Embeddings'
+                div(class='dashboard_content', style='border: 0px;')
+                    button(class='train_test_button',
+                        type='button',
+                        onclick='trainEmbeddings()')='Train'
+                    button(class='train_test_button',
+                        style='width:120px;',
+                        type='button',
+                        onclick='visualize2dEmbeddings()')='Visualize 2D'
+                    button(class='train_test_button',
+                        style='width:120px;',
+                        type='button',
+                        onclick='visualize3dEmbeddings()')='Visualize 3D'
+                    div(id='embeddings_visualization', class='results')
+            div(class='center' style='padding-bottom: 200px;')
+                div(class='title')
+                    p='Training Data'
+                div(class='dashboard_content', style='border: 0px;')
+                    div(id='training-header', class='training-header')
+                        a(class='left-link', href='#', onclick='fetchResumes()')='Resumes'
+                        a(class='right-link', href='#', onclick='fetchJobs()')='Jobs'
+                    div(class='training-list')
+                        div(id='resumes-list', class='training-list-left')
+                        div(id='jobs-list', class='training-list-right')
