@@ -44,9 +44,6 @@ class Vectorizer(object):
         self.load()
         return self.model.transform(samples)
 
-    def num_inputs(self):
+    def feature_names(self):
         self.load()
-        return len(self.model.get_feature_names())
-
-
-
+        return self.model.get_feature_names()

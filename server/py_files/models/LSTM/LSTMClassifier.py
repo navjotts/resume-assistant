@@ -4,7 +4,7 @@ import numpy as np
 from keras.models import Sequential
 from keras.layers import LSTM, Dense, Dropout, Embedding
 from keras.preprocessing.sequence import pad_sequences
-from py_files.models.SentenceLabelEncoder import LabelEncoder
+from py_files.models.SentenceLabelEncoder import SentenceLabelEncoder
 from sklearn.utils import class_weight
 
 from py_files.models.Embeddings.Embeddings import Embeddings
@@ -43,19 +43,19 @@ class LSTMClassifier(KerasSentenceClassifier):
         print(model.summary())
         self.model = model
 
-        numeric_labels = LabelEncoder().encode_numerical(labels)
+        numeric_labels = SentenceLabelEncoder().encode_numerical(labels)
 
         class_weights = class_weight.compute_class_weight('balanced',
                                             np.unique(numeric_labels),
                                             numeric_labels)
 
-        y_train = LabelEncoder().encode_catigorical(labels)
+        y_train = SentenceLabelEncoder().encode_categorical(labels)
 
-        self.model.fit(x_train, y_train, validation_split=0.2, epochs=10, batch_size=32, verbose=2, shuffle=True, class_weight=class_weights)
+        self.model.fit(x_train, y_train, validation_split=0.2, epochs=20, batch_size=32, verbose=2, shuffle=True, class_weight=class_weights)
         loss, self.accuracy = self.model.evaluate(x_train, y_train)
         print('accuracy:', self.accuracy)
 
-        self.labels_pred = LabelEncoder().decode(self.model.predict_classes(x_train))
+        self.labels_pred = SentenceLabelEncoder().decode(self.model.predict_classes(x_train))
         return super().train(samples, labels)
 
     def test(self, samples, labels):
@@ -64,14 +64,12 @@ class LSTMClassifier(KerasSentenceClassifier):
 
         if self.feature_type == 'word-embeddings':
             x_test = pad_sequences(features, maxlen=100, padding='post')
-
         elif self.feature_type in ['tf-idf', 'bow']:
             x_test = features
-
         else:
             raise Exception('Please select a valid feature')
 
-        y_test = LabelEncoder().encode_catigorical(labels)
+        y_test = SentenceLabelEncoder().encode_categorical(labels)
 
         # self.model.compile(loss='categorical_crossentropy', optimizer='adam', metrics=['accuracy'])
         loss, self.accuracy = self.model.evaluate(x_test, y_test)
@@ -80,7 +78,7 @@ class LSTMClassifier(KerasSentenceClassifier):
         # self.labels_pred = self.model.predict(x_test)
         # print(self.labels_pred)
         # return super().test(samples, labels)
-        self.labels_pred = LabelEncoder().decode(self.model.predict_classes(x_test))
+        self.labels_pred = SentenceLabelEncoder().decode(self.model.predict_classes(x_test))
         return super().test(samples, labels)
 
     def classify(self, samples):

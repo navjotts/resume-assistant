@@ -7,11 +7,9 @@ from keras.preprocessing.sequence import pad_sequences
 from keras.optimizers import adam
 from sklearn.utils import class_weight
 
-from py_files.models.Vectorizer.Vectorizer import Vectorizer
-from py_files.models.SentenceLabelEncoder import LabelEncoder
-
 from py_files.models.Embeddings.Embeddings import Embeddings
 from py_files.models.KerasSentenceClassifier import KerasSentenceClassifier
+from py_files.models.SentenceLabelEncoder import SentenceLabelEncoder
 
 class NeuralNetClassifier(KerasSentenceClassifier):
     def __init__(self, name, feature_type):
@@ -46,13 +44,13 @@ class NeuralNetClassifier(KerasSentenceClassifier):
         print(model.summary())
         self.model = model
 
-        numeric_labels = LabelEncoder().encode_numerical(labels)
+        numeric_labels = SentenceLabelEncoder().encode_numerical(labels)
 
         class_weights = class_weight.compute_class_weight('balanced',
                                                  np.unique(numeric_labels),
                                                  numeric_labels)
 
-        y_train = LabelEncoder().encode_catigorical(labels)
+        y_train = SentenceLabelEncoder().encode_categorical(labels)
 
         optimizer = adam(lr=0.00075)
 
@@ -60,7 +58,7 @@ class NeuralNetClassifier(KerasSentenceClassifier):
         loss, self.accuracy = self.model.evaluate(x_train, y_train)
         print('accuracy:', self.accuracy)
 
-        self.labels_pred = LabelEncoder().decode(self.model.predict_classes(x_train))
+        self.labels_pred = SentenceLabelEncoder().decode(self.model.predict_classes(x_train))
         return super().train(samples, labels)
 
     def test(self, samples, labels):
@@ -69,19 +67,17 @@ class NeuralNetClassifier(KerasSentenceClassifier):
 
         if self.feature_type == 'word-embeddings':
             x_test = pad_sequences(features, maxlen=100, padding='post')
-
         elif self.feature_type in ['tf-idf', 'bow']:
             x_test = features
-
         else:
             raise Exception('Please select a valid feature')
 
-        y_test = LabelEncoder().encode_catigorical(labels)
+        y_test = SentenceLabelEncoder().encode_categorical(labels)
 
         # self.model.compile(loss='categorical_crossentropy', optimizer='adam', metrics=['accuracy'])
         loss, self.accuracy = self.model.evaluate(x_test, y_test)
         print('accuracy:', self.accuracy)
-        self.labels_pred = LabelEncoder().decode(self.model.predict_classes(x_test))
+        self.labels_pred = SentenceLabelEncoder().decode(self.model.predict_classes(x_test))
         return super().test(samples, labels)
 
     def classify(self, samples):
