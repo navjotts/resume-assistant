@@ -77,12 +77,10 @@ class CNNClassifier(KerasSentenceClassifier):
 
         y_test = SentenceLabelEncoder().encode_categorical(labels)
 
-        # self.model.compile(loss='categorical_crossentropy', optimizer=optimizer, metrics=['accuracy'])
-        print(y_test)
         loss, self.accuracy = self.model.evaluate(x_test, y_test)
+        self.labels_pred = SentenceLabelEncoder().decode(self.model.predict_classes(x_test))
         print('accuracy:', self.accuracy)
 
-        self.labels_pred = SentenceLabelEncoder().decode(self.model.predict_classes(x_test))
         return super().test(samples, labels)
 
     def classify(self, samples):

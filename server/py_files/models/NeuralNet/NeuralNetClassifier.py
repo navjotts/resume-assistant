@@ -53,7 +53,7 @@ class NeuralNetClassifier(KerasSentenceClassifier):
         self.model.fit(x_train, y_train, validation_split=0.05, epochs=10, batch_size=2,
                         verbose=2, shuffle=True, class_weight=class_weights)
         loss, self.accuracy = self.model.evaluate(x_train, y_train)
-        print('accuracy:', self.accuracy)
+        print('Accuracy:', self.accuracy)
 
         self.labels_pred = SentenceLabelEncoder().decode(self.model.predict_classes(x_train))
         return super().train(samples, labels)
@@ -71,10 +71,10 @@ class NeuralNetClassifier(KerasSentenceClassifier):
 
         y_test = SentenceLabelEncoder().encode_categorical(labels)
 
-        # self.model.compile(loss='categorical_crossentropy', optimizer='adam', metrics=['accuracy'])
         loss, self.accuracy = self.model.evaluate(x_test, y_test)
-        print('accuracy:', self.accuracy)
         self.labels_pred = SentenceLabelEncoder().decode(self.model.predict_classes(x_test))
+        print('Accuracy:', self.accuracy)
+
         return super().test(samples, labels)
 
     def classify(self, samples):
