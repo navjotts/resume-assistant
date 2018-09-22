@@ -209,6 +209,7 @@ app.get('/training/summary', async function (req, res, next) {
     }
 });
 
+// get rid of this - we can take ALL job descriptions for training embeddings atleast
 function sampleSet(destFolder, fileName) {
     if (destFolder === 'jobs') {
         if (fileName.includes('google')) {

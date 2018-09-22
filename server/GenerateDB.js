@@ -54,7 +54,7 @@ function sampleSet(destFolder, fileName) {
         }
 
         if (fileName.includes('dice')) {
-            return Math.floor((Math.random()*500)+1) === 500 ? true : false;
+            return Math.floor((Math.random()*100)+1) === 100 ? true : false;
         }
 
         return Math.floor((Math.random()*100)+1) === 100 ? true : false;
