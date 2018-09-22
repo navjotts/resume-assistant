@@ -33,8 +33,6 @@ class SentenceEmbeddings(object):
                     epochs=100)
 
         print('saving the model at: %s' % self.path)
-        # with open(self.path, 'w') as f:
-        #     f.write('')
         model.save(self.path)
 
         self.model = model
@@ -47,7 +45,6 @@ class SentenceEmbeddings(object):
         print('tagged_sents:', len(tagged_sents))
         return tagged_sents
 
-
     # loads the model from local (if needed)
     def load(self):
         if not self.model:
@@ -58,7 +55,6 @@ class SentenceEmbeddings(object):
 
     def similarity(self, sent1, sents2):
         self.load()
-        # print('similarity:', self.model.docvecs.n_similarity(sent1,sent2))
         scores = []
         sent1_dum = self.model.infer_vector(sent1)
         l2_sent1 = math.sqrt(np.dot(sent1_dum, sent1_dum))
@@ -68,10 +64,8 @@ class SentenceEmbeddings(object):
             score = np.dot(sent1_dum, sent_dum) / (l2_sent1 * l2_sent)
             # score = spatial.distance.cosine(self.model.infer_vector(sent1), self.model.infer_vector(sent))
             # score = cosine_similarity(np.array(self.model.infer_vector(sent1)).reshape(1,-1), np.array(self.model.infer_vector(sent)).reshape(1,-1))
-            if score > 1:
-                score = 1
-            elif score < 0:
-                score = 0
-
+            # print('similarity:', self.model.docvecs.n_similarity(sent1, sent))
+            score = 1 if score > 1 else (0 if score < 0 else score)
             scores.append(score)
+
         return scores
