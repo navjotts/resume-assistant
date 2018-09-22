@@ -19,7 +19,7 @@ class AccuracyAnalysis(object):
         assert len(y_true) == len(y_predict) == len(samples)
         ret = []
         for i in range(len(y_true)):
-            if y_true[i] != y_predict[i]: # https://trello.com/c/38Kvc8bX/31-bug-empty-predicted-labels-in-training-set
+            if y_true[i] != y_predict[i]:
                 ret.append({
                     'sample_index':i,
                     'sample': samples[i],
