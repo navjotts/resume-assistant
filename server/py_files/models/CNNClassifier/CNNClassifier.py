@@ -58,10 +58,11 @@ class CNNClassifier(KerasSentenceClassifier):
 
         self.model.fit(x_train, y_train, validation_split=0.2, epochs=20, batch_size=128,
                         verbose=2, shuffle=True, class_weight=class_weights)
-        loss, self.accuracy = self.model.evaluate(x_train, y_train)
-        print('accuracy:', self.accuracy)
+        loss, accuracy = self.model.evaluate(x_train, y_train)
+        print('loss, accuracy:', loss, accuracy)
 
         self.labels_pred = SentenceLabelEncoder().decode(self.model.predict_classes(x_train))
+
         return super().train(samples, labels)
 
     def test(self, samples, labels):
@@ -77,9 +78,10 @@ class CNNClassifier(KerasSentenceClassifier):
 
         y_test = SentenceLabelEncoder().encode_categorical(labels)
 
-        loss, self.accuracy = self.model.evaluate(x_test, y_test)
+        loss, accuracy = self.model.evaluate(x_test, y_test)
+        print('loss, accuracy:', loss, accuracy)
+
         self.labels_pred = SentenceLabelEncoder().decode(self.model.predict_classes(x_test))
-        print('accuracy:', self.accuracy)
 
         return super().test(samples, labels)
 
