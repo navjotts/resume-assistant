@@ -392,7 +392,7 @@ app.get('/analyze/:resumeFile/:jobFile', async function (req, res, next) {
             sentsToCompare.push({'from': resumeSent, 'to': jobSents});
         });
 
-        scores = await PythonConnector.invoke('sentence_similarity_score', 'resumes_jobs', 100, sentsToCompare);
+        scores = await PythonConnector.invoke('sentence_group_similarity_score', 'resumes_jobs', 100, sentsToCompare);
         var data = [];
         resumeSamples.forEach((sent, index) => {
             data.push({

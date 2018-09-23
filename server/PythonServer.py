@@ -67,15 +67,19 @@ class PythonServer(object):
         sent_embeddings = SentenceEmbeddings(model_name, dimension)
         sent_embeddings.train(sents)
 
-    def sentence_similarity_score(self, model_name, dimension, sents):
-        sent_embeddings = SentenceEmbeddings(model_name, dimension)
-        return sent_embeddings.similarity_score(sents)
-
     def generate_embeddings_coordinates(self, model_name, dimension, reduced_dimension):
         embeddings = Embeddings(model_name, dimension)
         embeddings.words_coordinates(reduced_dimension)
 
-# print(Embeddings('resumes', 100).vectors()) # for testing other classes directly (comment out the below zerorpc server if you do this)
+    def sentence_group_similarity_score(self, model_name, dimension, sents):
+        sent_embeddings = SentenceEmbeddings(model_name, dimension)
+        return sent_embeddings.group_similarity_score(sents)
+
+    def sentence_similarity_score(self, model_name, dimension, sent1, sent2):
+        sent_embeddings = SentenceEmbeddings(model_name, dimension)
+        return sent_embeddings.similarity_score(sent1, sent2)
+
+# print(SentenceEmbeddings('resumes_jobs', 100).similarity_score(('Full', 'Stack', 'Internship', '·', 'July', '2017', 'to', 'Oct.', '2017'), ('5', 'years', 'of', 'experience', 'in', 'technical', 'leadership', 'and', 'people', 'management', '.'))) # for testing other classes directly (comment out the below zerorpc server if you do this)
 
 try:
     s = zerorpc.Server(PythonServer())
