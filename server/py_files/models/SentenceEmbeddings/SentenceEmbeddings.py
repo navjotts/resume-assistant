@@ -63,6 +63,17 @@ class SentenceEmbeddings(object):
         self.model.random.seed(self.seed)
         return self.model.infer_vector(sent, steps=self.epochs)
 
+    def similarity_score(self, sent1, sent2):
+        self.load()
+        sent1_vec = self.vector(sent1)
+        sent2_vec = self.vector(sent2)
+        sent1_l2 = math.sqrt(np.dot(sent1_vec, sent1_vec))
+        sent2_l2 = math.sqrt(np.dot(sent2_vec, sent2_vec))
+        score = np.dot(sent1_vec, sent2_vec) / (sent1_l2 * sent2_l2)
+        score = 1 if score > 1 else (0 if score < 0 else score)
+
+        return score
+
     def group_similarity_score(self, groups_of_sents):
         '''
             sents is a list of dicts with 2 keys: 'from' and 'to'
@@ -94,14 +105,3 @@ class SentenceEmbeddings(object):
                 scores.append(max(group_scores))
 
         return scores
-
-    def similarity_score(self, sent1, sent2):
-        self.load()
-        sent1_vec = self.vector(sent1)
-        sent2_vec = self.vector(sent2)
-        sent1_l2 = math.sqrt(np.dot(sent1_vec, sent1_vec))
-        sent2_l2 = math.sqrt(np.dot(sent2_vec, sent2_vec))
-        score = np.dot(sent1_vec, sent2_vec) / (sent1_l2 * sent2_l2)
-        score = 1 if score > 1 else (0 if score < 0 else score)
-
-        return score
