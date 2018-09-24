@@ -88,7 +88,7 @@ class SentenceEmbeddings(object):
             from_sent = group['from']
             to_sents = group['to']
             if len(to_sents) == 0:
-                scores.append(1.0) # if nothing to compare to
+                scores.append(-1.0) # if nothing to compare to
             else:
                 from_sent_vec = self.vector(from_sent)
                 from_sent_l2 = math.sqrt(np.dot(from_sent_vec, from_sent_vec))
