@@ -136,6 +136,7 @@ class CNNClassifier(KerasSentenceClassifier):
         return model
 
     # https://machinelearningmastery.com/best-practices-document-classification-deep-learning/
+    # todo either convert this to use Keras' non-functional API, or update other functions
     def train_common_baseline_CNN(self, features, labels, trainable_embeddings):
         embedding_size = 100
         embedding_layer, x_train = self.embedding_layer(embedding_size=embedding_size, trainable=trainable_embeddings, features=features)
