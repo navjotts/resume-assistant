@@ -4,7 +4,8 @@ import numpy as np
 
 from keras.models import Sequential
 from keras.optimizers import adam
-from keras.layers import LSTM, Dense, Dropout, Embedding, Conv1D, MaxPool1D, Flatten
+from keras.layers import LSTM, Dense, Dropout, Embedding, Conv1D, MaxPool1D, Flatten, Input, concatenate
+from keras.models import Model
 from keras.preprocessing.sequence import pad_sequences
 from keras.utils import to_categorical
 from sklearn.utils import class_weight
@@ -23,7 +24,8 @@ class CNNClassifier(KerasSentenceClassifier):
         features = self.choose_features(samples, True)
 
         # self.train_experimental_CNN(features=features, trainable_embeddings=True) # uncomment to use this
-        self.train_vanilla_CNN(features=features, labels=labels, trainable_embeddings=False)
+        # self.train_vanilla_CNN(features=features, labels=labels, trainable_embeddings=False)
+        self.train_common_baseline_CNN(features=features, labels=labels, trainable_embeddings=False)
 
         return super().train(samples, labels)
 
@@ -43,7 +45,11 @@ class CNNClassifier(KerasSentenceClassifier):
         loss, accuracy = self.model.evaluate(x_test, y_test)
         print('loss, accuracy:', loss, accuracy)
 
-        self.labels_pred = SentenceLabelEncoder().decode(self.model.predict_classes(x_test))
+        # todo try to write the models in 1 fashion (either functional or not) - so that we don't have to do the below stuff
+        try:
+            self.labels_pred = SentenceLabelEncoder().decode(self.model.predict_classes(x_test))
+        except Exception as e:
+            self.labels_pred = SentenceLabelEncoder().decode(np.argmax(self.model.predict(x_test), axis=1))
 
         return super().test(samples, labels)
 
@@ -126,5 +132,40 @@ class CNNClassifier(KerasSentenceClassifier):
         print('loss, accuracy:', loss, accuracy)
 
         self.labels_pred = SentenceLabelEncoder().decode(self.model.predict_classes(x_train))
+
+        return model
+
+    # https://machinelearningmastery.com/best-practices-document-classification-deep-learning/
+    def train_common_baseline_CNN(self, features, labels, trainable_embeddings):
+        embedding_size = 100
+        embedding_layer, x_train = self.embedding_layer(embedding_size=embedding_size, trainable=trainable_embeddings, features=features)
+
+        main_input = Input(shape=(embedding_size, ))
+        x = embedding_layer(main_input)
+        x3 = Conv1D(filters=100, kernel_size=2, activation='relu')(x) # generalization of bigrams
+        x4 = Conv1D(filters=100, kernel_size=4, activation='relu')(x) # generalization of ngrams, n=4
+        x5 = Conv1D(filters=100, kernel_size=5, activation='relu')(x) # generalization of ngrams, n=5
+        x3 = MaxPool1D(pool_size=99)(x3)
+        x4 = MaxPool1D(pool_size=97)(x4)
+        x5 = MaxPool1D(pool_size=96)(x5)
+        out = concatenate([x3, x4, x5]) # all ngram features stacked together
+        out = Dropout(rate=0.5)(out)
+        out = Flatten()(out)
+        main_output = Dense(self.num_classes, activation='softmax')(out)
+        model = Model(inputs=main_input, outputs=main_output)
+        model.compile(loss='categorical_crossentropy', optimizer='adam', metrics=['acc'])
+        print(model.summary())
+        self.model = model
+
+        numeric_labels = SentenceLabelEncoder().encode_numerical(labels)
+        class_weights = class_weight.compute_class_weight('balanced', np.unique(numeric_labels), numeric_labels)
+        y_train = SentenceLabelEncoder().encode_categorical(labels)
+
+        self.model.fit(x_train, y_train, validation_split=0.2, epochs=30, batch_size=128,
+                        verbose=2, shuffle=True, class_weight=class_weights)
+        loss, accuracy = self.model.evaluate(x_train, y_train)
+        print('loss, accuracy:', loss, accuracy)
+
+        self.labels_pred = SentenceLabelEncoder().decode(np.argmax(self.model.predict(x_train), axis=1))
 
         return model
