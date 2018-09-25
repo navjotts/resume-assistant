@@ -149,9 +149,9 @@ class CNNClassifier(KerasSentenceClassifier):
         x3 = MaxPool1D(pool_size=99)(x3)
         x4 = MaxPool1D(pool_size=97)(x4)
         x5 = MaxPool1D(pool_size=96)(x5)
-        out = concatenate([x3, x4, x5]) # all ngram features stacked together
+        out = concatenate([x3, x4, x5])
         out = Dropout(rate=0.5)(out)
-        out = Flatten()(out)
+        out = Flatten()(out) # todo - check should we use a Dense (fully connected layer)?
         main_output = Dense(self.num_classes, activation='softmax')(out)
         model = Model(inputs=main_input, outputs=main_output)
         model.compile(loss='categorical_crossentropy', optimizer='adam', metrics=['acc'])
