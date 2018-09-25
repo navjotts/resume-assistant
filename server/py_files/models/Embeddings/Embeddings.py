@@ -16,12 +16,13 @@ class Embeddings(object):
         self.dimension = dimension
         self.path = os.path.join(os.path.dirname(os.path.abspath(__file__)), 'trained', name + str(dimension) + 'd.txt')
         self.model = None
+        self.seed = 42
 
     def train(self, sentences):
         model = w2v.Word2Vec(min_count=1,
                             window=7,
                             size=self.dimension,
-                            seed=42,
+                            seed=self.seed,
                             workers=multiprocessing.cpu_count())
 
         model.build_vocab(sentences)
