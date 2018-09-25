@@ -35,12 +35,12 @@ class LSTMClassifier(KerasSentenceClassifier):
         else:
             raise Exception('Please select a valid feature')
 
-        model.add(LSTM(50))
-        model.add(Dense(16, activation='relu'))
-        model.add(Dropout(0.3))
-        model.add(Dense(32, activation='relu'))
-        model.add(Dense(8, activation='relu'))
-        model.add(Dense(self.num_classes, activation='softmax'))
+        model.add(LSTM(units=50))
+        model.add(Dense(units=16, activation='relu'))
+        model.add(Dropout(rate=0.3))
+        model.add(Dense(units=32, activation='relu'))
+        model.add(Dense(units=8, activation='relu'))
+        model.add(Dense(units=self.num_classes, activation='softmax'))
         model.compile(loss='categorical_crossentropy', optimizer='adam', metrics=['accuracy'])
         print(model.summary())
         self.model = model
