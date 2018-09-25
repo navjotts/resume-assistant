@@ -143,13 +143,25 @@ function summary(modelName) {
                     var scores = Object.keys(response[stage][models[0]]);
                     scores.forEach(scoreType => {
                         var scoreValues = models.map(model => response[stage][model][scoreType]);
+
+                         // This is a hack, I know!                                                                                    
+                        barColor = '';                                                                                                
+                        if (scoreType === 'precision') {                                                                              
+                            barColor = 'rgb(247,143,136)';                                                                            
+                        } else if(scoreType === 'recall') {                                                                           
+                            barColor = 'rgb(247, 206, 133)';                                                                          
+                        } else {                                                                                                      
+                            barColor =  'rgb(250,239,135)';                                                                           
+                        } 
+
                         var trace = {
                             x: models,
                             y: scoreValues,
                             text: scoreValues,
                             textposition: 'auto',
                             name: scoreType,
-                            type: 'bar'
+                            type: 'bar',
+                            marker: {color: barColor}
                         };
                         data.push(trace);
                     });
