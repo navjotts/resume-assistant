@@ -29,19 +29,19 @@ class NeuralNetClassifier(KerasSentenceClassifier):
             model.add(Embedding(input_dim=vocab_size, output_dim=embedding_size,
                                 input_length=self.max_len, trainable=True, weights=[pretrained_embeddings]))
             model.add(Flatten())
-            model.add(Dense(64, activation='relu'))
+            model.add(Dense(units=64, activation='relu'))
         elif self.feature_type in ['tf-idf', 'bow']:
             x_train = features
             vocab_size = x_train.shape[1]
-            model.add(Dense(128, activation='relu', input_dim=vocab_size))
+            model.add(Dense(units=128, activation='relu', input_dim=vocab_size))
         else:
             raise Exception('Please select a valid feature')
 
-        model.add(Dropout(0.5))
-        model.add(Dense(64, activation='relu'))
-        model.add(Dense(16, activation='relu'))
-        model.add(Dropout(0.4))
-        model.add(Dense(self.num_classes, activation='softmax'))
+        model.add(Dropout(rate=0.5))
+        model.add(Dense(units=64, activation='relu'))
+        model.add(Dense(units=16, activation='relu'))
+        model.add(Dropout(rate=0.4))
+        model.add(Dense(units=self.num_classes, activation='softmax'))
         model.compile(loss='categorical_crossentropy', optimizer='adam', metrics=['accuracy'])
         print(model.summary())
         self.model = model
@@ -50,7 +50,7 @@ class NeuralNetClassifier(KerasSentenceClassifier):
         class_weights = class_weight.compute_class_weight('balanced', np.unique(numeric_labels), numeric_labels)
         y_train = SentenceLabelEncoder().encode_categorical(labels)
 
-        self.model.fit(x_train, y_train, validation_split=0.05, epochs=10, batch_size=2,
+        self.model.fit(x_train, y_train, validation_split=0.2, epochs=10, batch_size=2,
                         verbose=2, shuffle=True, class_weight=class_weights)
         loss, accuracy = self.model.evaluate(x_train, y_train)
         print('loss, accuracy:', loss, accuracy)
