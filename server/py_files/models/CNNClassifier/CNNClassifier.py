@@ -47,7 +47,7 @@ class CNNClassifier(KerasSentenceClassifier):
         model.add(Dropout(0.5))
         model.add(Dense(units=32, activation='relu'))
         model.add(Dropout(rate=0.5))
-        model.add(Dense(units=5, activation='softmax'))
+        model.add(Dense(units=self.num_classes, activation='softmax'))
         model.compile(loss='categorical_crossentropy', optimizer='adam', metrics=['acc'])
         print(model.summary())
         self.model = model
