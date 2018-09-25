@@ -22,19 +22,8 @@ class CNNClassifier(KerasSentenceClassifier):
     def train(self, samples, labels):
         features = self.choose_features(samples, True)
 
-        # self.model, x_train = self.experimental_CNN(features=features, trainable_embeddings=True) # uncomment to use this
-        self.model, x_train = self.vanilla_CNN(features=features, trainable_embeddings=True)
-
-        numeric_labels = SentenceLabelEncoder().encode_numerical(labels)
-        class_weights = class_weight.compute_class_weight('balanced', np.unique(numeric_labels), numeric_labels)
-        y_train = SentenceLabelEncoder().encode_categorical(labels)
-
-        self.model.fit(x_train, y_train, validation_split=0.2, epochs=20, batch_size=128,
-                        verbose=2, shuffle=True, class_weight=class_weights)
-        loss, accuracy = self.model.evaluate(x_train, y_train)
-        print('loss, accuracy:', loss, accuracy)
-
-        self.labels_pred = SentenceLabelEncoder().decode(self.model.predict_classes(x_train))
+        # self.train_experimental_CNN(features=features, trainable_embeddings=True) # uncomment to use this
+        self.train_vanilla_CNN(features=features, labels=labels, trainable_embeddings=True)
 
         return super().train(samples, labels)
 
@@ -82,7 +71,7 @@ class CNNClassifier(KerasSentenceClassifier):
 
         return embedding_layer, x_train
 
-    def experimental_CNN(self, features, trainable_embeddings):
+    def train_experimental_CNN(self, features, labels, trainable_embeddings):
         embedding_layer, x_train = self.embedding_layer(embedding_size=100, trainable=trainable_embeddings, features=features)
         model = Sequential()
         model.add(embedding_layer)
@@ -99,10 +88,22 @@ class CNNClassifier(KerasSentenceClassifier):
         model.add(Dense(units=self.num_classes, activation='softmax'))
         model.compile(loss='categorical_crossentropy', optimizer='adam', metrics=['acc'])
         print(model.summary())
+        self.model = model
 
-        return model, x_train
+        numeric_labels = SentenceLabelEncoder().encode_numerical(labels)
+        class_weights = class_weight.compute_class_weight('balanced', np.unique(numeric_labels), numeric_labels)
+        y_train = SentenceLabelEncoder().encode_categorical(labels)
 
-    def vanilla_CNN(self, features, trainable_embeddings):
+        self.model.fit(x_train, y_train, validation_split=0.2, epochs=20, batch_size=128,
+                        verbose=2, shuffle=True, class_weight=class_weights)
+        loss, accuracy = self.model.evaluate(x_train, y_train)
+        print('loss, accuracy:', loss, accuracy)
+
+        self.labels_pred = SentenceLabelEncoder().decode(self.model.predict_classes(x_train))
+
+        return model
+
+    def train_vanilla_CNN(self, features, labels, trainable_embeddings):
         embedding_layer, x_train = self.embedding_layer(embedding_size=100, trainable=trainable_embeddings, features=features)
         model = Sequential()
         model.add(embedding_layer)
@@ -113,5 +114,17 @@ class CNNClassifier(KerasSentenceClassifier):
         model.add(Dense(self.num_classes, activation='softmax'))
         model.compile(loss='categorical_crossentropy', optimizer='adam', metrics=['acc'])
         print(model.summary())
+        self.model = model
 
-        return model, x_train
+        numeric_labels = SentenceLabelEncoder().encode_numerical(labels)
+        class_weights = class_weight.compute_class_weight('balanced', np.unique(numeric_labels), numeric_labels)
+        y_train = SentenceLabelEncoder().encode_categorical(labels)
+
+        self.model.fit(x_train, y_train, validation_split=0.2, epochs=20, batch_size=128,
+                        verbose=2, shuffle=True, class_weight=class_weights)
+        loss, accuracy = self.model.evaluate(x_train, y_train)
+        print('loss, accuracy:', loss, accuracy)
+
+        self.labels_pred = SentenceLabelEncoder().decode(self.model.predict_classes(x_train))
+
+        return model
