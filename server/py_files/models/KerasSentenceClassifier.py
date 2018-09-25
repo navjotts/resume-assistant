@@ -4,9 +4,10 @@ from keras.models import load_model
 from keras.layers import Embedding
 from keras.preprocessing.sequence import pad_sequences
 
-from py_files.models.SentenceClassifier import SentenceClassifier
 from py_files.models.Vectorizer.Vectorizer import Vectorizer
 from py_files.models.Embeddings.Embeddings import Embeddings
+from py_files.models.SentenceLabelEncoder import SentenceLabelEncoder
+from py_files.models.SentenceClassifier import SentenceClassifier
 
 class KerasSentenceClassifier(SentenceClassifier):
     def __init__(self, name, feature_type):
@@ -30,7 +31,24 @@ class KerasSentenceClassifier(SentenceClassifier):
         super().load()
 
     def test(self, samples, labels):
-        return super().train(samples, labels)
+        self.load()
+        features = self.choose_features(samples)
+
+        if self.feature_type == 'word-embeddings':
+            x_test = pad_sequences(features, maxlen=self.max_len, padding='post')
+        elif self.feature_type in ['tf-idf', 'bow']:
+            x_test = features
+        else:
+            raise Exception('Please select a valid feature')
+
+        y_test = SentenceLabelEncoder().encode_categorical(labels)
+
+        loss, accuracy = self.model.evaluate(x_test, y_test)
+        print('loss, accuracy:', loss, accuracy)
+
+        self.labels_pred = SentenceLabelEncoder().decode(self.model.predict_classes(x_test))
+
+        return super().test(samples, labels)
 
     def classify(self, samples):
         return super().classify(samples)

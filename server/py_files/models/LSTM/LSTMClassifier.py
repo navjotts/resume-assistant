@@ -58,27 +58,6 @@ class LSTMClassifier(KerasSentenceClassifier):
 
         return super().train(samples, labels)
 
-    # todo shift to KerasSentenceClassifier
-    def test(self, samples, labels):
-        self.load()
-        features = self.choose_features(samples)
-
-        if self.feature_type == 'word-embeddings':
-            x_test = pad_sequences(features, maxlen=self.max_len, padding='post')
-        elif self.feature_type in ['tf-idf', 'bow']:
-            x_test = features
-        else:
-            raise Exception('Please select a valid feature')
-
-        y_test = SentenceLabelEncoder().encode_categorical(labels)
-
-        loss, accuracy = self.model.evaluate(x_test, y_test)
-        print('Accuracy:', accuracy)
-
-        self.labels_pred = SentenceLabelEncoder().decode(self.model.predict_classes(x_test))
-
-        return super().test(samples, labels)
-
     def classify(self, samples):
         self.load()
         features = self.choose_features(samples)
