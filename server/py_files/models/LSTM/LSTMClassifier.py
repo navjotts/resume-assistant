@@ -58,6 +58,7 @@ class LSTMClassifier(KerasSentenceClassifier):
 
         return super().train(samples, labels)
 
+    # todo shift to KerasSentenceClassifier
     def test(self, samples, labels):
         self.load()
         features = self.choose_features(samples)

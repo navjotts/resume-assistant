@@ -1,6 +1,8 @@
 import os
 import keras
 from keras.models import load_model
+from keras.layers import Embedding
+from keras.preprocessing.sequence import pad_sequences
 
 from py_files.models.SentenceClassifier import SentenceClassifier
 from py_files.models.Vectorizer.Vectorizer import Vectorizer
@@ -40,3 +42,21 @@ class KerasSentenceClassifier(SentenceClassifier):
             return Embeddings(self.name, 100).encode_samples(samples)
         else:
             return samples # no change/manipulation
+
+    def embedding_layer(self, embedding_size, trainable, features):
+        embedding_layer = None
+        if self.feature_type == 'word-embeddings':
+            x_train = pad_sequences(features, maxlen=self.max_len, padding='post')
+            pretrained_embeddings = Embeddings(self.name, embedding_size).vectors()
+            vocab_size = pretrained_embeddings.shape[0]
+            embedding_layer = Embedding(input_dim=vocab_size, output_dim=embedding_size,
+                                input_length=self.max_len, trainable=trainable, weights=[pretrained_embeddings])
+        elif self.feature_type in ['tf-idf', 'bow']:
+            x_train = features
+            vocab_size = x_train.shape[1]
+            embedding_layer = Embedding(input_dim=vocab_size, output_dim=embedding_size,
+                                input_length=vocab_size, trainable=trainable)
+        else:
+            raise Exception('Please select a valid feature')
+
+        return embedding_layer, x_train

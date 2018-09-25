@@ -11,7 +11,6 @@ from keras.utils import to_categorical
 from sklearn.utils import class_weight
 
 from py_files.models.SentenceLabelEncoder import SentenceLabelEncoder
-from py_files.models.Embeddings.Embeddings import Embeddings
 from py_files.models.KerasSentenceClassifier import KerasSentenceClassifier
 
 class CNNClassifier(KerasSentenceClassifier):
@@ -23,12 +22,13 @@ class CNNClassifier(KerasSentenceClassifier):
     def train(self, samples, labels):
         features = self.choose_features(samples, True)
 
-        # self.train_experimental_CNN(features=features, trainable_embeddings=True) # uncomment to use this
+        # self.train_experimental_CNN(features=features, labels=labels, trainable_embeddings=True) # uncomment to use this
         # self.train_vanilla_CNN(features=features, labels=labels, trainable_embeddings=False)
         self.train_common_baseline_CNN(features=features, labels=labels, trainable_embeddings=False)
 
         return super().train(samples, labels)
 
+    # todo shift to KerasSentenceClassifier
     def test(self, samples, labels):
         self.load()
         features = self.choose_features(samples)
@@ -58,24 +58,6 @@ class CNNClassifier(KerasSentenceClassifier):
         features = self.choose_features(samples)
         # todo
         return super().classify(samples)
-
-    def embedding_layer(self, embedding_size, trainable, features):
-        embedding_layer = None
-        if self.feature_type == 'word-embeddings':
-            x_train = pad_sequences(features, maxlen=self.max_len, padding='post')
-            pretrained_embeddings = Embeddings(self.name, embedding_size).vectors()
-            vocab_size = pretrained_embeddings.shape[0]
-            embedding_layer = Embedding(input_dim=vocab_size, output_dim=embedding_size,
-                                input_length=self.max_len, trainable=trainable, weights=[pretrained_embeddings])
-        elif self.feature_type in ['tf-idf', 'bow']:
-            x_train = features
-            vocab_size = x_train.shape[1]
-            embedding_layer = Embedding(input_dim=vocab_size, output_dim=embedding_size,
-                                input_length=vocab_size, trainable=trainable)
-        else:
-            raise Exception('Please select a valid feature')
-
-        return embedding_layer, x_train
 
     def train_experimental_CNN(self, features, labels, trainable_embeddings):
         embedding_layer, x_train = self.embedding_layer(embedding_size=100, trainable=trainable_embeddings, features=features)
@@ -107,8 +89,6 @@ class CNNClassifier(KerasSentenceClassifier):
 
         self.labels_pred = SentenceLabelEncoder().decode(self.model.predict_classes(x_train))
 
-        return model
-
     def train_vanilla_CNN(self, features, labels, trainable_embeddings):
         embedding_layer, x_train = self.embedding_layer(embedding_size=100, trainable=trainable_embeddings, features=features)
         model = Sequential()
@@ -132,8 +112,6 @@ class CNNClassifier(KerasSentenceClassifier):
         print('loss, accuracy:', loss, accuracy)
 
         self.labels_pred = SentenceLabelEncoder().decode(self.model.predict_classes(x_train))
-
-        return model
 
     # https://machinelearningmastery.com/best-practices-document-classification-deep-learning/
     # todo either convert this to use Keras' non-functional API, or update other functions
@@ -168,5 +146,3 @@ class CNNClassifier(KerasSentenceClassifier):
         print('loss, accuracy:', loss, accuracy)
 
         self.labels_pred = SentenceLabelEncoder().decode(np.argmax(self.model.predict(x_train), axis=1))
-
-        return model
