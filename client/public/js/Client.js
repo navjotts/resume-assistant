@@ -133,6 +133,7 @@ function summary(modelName) {
         success: function(response) {
             var output = "<div class=\"result_header\">LATEST RESULTS</div>";
             var plots = [];
+            var barColors = ['rgb(247, 206, 133)', 'rgb(247,143,136)', 'rgb(250,239,135)'];
             var stages = Object.keys(response);
             stages.forEach(stage => {
                 var divId = modelName + '_' + stage + '_summary_plot';
@@ -141,7 +142,7 @@ function summary(modelName) {
                 if (models.length) {
                     var data = [];
                     var scores = Object.keys(response[stage][models[0]]);
-                    scores.forEach(scoreType => {
+                    scores.forEach((scoreType, index) => {
                         var scoreValues = models.map(model => response[stage][model][scoreType]);
                         var trace = {
                             x: models,
@@ -149,7 +150,8 @@ function summary(modelName) {
                             text: scoreValues,
                             textposition: 'auto',
                             name: scoreType,
-                            type: 'bar'
+                            type: 'bar',
+                            marker: {color: barColors[index]}
                         };
                         data.push(trace);
                     });
