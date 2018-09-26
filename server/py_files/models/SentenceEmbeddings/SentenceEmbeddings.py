@@ -35,8 +35,8 @@ class SentenceEmbeddings(object):
                     total_examples=len(sentences),
                     epochs=self.epochs)
 
-        print('saving the model at: %s' % self.path)
         model.save(self.path)
+        print('Saved model to disk...')
 
         self.model = model
 

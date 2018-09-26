@@ -28,7 +28,6 @@ class KerasSentenceClassifier(SentenceClassifier):
         if not self.model:
             self.model = load_model(self.path + '/model_weights.h5')
             print('Loaded model from disk...')
-            print(self.path)
 
         super().load()
 

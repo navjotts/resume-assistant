@@ -33,8 +33,8 @@ class Embeddings(object):
                     total_examples=len(sentences),
                     epochs=100)
 
-        print('saving the model at: %s' % self.path)
         model.wv.save_word2vec_format(self.path, binary = False)
+        print('Saved model to disk...')
 
         self.model = model
 
