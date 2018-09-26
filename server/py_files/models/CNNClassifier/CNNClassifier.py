@@ -25,7 +25,7 @@ class CNNClassifier(KerasSentenceClassifier):
 
         # self.train_experimental_CNN(features=features, labels=labels, trainable_embeddings=True) # uncomment to use this (todo crashes on Mac)
         # self.train_vanilla_CNN(features=features, labels=labels, trainable_embeddings=False) # f1 0.849 with frozen word_embeddings on test (similar cross_val)
-        self.train_common_baseline_CNN(features=features, labels=labels, trainable_embeddings=True)
+        self.train_common_baseline_CNN(features=features, labels=labels, trainable_embeddings=False)
 
         return super().train(samples, labels)
 
@@ -151,7 +151,7 @@ class CNNClassifier(KerasSentenceClassifier):
         class_weights = class_weight.compute_class_weight('balanced', np.unique(numeric_labels), numeric_labels)
         y_train = SentenceLabelEncoder().encode_categorical(labels)
 
-        self.model.fit(x_train, y_train, validation_split=0.2, epochs=1, batch_size=128,
+        self.model.fit(x_train, y_train, validation_split=0.2, epochs=30, batch_size=128,
                         verbose=2, shuffle=True, class_weight=class_weights)
         loss, accuracy = self.model.evaluate(x_train, y_train)
         print('loss, accuracy:', loss, accuracy)
