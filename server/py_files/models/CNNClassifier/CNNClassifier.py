@@ -23,9 +23,9 @@ class CNNClassifier(KerasSentenceClassifier):
     def train(self, samples, labels):
         features = self.choose_features(samples, True)
 
-        # self.train_experimental_CNN(features=features, labels=labels, trainable_embeddings=True) # uncomment to use this
-        # self.train_vanilla_CNN(features=features, labels=labels, trainable_embeddings=False)
-        self.train_common_baseline_CNN(features=features, labels=labels, trainable_embeddings=False)
+        # self.train_experimental_CNN(features=features, labels=labels, trainable_embeddings=True) # uncomment to use this (todo crashes on Mac)
+        # self.train_vanilla_CNN(features=features, labels=labels, trainable_embeddings=False) # f1 0.849 with frozen word_embeddings on test (similar cross_val)
+        self.train_common_baseline_CNN(features=features, labels=labels, trainable_embeddings=True)
 
         return super().train(samples, labels)
 
@@ -35,27 +35,23 @@ class CNNClassifier(KerasSentenceClassifier):
         # todo
         return super().classify(samples)
 
-    def embedding_layer(self, embedding_size, trainable, features):
-        embedding_layer = None
+    def train_vanilla_CNN(self, features, labels, trainable_embeddings):
+        embedding_size = 100
+
         if self.feature_type == 'word-embeddings':
             x_train = pad_sequences(features, maxlen=self.max_len, padding='post')
             pretrained_embeddings = Embeddings(self.name, embedding_size).vectors()
             vocab_size = pretrained_embeddings.shape[0]
             embedding_layer = Embedding(input_dim=vocab_size, output_dim=embedding_size,
-                                input_length=self.max_len, trainable=trainable, weights=[pretrained_embeddings])
+                                input_length=self.max_len, trainable=trainable_embeddings, weights=[pretrained_embeddings])
         elif self.feature_type in ['tf-idf', 'bow']:
             x_train = features
             vocab_size = x_train.shape[1]
             embedding_layer = Embedding(input_dim=vocab_size, output_dim=embedding_size,
-                                input_length=vocab_size, trainable=trainable)
+                                input_length=vocab_size, trainable=trainable_embeddings)
         else:
             raise Exception('Please select a valid feature')
 
-        return embedding_layer, x_train
-
-    def train_vanilla_CNN(self, features, labels, trainable_embeddings):
-        embedding_size = 100
-        embedding_layer, x_train = self.embedding_layer(embedding_size=embedding_size, trainable=trainable_embeddings, features=features)
         model = Sequential()
         model.add(embedding_layer)
         model.add(Conv1D(filters=256, kernel_size=5, padding='same', activation='relu'))
@@ -80,7 +76,21 @@ class CNNClassifier(KerasSentenceClassifier):
 
     def train_experimental_CNN(self, features, labels, trainable_embeddings):
         embedding_size = 100
-        embedding_layer, x_train = self.embedding_layer(embedding_size=embedding_size, trainable=trainable_embeddings, features=features)
+
+        if self.feature_type == 'word-embeddings':
+            x_train = pad_sequences(features, maxlen=self.max_len, padding='post')
+            pretrained_embeddings = Embeddings(self.name, embedding_size).vectors()
+            vocab_size = pretrained_embeddings.shape[0]
+            embedding_layer = Embedding(input_dim=vocab_size, output_dim=embedding_size,
+                                input_length=self.max_len, trainable=trainable_embeddings, weights=[pretrained_embeddings])
+        elif self.feature_type in ['tf-idf', 'bow']:
+            x_train = features
+            vocab_size = x_train.shape[1]
+            embedding_layer = Embedding(input_dim=vocab_size, output_dim=embedding_size,
+                                input_length=vocab_size, trainable=trainable_embeddings)
+        else:
+            raise Exception('Please select a valid feature')
+
         model = Sequential()
         model.add(embedding_layer)
         model.add(Conv1D(filters=256, kernel_size=5, strides=4, padding='valid', activation='relu', data_format='channels_first'))
@@ -113,9 +123,14 @@ class CNNClassifier(KerasSentenceClassifier):
     # todo either convert this to use Keras' non-functional API, or update other functions
     def train_common_baseline_CNN(self, features, labels, trainable_embeddings):
         embedding_size = 100
-        embedding_layer, x_train = self.embedding_layer(embedding_size=embedding_size, trainable=trainable_embeddings, features=features)
 
-        main_input = Input(shape=(embedding_size, ))
+        x_train = pad_sequences(features, maxlen=self.max_len, padding='post')
+        pretrained_embeddings = Embeddings(self.name, embedding_size).vectors()
+        vocab_size = pretrained_embeddings.shape[0]
+        embedding_layer = Embedding(input_dim=vocab_size, output_dim=embedding_size,
+                            input_length=self.max_len, trainable=trainable_embeddings, weights=[pretrained_embeddings])
+
+        main_input = Input(shape=(self.max_len, ))
         x = embedding_layer(main_input)
         x3 = Conv1D(filters=100, kernel_size=2, activation='relu')(x) # generalization of bigrams
         x4 = Conv1D(filters=100, kernel_size=4, activation='relu')(x) # generalization of ngrams, n=4
@@ -136,7 +151,7 @@ class CNNClassifier(KerasSentenceClassifier):
         class_weights = class_weight.compute_class_weight('balanced', np.unique(numeric_labels), numeric_labels)
         y_train = SentenceLabelEncoder().encode_categorical(labels)
 
-        self.model.fit(x_train, y_train, validation_split=0.2, epochs=30, batch_size=128,
+        self.model.fit(x_train, y_train, validation_split=0.2, epochs=1, batch_size=128,
                         verbose=2, shuffle=True, class_weight=class_weights)
         loss, accuracy = self.model.evaluate(x_train, y_train)
         print('loss, accuracy:', loss, accuracy)
