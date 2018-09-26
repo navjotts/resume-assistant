@@ -1,6 +1,6 @@
 import os
-import numpy as np
 
+import numpy as np
 from keras.models import Sequential
 from keras.layers import LSTM, Dense, Dropout, Embedding
 from keras.preprocessing.sequence import pad_sequences

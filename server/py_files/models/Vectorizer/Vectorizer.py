@@ -1,8 +1,8 @@
 import os
+import pickle
 
 from sklearn.feature_extraction.text import TfidfVectorizer
 from sklearn.feature_extraction.text import CountVectorizer
-import pickle
 
 class Vectorizer(object):
     def __init__(self, name, vec_type):

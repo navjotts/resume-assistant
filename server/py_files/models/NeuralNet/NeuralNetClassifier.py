@@ -1,6 +1,6 @@
 import os
-import numpy as np
 
+import numpy as np
 from keras.models import Sequential
 from keras.layers import Dense, Dropout, Flatten, Embedding
 from keras.preprocessing.sequence import pad_sequences
@@ -20,8 +20,8 @@ class NeuralNetClassifier(KerasSentenceClassifier):
     def train(self, samples, labels):
         features = self.choose_features(samples, True)
 
-        # self.train_experimental_NN(features=features, labels=labels, trainable_embeddings=True)
-        self.train_vanilla_NN(features=features, labels=labels, trainable_embeddings=True)
+        self.train_experimental_NN(features=features, labels=labels, trainable_embeddings=True)
+        # self.train_vanilla_NN(features=features, labels=labels, trainable_embeddings=True)
 
         return super().train(samples, labels)
 

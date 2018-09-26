@@ -1,10 +1,11 @@
 import os
+import numpy as np
+import math
 import multiprocessing
+
 import gensim.models.doc2vec as d2v
 from scipy import spatial
 from sklearn.metrics.pairwise import cosine_similarity
-import numpy as np
-import math
 
 import logging
 logging.basicConfig(format='%(asctime)s : %(levelname)s : %(message)s', level=logging.INFO)

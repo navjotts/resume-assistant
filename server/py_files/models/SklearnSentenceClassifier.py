@@ -1,6 +1,7 @@
 import os
-import numpy as np
 import pickle
+
+import numpy as np
 
 from py_files.models.SentenceClassifier import SentenceClassifier
 from py_files.models.Vectorizer.Vectorizer import Vectorizer

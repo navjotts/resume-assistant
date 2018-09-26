@@ -1,7 +1,7 @@
 import os
 import sys
-import numpy as np
 
+import numpy as np
 from keras.models import Sequential
 from keras.optimizers import adam
 from keras.layers import LSTM, Dense, Dropout, Embedding, Conv1D, MaxPool1D, Flatten, Input, concatenate
@@ -10,6 +10,7 @@ from keras.preprocessing.sequence import pad_sequences
 from keras.utils import to_categorical
 from sklearn.utils import class_weight
 
+from py_files.models.Embeddings.Embeddings import Embeddings
 from py_files.models.SentenceLabelEncoder import SentenceLabelEncoder
 from py_files.models.KerasSentenceClassifier import KerasSentenceClassifier
 
@@ -28,36 +29,29 @@ class CNNClassifier(KerasSentenceClassifier):
 
         return super().train(samples, labels)
 
-    # todo shift to KerasSentenceClassifier
-    def test(self, samples, labels):
-        self.load()
-        features = self.choose_features(samples)
-
-        if self.feature_type == 'word-embeddings':
-            x_test = pad_sequences(features, maxlen=self.max_len, padding='post')
-        elif self.feature_type in ['tf-idf', 'bow']:
-            x_test = features
-        else:
-            raise Exception('Please select a valid feature')
-
-        y_test = SentenceLabelEncoder().encode_categorical(labels)
-
-        loss, accuracy = self.model.evaluate(x_test, y_test)
-        print('loss, accuracy:', loss, accuracy)
-
-        # todo try to write the models in 1 fashion (either functional or not) - so that we don't have to do the below stuff
-        try:
-            self.labels_pred = SentenceLabelEncoder().decode(self.model.predict_classes(x_test))
-        except Exception as e:
-            self.labels_pred = SentenceLabelEncoder().decode(np.argmax(self.model.predict(x_test), axis=1))
-
-        return super().test(samples, labels)
-
     def classify(self, samples):
         self.load()
         features = self.choose_features(samples)
         # todo
         return super().classify(samples)
+
+    def embedding_layer(self, embedding_size, trainable, features):
+        embedding_layer = None
+        if self.feature_type == 'word-embeddings':
+            x_train = pad_sequences(features, maxlen=self.max_len, padding='post')
+            pretrained_embeddings = Embeddings(self.name, embedding_size).vectors()
+            vocab_size = pretrained_embeddings.shape[0]
+            embedding_layer = Embedding(input_dim=vocab_size, output_dim=embedding_size,
+                                input_length=self.max_len, trainable=trainable, weights=[pretrained_embeddings])
+        elif self.feature_type in ['tf-idf', 'bow']:
+            x_train = features
+            vocab_size = x_train.shape[1]
+            embedding_layer = Embedding(input_dim=vocab_size, output_dim=embedding_size,
+                                input_length=vocab_size, trainable=trainable)
+        else:
+            raise Exception('Please select a valid feature')
+
+        return embedding_layer, x_train
 
     def train_vanilla_CNN(self, features, labels, trainable_embeddings):
         embedding_size = 100
