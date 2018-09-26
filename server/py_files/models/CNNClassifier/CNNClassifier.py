@@ -25,7 +25,7 @@ class CNNClassifier(KerasSentenceClassifier):
 
         # self.train_experimental_CNN(features=features, labels=labels, trainable_embeddings=True) # uncomment to use this (todo crashes on Mac)
         # self.train_vanilla_CNN(features=features, labels=labels, trainable_embeddings=False) # f1 0.849 with frozen word_embeddings on test (similar cross_val)
-        self.train_common_baseline_CNN(features=features, labels=labels, trainable_embeddings=False)
+        self.train_common_baseline_CNN(features=features, labels=labels, trainable_embeddings=True)
 
         return super().train(samples, labels)
 
@@ -125,7 +125,7 @@ class CNNClassifier(KerasSentenceClassifier):
         embedding_size = 100
 
         x_train = pad_sequences(features, maxlen=self.max_len, padding='post')
-        pretrained_embeddings = Embeddings(self.name, embedding_size).vectors()
+        pretrained_embeddings = Embeddings(self.name, embedding_size).vectors('glove')
         vocab_size = pretrained_embeddings.shape[0]
         embedding_layer = Embedding(input_dim=vocab_size, output_dim=embedding_size,
                             input_length=self.max_len, trainable=trainable_embeddings, weights=[pretrained_embeddings])
