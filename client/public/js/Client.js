@@ -454,24 +454,24 @@ function visualize3dEmbeddings() {
                     width: 1200,
                     height: 1200,
                     hovermode:'closest',
-                    scene:{
+                    scene: {
                         xaxis: {
-                        backgroundcolor: "#FFFFFF",
-                        gridcolor: "#E9E9E9",
-                        showbackground: true,
-                        zerolinecolor: "#FFFFFF",
+                            backgroundcolor: "#FFFFFF",
+                            gridcolor: "#E9E9E9",
+                            showbackground: true,
+                            zerolinecolor: "#FFFFFF",
                         },
                         yaxis: {
-                        backgroundcolor: "#FFFFFF",
-                        gridcolor: "#E9E9E9",
-                        showbackground: true,
-                        zerolinecolor: "#FFFFFF",
+                            backgroundcolor: "#FFFFFF",
+                            gridcolor: "#E9E9E9",
+                            showbackground: true,
+                            zerolinecolor: "#FFFFFF",
                         },
                         zaxis: {
-                        backgroundcolor: "#FFFFFF",
-                        gridcolor: "#E9E9E9",
-                        showbackground: true,
-                        zerolinecolor: "#FFFFFF",
+                            backgroundcolor: "#FFFFFF",
+                            gridcolor: "#E9E9E9",
+                            showbackground: true,
+                            zerolinecolor: "#FFFFFF",
                         }}
                 };
                 Plotly.newPlot('embeddings_plot', data, layout);
