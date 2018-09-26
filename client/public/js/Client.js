@@ -151,7 +151,8 @@ function summary(modelName) {
                             textposition: 'auto',
                             name: scoreType,
                             type: 'bar',
-                            marker: {color: barColors[index]}
+                            marker: {color: barColors[index]},
+                            hoverinfo: 'none'
                         };
                         data.push(trace);
                     });
