@@ -80,6 +80,7 @@ class PythonServer(object):
         return sent_embeddings.similarity_score(sent1, sent2)
 
 # print(SentenceEmbeddings('resumes_jobs', 100).similarity_score(('Full', 'Stack', 'Internship', '·', 'July', '2017', 'to', 'Oct.', '2017'), ('5', 'years', 'of', 'experience', 'in', 'technical', 'leadership', 'and', 'people', 'management', '.'))) # for testing other classes directly (comment out the below zerorpc server if you do this)
+# Embeddings('resumes', 100).vectors('glove')
 
 try:
     s = zerorpc.Server(PythonServer())
