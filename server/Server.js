@@ -179,7 +179,7 @@ app.get('/training/:trainOrTest/:dataset/:modelName/:modelType/:featureType', as
     if (trainOrTest == 'train') {
         dataset = 'DB'; // training should always happens on the training dataset (testing can happen either on training or testing dataset)
     }
-    var method = trainOrTest == 'train' ? 'train_classifier' : 'test_classifier';
+    var method = trainOrTest == 'train' ? 'train_sentence_classifier' : 'test_sentence_classifier';
     var modelType = req.params.modelType;
     var featureType = req.params.featureType;
     try {

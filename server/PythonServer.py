@@ -26,11 +26,11 @@ class PythonServer(object):
                     sents.append(sentence)
         return sents
 
-    def train_classifier(self, model_name, model_type, feature_type, samples, labels):
+    def train_sentence_classifier(self, model_name, model_type, feature_type, samples, labels):
         model = self.choose_model(model_name, model_type, feature_type)
         return model.train(samples, labels)
 
-    def test_classifier(self, model_name, model_type, feature_type, samples, labels):
+    def test_sentence_classifier(self, model_name, model_type, feature_type, samples, labels):
         model = self.choose_model(model_name, model_type, feature_type)
         return model.test(samples, labels)
 
