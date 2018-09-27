@@ -55,7 +55,8 @@ class Embeddings(object):
 
         if model_name == 'glove':
             embeddings_dict = dict()
-            f = open(os.path.join(os.path.dirname(os.path.abspath(__file__)), 'trained', 'glove.6B.' + str(dimension) + 'd.txt'))
+            f = open(os.path.join(os.path.dirname(os.path.abspath(__file__)), 'trained', 'glove.6B.' + str(dimension) + 'd.txt'), encoding ='utf-8' )
+            print('using glove model')
             for line in f:
                 values = line.split()
                 word = values[0]
@@ -70,6 +71,7 @@ class Embeddings(object):
                 if embedding_vec is not None:
                     pretrained_vectors[vocab_object.index] = embedding_vec
         else:
+            print('using custom pretrained vectors')
             pretrained_vectors = self.model.wv.syn0
 
         vocab_size, emdedding_size = pretrained_vectors.shape
