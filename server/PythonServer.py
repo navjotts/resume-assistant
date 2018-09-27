@@ -28,6 +28,7 @@ class PythonServer(object):
 
     def train_sentence_classifier(self, model_name, model_type, feature_type, samples, labels):
         model = self.choose_model(model_name, model_type, feature_type)
+        print(type(samples))
         return model.train(samples, labels)
 
     def test_sentence_classifier(self, model_name, model_type, feature_type, samples, labels):
