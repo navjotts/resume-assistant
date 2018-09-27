@@ -236,7 +236,6 @@ app.get('/training/sentenceembeddings/train', async function (req, res, next) {
         console.log(`Collecting sentences from ${srcFolder}...`);
         var srcDir = path.join(__dirname, 'data', srcFolder);
         var files = fs.readdirSync(srcDir);
-
         for (var i = 0; i < files.length; i++) {
             var fileName = files[i];
             if (fileName.split('.').pop() === 'txt') {
@@ -251,7 +250,6 @@ app.get('/training/sentenceembeddings/train', async function (req, res, next) {
         console.log(`Collecting sentences from ${srcFolder}...`);
         var srcDir = path.join(__dirname, 'data', srcFolder);
         var files = fs.readdirSync(srcDir);
-
         for (var i = 0; i < files.length; i++) {
             var fileName = files[i];
             if (fileName.split('.').pop() === 'txt') {
@@ -264,9 +262,8 @@ app.get('/training/sentenceembeddings/train', async function (req, res, next) {
                 sents = sents.concat(sentences);
             }
         }
-
         console.log('total sents', sents.length);
-        console.log(sents[sents.length-1]);
+
         await PythonConnector.invoke('train_sent_embeddings', 'resumes_jobs', 100, sents);
         res.json(200);
     }
@@ -280,11 +277,11 @@ app.get('/training/embeddings/train', async function (req, res, next) {
     console.log(req.url);
     try {
         var sents = [];
-        var srcFolder = 'resumes-txt'; // TODO add jobs also
+
+        var srcFolder = 'resumes-txt';
         console.log(`Collecting sentences from ${srcFolder}...`);
         var srcDir = path.join(__dirname, 'data', srcFolder);
         var files = fs.readdirSync(srcDir);
-
         for (var i = 0; i < files.length; i++) {
             var fileName = files[i];
             if (fileName.split('.').pop() === 'txt') {
@@ -293,8 +290,24 @@ app.get('/training/embeddings/train', async function (req, res, next) {
                 sents = sents.concat(sentences);
             }
         }
+        console.log('total sents', sents.length);
 
-        await PythonConnector.invoke('train_embeddings', 'resumes', 100, sents);
+        var srcFolder = 'jobs-txt';
+        console.log(`Collecting sentences from ${srcFolder}...`);
+        var srcDir = path.join(__dirname, 'data', srcFolder);
+        var files = fs.readdirSync(srcDir);
+        for (var i = 0; i < files.length; i++) {
+            var fileName = files[i];
+            if (fileName.split('.').pop() === 'txt') {
+                console.log(`#${i} Collecting sentences for: ${fileName}`);
+                var sentences = await PythonConnector.invoke('sentences', fs.readFileSync(path.join(srcDir, fileName)).toString(), true, true);
+                sents = sents.concat(sentences);
+            }
+        }
+        console.log('total sents', sents.length);
+
+
+        await PythonConnector.invoke('train_embeddings', 'resumes_jobs', 100, sents);
         res.json(200);
     }
     catch (e) {
