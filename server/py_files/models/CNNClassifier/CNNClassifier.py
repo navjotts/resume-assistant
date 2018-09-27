@@ -94,7 +94,7 @@ class CNNClassifier(KerasSentenceClassifier):
         model = Sequential()
         model.add(embedding_layer)
         model.add(Conv1D(filters=256, kernel_size=5, activation='relu'))
-        model.add(MaxPool1D(pool_size=5)) # output size 20 (100/5) - todo change 100 to a variable in this comment for clarity
+        model.add(MaxPool1D(pool_size=5)) # output size 20 (self.max_len/5) (MaxPool acts on the input dimension/size)
         model.add(Dropout(rate=0.3))
         model.add(Conv1D(filters=128, kernel_size=5, activation='relu'))
         model.add(MaxPool1D(pool_size=15)) # filter of size 5 applied on the size 20 output of 1st MaxPool1D
