@@ -346,7 +346,7 @@ app.get('/training/embeddings/generatecoordinates/:dimension', async function (r
     console.log(req.url);
     var dimension = req.params.dimension;
     try {
-        await PythonConnector.invoke('generate_embeddings_coordinates', 'resumes', 100, Number(dimension));
+        await PythonConnector.invoke('generate_embeddings_coordinates', 'resumes_jobs', 100, Number(dimension));
         res.json(200);
     }
     catch (e) {

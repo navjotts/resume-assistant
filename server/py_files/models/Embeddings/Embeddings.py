@@ -15,8 +15,7 @@ class Embeddings(object):
     def __init__(self, name, dimension):
         self.name = name
         self.dimension = dimension
-        self.path = os.path.join(os.path.dirname(os.path.abspath(__file__)), 'trained', 'resumes' + str(dimension) + 'd.txt')
-        # self.path = os.path.join(os.path.dirname(os.path.abspath(__file__)), 'trained', name + str(dimension) + 'd.txt')
+        self.path = os.path.join(os.path.dirname(os.path.abspath(__file__)), 'trained', name + str(dimension) + 'd.txt')
         self.model = None
         self.seed = 42
 
