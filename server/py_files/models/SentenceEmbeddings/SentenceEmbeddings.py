@@ -73,7 +73,7 @@ class SentenceEmbeddings(object):
 
         return score
 
-    def group_similarity_score(self, groups_of_sents, method = 'gensim'):
+    def group_similarity_score(self, groups_of_sents, method = 'custom'):
         '''
             sents is a list of dicts with 2 keys: 'from' and 'to'
             where 'from' is the base sentence we want to compare,
