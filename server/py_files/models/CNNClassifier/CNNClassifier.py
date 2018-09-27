@@ -23,7 +23,7 @@ class CNNClassifier(KerasSentenceClassifier):
     def train(self, samples, labels):
         features = self.choose_features(samples, True)
 
-        # self.train_experimental_CNN(features=features, labels=labels, trainable_embeddings=True) # uncomment to use this (todo crashes on Mac)
+        # self.train_experimental_CNN(features=features, labels=labels, trainable_embeddings=True)
         # self.train_vanilla_CNN(features=features, labels=labels, trainable_embeddings=False) # f1 0.849 with frozen word_embeddings on test (similar cross_val)
         self.train_common_baseline_CNN(features=features, labels=labels, trainable_embeddings=True)
 
@@ -93,11 +93,11 @@ class CNNClassifier(KerasSentenceClassifier):
 
         model = Sequential()
         model.add(embedding_layer)
-        model.add(Conv1D(filters=256, kernel_size=5, strides=4, padding='valid', activation='relu', data_format='channels_first'))
-        model.add(MaxPool1D(pool_size=5))
+        model.add(Conv1D(filters=256, kernel_size=5, activation='relu'))
+        model.add(MaxPool1D(pool_size=5)) # output size 20 (100/5) - todo change 100 to a variable in this comment for clarity
         model.add(Dropout(rate=0.3))
-        model.add(Conv1D(filters=128, kernel_size=5, strides=2, padding='valid', activation='relu', data_format='channels_first'))
-        model.add(MaxPool1D(pool_size=50))
+        model.add(Conv1D(filters=128, kernel_size=5, activation='relu'))
+        model.add(MaxPool1D(pool_size=15)) # filter of size 5 applied on the size 20 output of 1st MaxPool1D
         model.add(Flatten())
         model.add(Dense(units=64, activation='relu'))
         model.add(Dropout(rate=0.5))
