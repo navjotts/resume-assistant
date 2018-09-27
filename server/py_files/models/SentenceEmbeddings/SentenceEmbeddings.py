@@ -104,6 +104,7 @@ class SentenceEmbeddings(object):
                 elif (method == 'gensim'):
                     group_scores = []
                     for sent in to_sents:
+                        self.model.random.seed(self.seed)
                         score = self.model.docvecs.similarity_unseen_docs(self.model,from_sent, sent, steps=100)
                         score = (score + 1)/2
                         # score = d2v.similarity_unseen_docs(self.model, from_sent, sent, steps = 100)
