@@ -73,7 +73,7 @@ class SentenceEmbeddings(object):
 
         return score
 
-    def group_similarity_score(self, groups_of_sents, method = 'custom'):
+    def group_similarity_score(self, groups_of_sents, method='custom'):
         '''
             sents is a list of dicts with 2 keys: 'from' and 'to'
             where 'from' is the base sentence we want to compare,
@@ -89,27 +89,26 @@ class SentenceEmbeddings(object):
             if len(to_sents) == 0:
                 scores.append(-1.0) # if nothing to compare to
             else:
+                group_scores = []
+
                 if(method == 'custom'):
                     from_sent_vec = self.vector(from_sent)
                     from_sent_l2 = math.sqrt(np.dot(from_sent_vec, from_sent_vec))
-                    group_scores = []
                     for sent in to_sents:
                         sent_vec = self.vector(sent)
                         sent_l2 = math.sqrt(np.dot(sent_vec, sent_vec))
                         score = np.dot(from_sent_vec, sent_vec) / (from_sent_l2 * sent_l2)
-                        # score = 1 if score > 1 else (0 if score < 0 else score)
                         score = (score + 1)/2
+                        # score = 1 if score > 1 else (0 if score < 0 else score)
                         group_scores.append(score)
-
                 elif (method == 'gensim'):
-                    group_scores = []
                     for sent in to_sents:
                         self.model.random.seed(self.seed)
-                        score = self.model.docvecs.similarity_unseen_docs(self.model,from_sent, sent, steps=100)
+                        score = self.model.docvecs.similarity_unseen_docs(self.model, from_sent, sent, steps=100)
                         score = (score + 1)/2
-                        # score = d2v.similarity_unseen_docs(self.model, from_sent, sent, steps = 100)
+                        # score = 1 if score > 1 else (0 if score < 0 else score)
                         group_scores.append(score)
-                
+
                 scores.append(max(group_scores))
-        print('similariity calculation finished')
+
         return scores
