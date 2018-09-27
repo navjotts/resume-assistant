@@ -75,12 +75,8 @@ class PythonServer(object):
         sent_embeddings = SentenceEmbeddings(model_name, dimension)
         return sent_embeddings.group_similarity_score(sents)
 
-    def sentence_similarity_score(self, model_name, dimension, sent1, sent2):
-        sent_embeddings = SentenceEmbeddings(model_name, dimension)
-        return sent_embeddings.similarity_score(sent1, sent2)
-
-# print(SentenceEmbeddings('resumes_jobs', 100).similarity_score(('Full', 'Stack', 'Internship', '·', 'July', '2017', 'to', 'Oct.', '2017'), ('5', 'years', 'of', 'experience', 'in', 'technical', 'leadership', 'and', 'people', 'management', '.'))) # for testing other classes directly (comment out the below zerorpc server if you do this)
-# Embeddings('resumes', 100).vectors('glove')
+# Embeddings('resumes', 100).vectors('glove') # for testing other classes directly (comment out the below zerorpc server if you do this)
+# print(SentenceEmbeddings('resumes_jobs', 100).similarity_score(('Full', 'Stack', 'Internship', '·', 'July', '2017', 'to', 'Oct.', '2017'), ('5', 'years', 'of', 'experience', 'in', 'technical', 'leadership', 'and', 'people', 'management', '.')))
 
 try:
     s = zerorpc.Server(PythonServer())
