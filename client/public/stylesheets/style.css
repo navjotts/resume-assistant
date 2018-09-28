@@ -152,6 +152,8 @@ body {
     flex-basis: 8%;
     text-align: right;
     vertical-align: middle;
+    padding-left: 5px;
+    padding-right: 5px;
 }
 
 .prev-button {

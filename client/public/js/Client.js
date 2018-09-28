@@ -64,7 +64,7 @@ function analyzeFiles() {
                     var missing = response.missing;
                     output += "<div class=\"document-header\"><label class=\"document-header-label-left\">JOB</label></div>";
                     for (var i = 0; i < missing.length; i++) {
-                        output += "<div class=\"sentence\"><div class=\"left-child\" >" + missing[i].sentence + "</div>" + "<div class=\"right-child\">MISSING</div>" + "</div>";
+                        output += "<div class=\"sentence\"><div class=\"left-child\" >" + missing[i].sentence + "</div>" + "<div class=\"right-child\" style=\"background-color:#FF0000; color:#FFFFFF;\">Missing</div>" + "</div>";
                     }
 
                     output += "<div class=\"divider\"></div>";
@@ -352,7 +352,7 @@ function visualizeTopTopics() {
             $('#topic_visualization').html(output);
 
             // TODO dynamic - pull from the LDA topic modeling - this could be top50 also
-            var resumeTopics = ['Javascript', 'Python', 'MySQL', 'React', 'Git', 'SVN', 'C++', 'manage', 'web', 'development', 'MongoDB', 'lead', 'programming', 'components', 'projects'];
+            var resumeTopics = ['Javascript', 'Python', 'MySQL', 'React', 'Git', 'SVN', 'C++', 'manage', 'web', 'development', 'MongoDB', 'lead', 'programming', 'components', 'projects', 'Computer'];
             var jobTopics = ['development', 'HTML', 'HTML5', 'Java', 'Javascript', 'C++', 'technical', 'Computer', 'management', 'leadership', 'planning', 'degree', 'projects', 'full-stack'];
 
             var words = [];
@@ -373,7 +373,7 @@ function visualizeTopTopics() {
                     sizes.push(14);
                 }
                 else if (jobTopics.includes(item['word'])) {
-                    colors.push('#F78F88');
+                    colors.push('#FF0000');
                     opacities.push(1.0);
                     sizes.push(20);
                 }
@@ -508,7 +508,7 @@ function visualizeTopTopics() {
             //     hoverinfo: 'text',
             //     mode: 'markers',
             //     marker: {
-            //         color: '#F78F88',
+            //         color: '#FF0000',
             //         opacity: 1.0,
             //         size: 14,
             //         line: {
