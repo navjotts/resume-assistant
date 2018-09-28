@@ -125,5 +125,5 @@ class SentenceEmbeddings(object):
                     raise Exception('Please provide a similarity scoring method!')
 
                 scores.append(max(group_scores))
-        print(scores)
+
         return scores
