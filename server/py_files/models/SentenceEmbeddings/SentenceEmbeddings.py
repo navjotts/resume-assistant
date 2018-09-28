@@ -61,7 +61,7 @@ class SentenceEmbeddings(object):
         self.model.random.seed(self.seed)
         return self.model.infer_vector(sent, steps=self.epochs)
 
-    def similarity_score(self, fromsent, tosent, method='custom'):
+    def similarity_score(self, fromsent, tosent, method='gensim'):
         self.load()
 
         if method == 'custom':
@@ -79,7 +79,7 @@ class SentenceEmbeddings(object):
         score = 1 if score > 1 else (0 if score < 0 else score)
         return score
 
-    def group_similarity_score(self, groups_of_sents, method='custom'):
+    def group_similarity_score(self, groups_of_sents, method='gensim'):
         '''
             sents is a list of dicts with 2 keys: 'from' and 'to'
             where 'from' is the base sentence we want to compare,
@@ -104,15 +104,15 @@ class SentenceEmbeddings(object):
                         sent_vec = self.vector(sent)
                         sent_l2 = math.sqrt(np.dot(sent_vec, sent_vec))
                         score = np.dot(fromsent_vec, sent_vec) / (fromsent_l2 * sent_l2)
-                        score = (score + 1)/2
-                        # score = 1 if score > 1 else (0 if score < 0 else score)
+                        # score = (score + 1)/2
+                        score = 1 if score > 1 else (0 if score < 0 else score)
                         group_scores.append(score)
                 elif method == 'gensim':
                     for sent in tosents:
                         self.model.random.seed(self.seed)
                         score = self.model.docvecs.similarity_unseen_docs(self.model, fromsent, sent, steps=self.epochs)
-                        score = (score + 1)/2
-                        # score = 1 if score > 1 else (0 if score < 0 else score)
+                        # score = (score + 1)/2
+                        score = 1 if score > 1 else (0 if score < 0 else score)
                         group_scores.append(score)
                 else:
                     raise Exception('Please provide a similarity scoring method!')
