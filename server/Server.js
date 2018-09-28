@@ -7,6 +7,8 @@ const multer = require('multer');
 const PythonConnector = require('./PythonConnector.js');
 const DocxParser = require('./DocxParser.js');
 
+var ongoing = false; // TODO fix this please: https://trello.com/c/IvmFXKc6/70-bug-multiple-ajax-calls-are-getting-fired-for-training-calls-which-take-longer-time
+
 var storage = multer.diskStorage({
     destination: function (req, file, callback) {
         callback(null, path.join(__dirname, 'uploads'));
