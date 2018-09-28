@@ -721,6 +721,7 @@ function generateEmbeddingsCoordinates() {
 }
 
 function getColor(score) {
-    var hue=((score)*120).toString(10);
-    return ["hsl(",hue,",100%,50%)"].join("");
+    score = Math.max(0.25, score < 0.5 ? score * (2 - score/0.5) : score); // restrict lower color boundary to start from a softer shade of red
+    var hue = (score * 120).toString(10);
+    return ['hsl(', hue, ', 100%, 50%)'].join('');
 }
