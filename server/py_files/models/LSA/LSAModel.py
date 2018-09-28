@@ -13,7 +13,6 @@ class LSAModel(object):
         np.random.seed(self.seed) # todo => doesn't setting this gets rid of the need of the above? CHECK (then we don't need to set `random_state` everywhere)
 
     def top_topics(self, samples, num_topics, words_per_topic):
-        # print(self.name, samples)
         features = Vectorizer(self.name, 'tf-idf').vectors(samples, False).toarray() # todense()
 
         lda = LatentDirichletAllocation(n_components=num_topics)
@@ -24,12 +23,10 @@ class LSAModel(object):
         topics = range(num_topics)
 
         list = []
-
         for i in range(0, 5, num_topics):
             these_topics = topics[i: i + num_topics]
             len_this_chunk = len(these_topics)
             for i in range(words_per_topic):
-                
                 list.extend(features[sorting[these_topics, i]])
 
         dummy_data = {'resumes': ['Javascript', 'Python', 'MySQL', 'React', 'Git', 'SVN', 'C++', 'manage', 'web', 'development', 'MongoDB', 'lead', 'programming', 'components', 'projects', 'Computer'],
