@@ -1,10 +1,9 @@
 import os
-import multiprocessing
-import gensim.models.doc2vec as d2v
-from scipy import spatial
-from sklearn.metrics.pairwise import cosine_similarity
 import numpy as np
 import math
+import multiprocessing
+
+import gensim.models.doc2vec as d2v
 
 import logging
 logging.basicConfig(format='%(asctime)s : %(levelname)s : %(message)s', level=logging.INFO)
@@ -34,8 +33,8 @@ class SentenceEmbeddings(object):
                     total_examples=len(sentences),
                     epochs=self.epochs)
 
-        print('saving the model at: %s' % self.path)
         model.save(self.path)
+        print('Saved model to disk...')
 
         self.model = model
 
@@ -50,7 +49,6 @@ class SentenceEmbeddings(object):
     # loads the model from local (if needed)
     def load(self):
         if not self.model:
-            print('LOADING!')
             self.model = d2v.Doc2Vec.load(self.path)
 
         if not self.model:
@@ -63,18 +61,26 @@ class SentenceEmbeddings(object):
         self.model.random.seed(self.seed)
         return self.model.infer_vector(sent, steps=self.epochs)
 
-    def similarity_score(self, sent1, sent2):
+    def similarity_score(self, fromsent, tosent, method):
         self.load()
-        sent1_vec = self.vector(sent1)
-        sent2_vec = self.vector(sent2)
-        sent1_l2 = math.sqrt(np.dot(sent1_vec, sent1_vec))
-        sent2_l2 = math.sqrt(np.dot(sent2_vec, sent2_vec))
-        score = np.dot(sent1_vec, sent2_vec) / (sent1_l2 * sent2_l2)
-        score = 1 if score > 1 else (0 if score < 0 else score)
 
+        if method == 'custom':
+            fromsent_vec = self.vector(fromsent)
+            tosent_vec = self.vector(tosent)
+            fromsent_l2 = math.sqrt(np.dot(fromsent_vec, fromsent_vec))
+            tosent_l2 = math.sqrt(np.dot(tosent_vec, tosent_vec))
+            score = np.dot(fromsent_vec, tosent_vec) / (fromsent_l2 * tosent_l2)
+        elif method == 'gensim':
+            self.model.random.seed(self.seed)
+            score = self.model.docvecs.similarity_unseen_docs(self.model, fromsent, tosent, steps=self.epochs)
+        else:
+            raise Exception('Please provide a similarity scoring method!')
+
+        score = 1 if score > 1 else (0 if score < 0 else score)
         return score
 
-    def group_similarity_score(self, groups_of_sents):
+    # todo - remove the `reverse_comparison` hack - study why order of sentences is mattering in the (from, to) comparison (only happens for `similarity_unseen_docs`)
+    def group_similarity_score(self, groups_of_sents, reverse_comparison, method):
         '''
             sents is a list of dicts with 2 keys: 'from' and 'to'
             where 'from' is the base sentence we want to compare,
@@ -85,23 +91,39 @@ class SentenceEmbeddings(object):
         self.load()
         scores = []
         for group in groups_of_sents:
-            from_sent = group['from']
-            to_sents = group['to']
-            if len(to_sents) == 0:
+            fromsent = group['from']
+            tosents = group['to']
+            if len(tosents) == 0:
                 scores.append(-1.0) # if nothing to compare to
             else:
-                from_sent_vec = self.vector(from_sent)
-                from_sent_l2 = math.sqrt(np.dot(from_sent_vec, from_sent_vec))
                 group_scores = []
-                for sent in to_sents:
-                    sent_vec = self.vector(sent)
-                    sent_l2 = math.sqrt(np.dot(sent_vec, sent_vec))
-                    score = np.dot(from_sent_vec, sent_vec) / (from_sent_l2 * sent_l2)
-                    # score = spatial.distance.cosine(self.vector(from_sent), self.vector(sent))
-                    # score = cosine_similarity(np.array(self.model.vector(from_sent)).reshape(1,-1), np.array(self.vector(sent)).reshape(1,-1))
-                    # print('similarity:', self.model.docvecs.n_similarity(from_sent, sent))
-                    score = 1 if score > 1 else (0 if score < 0 else score)
-                    group_scores.append(score)
+
+                if method == 'custom':
+                    fromsent_vec = self.vector(fromsent)
+                    fromsent_l2 = math.sqrt(np.dot(fromsent_vec, fromsent_vec))
+                    for sent in tosents:
+                        sent_vec = self.vector(sent)
+                        sent_l2 = math.sqrt(np.dot(sent_vec, sent_vec))
+                        score = np.dot(fromsent_vec, sent_vec) / (fromsent_l2 * sent_l2)
+                        assert score <= 1.0
+                        # score = (score + 1)/2
+                        score = 0.0 if score < 0 else score
+                        group_scores.append(score)
+                elif method == 'gensim':
+                    for sent in tosents:
+                        self.model.random.seed(self.seed) # todo check why do we need to set this each time - shouldn't it just be once the model is loaded (https://github.com/RaRe-Technologies/gensim/issues/447)
+                        if reverse_comparison:
+                            score = self.model.docvecs.similarity_unseen_docs(self.model, sent, fromsent, steps=self.epochs)
+                        else:
+                            score = self.model.docvecs.similarity_unseen_docs(self.model, fromsent, sent, steps=self.epochs)
+                        score = float(score)
+                        assert score <= 1.0
+                        # score = (score + 1)/2
+                        score = 0.0 if score < 0 else score
+                        group_scores.append(score)
+                else:
+                    raise Exception('Please provide a similarity scoring method!')
+
                 scores.append(max(group_scores))
 
         return scores
