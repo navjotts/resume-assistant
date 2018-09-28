@@ -144,7 +144,7 @@ function summary(modelName) {
         success: function(response) {
             var output = "<div class=\"result_header\">LATEST RESULTS</div>";
             var plots = [];
-            var barColors = ['rgb(247, 206, 133)', 'rgb(247,143,136)', 'rgb(250,239,135)'];
+            var barColors = ['#F7CE85', '#F78F88', '#FAEF87'];
             var stages = Object.keys(response);
             stages.forEach(stage => {
                 var divId = modelName + '_' + stage + '_summary_plot';
@@ -368,12 +368,12 @@ function visualizeTopTopics() {
                     sizes.push(20);
                 }
                 else if (resumeTopics.includes(item['word'])) {
-                    colors.push('rgb(250,239,135)');
+                    colors.push('#FAEF87');
                     opacities.push(1.0);
                     sizes.push(14);
                 }
                 else if (jobTopics.includes(item['word'])) {
-                    colors.push('rgb(247,143,136)');
+                    colors.push('#F78F88');
                     opacities.push(1.0);
                     sizes.push(20);
                 }
@@ -490,7 +490,7 @@ function visualizeTopTopics() {
             //     hoverinfo: 'text',
             //     mode: 'markers',
             //     marker: {
-            //         color: 'rgb(250,239,135)',
+            //         color: '#FAEF87',
             //         opacity: 1.0,
             //         size: 14,
             //         line: {
@@ -508,7 +508,7 @@ function visualizeTopTopics() {
             //     hoverinfo: 'text',
             //     mode: 'markers',
             //     marker: {
-            //         color: 'rgb(247, 206, 133)',
+            //         color: '#F78F88',
             //         opacity: 1.0,
             //         size: 14,
             //         line: {
@@ -582,7 +582,7 @@ function visualize2dEmbeddings() {
                     opacity: 0.6,
                     size: 14,
                     line: {
-                        color: 'rgb(231, 99, 250)',
+                        color: '#E763FA',
                          width: 0.7
                     }
                 }
