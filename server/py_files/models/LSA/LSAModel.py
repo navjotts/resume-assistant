@@ -1,5 +1,7 @@
 import os
 
+import numpy as np
+
 class LSAModel(object):
     def __init__(self, name):
         self.name = name
