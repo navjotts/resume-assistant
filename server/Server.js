@@ -379,6 +379,7 @@ app.get('/analyze/:resumeFile/:jobFile', async function (req, res, next) {
         resumeSentences.forEach(sent => resumeSamples.push(sent)); // TODO use concat
         var resumeLabelsPredicted = await PythonConnector.invoke('classify_sentences', 'resumes', 'FastText', 'None', resumeSamples);
         console.assert(resumeLabelsPredicted.length == resumeSamples.length);
+        var resumeTopTopics = await PythonConnector.invoke('top_topics', 'resumes', resumeSamples, 5, 5);
 
         var jobText = fs.readFileSync(jobFilePath).toString();
         var jobSentences = await PythonConnector.invoke('sentences', jobText);
@@ -387,6 +388,7 @@ app.get('/analyze/:resumeFile/:jobFile', async function (req, res, next) {
         jobSentences.forEach(sent => jobSamples.push(sent)); // TODO use concat
         var jobLabelsPredicted = await PythonConnector.invoke('classify_sentences', 'jobs', 'FastText', 'None', jobSamples);
         console.assert(jobLabelsPredicted.length == jobSamples.length);
+        var jobTopTopics = await PythonConnector.invoke('top_topics', 'jobs', jobSamples, 5, 5);
 
         var resumeData = {};
         resumeSamples.forEach((sent, index) => {
@@ -449,9 +451,7 @@ app.get('/analyze/:resumeFile/:jobFile', async function (req, res, next) {
             }
         });
 
-        var resumeTopTopics = await PythonConnector.invoke('top_topics', 'resumes', text, 5, 5);
         resumeTopTopics.forEach(topic => data.resumeTopTopics.push(topic)); // TODO use concat
-        var jobTopTopics = await PythonConnector.invoke('top_topics', 'jobs', jobText, 5, 5);
         jobTopTopics.forEach(topic => data.jobTopTopics.push(topic)); // TODO use concat
 
         res.json(data);
