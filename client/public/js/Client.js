@@ -343,8 +343,6 @@ function trainEmbeddings() {
 }
 
 function visualizeTopTopics(resumeTopics, jobTopics) {
-    console.log('resumeTopics', resumeTopics);
-    console.log('jobTopics', jobTopics);
     var dimension = 2;
     $.ajax({
         url: `http://localhost:3000/training/embeddings/visualize/${dimension}`,
