@@ -1,4 +1,6 @@
 import os
+from sklearn.feature_extraction.text import CountVectorizer, TfidfVectorizer
+from sklearn.decomposition import LatentDirichletAllocation
 
 import numpy as np
 
@@ -13,3 +15,8 @@ class LSAModel(object):
         dummy_data = {'resumes': ['Javascript', 'Python', 'MySQL', 'React', 'Git', 'SVN', 'C++', 'C', 'manage', 'web', 'development', 'MongoDB', 'lead', 'programming', 'components', 'projects', 'Computer'],
                         'jobs': ['development', 'HTML', 'HTML5', 'Java', 'Javascript', 'C++', 'technical', 'Computer', 'management', 'leadership', 'planning', 'degree', 'projects', 'full-stack']}
         return dummy_data[self.name]
+
+    def train(input):
+
+        vect = CountVectorizer(ngram_range=(1,1), stop_words='english')
+        dtm=vect.fit_transform(input)
