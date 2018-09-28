@@ -364,7 +364,7 @@ function visualizeTopTopics() {
                 if (resumeTopics.includes(item['word']) && jobTopics.includes(item['word'])) {
                     colors.push('#b1de69');
                     opacities.push(1.0);
-                    sizes.push(20);
+                    sizes.push(14);
                 }
                 else if (resumeTopics.includes(item['word'])) {
                     colors.push('#FAEF87');
@@ -374,7 +374,7 @@ function visualizeTopTopics() {
                 else if (jobTopics.includes(item['word'])) {
                     colors.push('#FF0000');
                     opacities.push(1.0);
-                    sizes.push(20);
+                    sizes.push(14);
                 }
                 else {
                     colors.push('#A6AFCB');
