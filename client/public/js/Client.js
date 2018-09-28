@@ -71,7 +71,7 @@ function analyzeFiles() {
                     var resumeScores = response.resume;
                     output += "<div class=\"document-header\"><label class=\"document-header-label-left\">RESUME</label><label class=\"document-header-label-right\">SCORE</label></div>";
                     for (var i = 0; i < resumeScores.length; i++) {
-                        var scoreDiv = resumeScores[i].score/100 == -1.0 ? "<div class=\"right-child\" style=\"border: 1px solid #979797; color:#5d5d5d;\">Info</div>" : "<div class=\"right-child\" style=\"flex-basis:" + 8*resumeScores[i].score/100 + "%; background-color:" + getColor(resumeScores[i].score/100) + ";\">" + resumeScores[i].score + "%</div>";
+                        var scoreDiv = resumeScores[i].score/100 == -1.0 ? "<div class=\"right-child\" style=\"border: 1px solid #979797; color:#5d5d5d;\">Info / Others</div>" : "<div class=\"right-child\" style=\"flex-basis:" + 8*resumeScores[i].score/100 + "%; background-color:" + getColor(resumeScores[i].score/100) + ";\">" + resumeScores[i].score + "%</div>";
                         output += "<div class=\"sentence\"><div class=\"left-child\" >" + resumeScores[i].sentence + "</div>" + scoreDiv + "</div>";
                     }
                     $('#document').html(output);
@@ -350,172 +350,92 @@ function visualizeTopTopics() {
             var output = "<div id=\"topics_plot\" style=\"margin:20px;\"></div>";
             $('#topic_visualization').html(output);
 
-            // TODO dynamic - pull from the LDA topic modeling - this could be top50 also
+            // TODO dynamic - pull from the LDA topic modeling - top25 topics
             var resumeTopics = ['Javascript', 'Python', 'MySQL', 'React', 'Git', 'SVN', 'C++', 'manage', 'web', 'development', 'MongoDB', 'lead', 'programming', 'components', 'projects', 'Computer'];
             var jobTopics = ['development', 'HTML', 'HTML5', 'Java', 'Javascript', 'C++', 'technical', 'Computer', 'management', 'leadership', 'planning', 'degree', 'projects', 'full-stack'];
 
             var words = [];
             var xcoords = [];
             var ycoords = [];
-            var colors = [];
-            var opacities = [];
-            var sizes = []
+            var wordsResume = [];
+            var wordsJob = [];
+            var wordsCommon = [];
+            var xcoordsResume = [];
+            var xcoordsJob = [];
+            var xcoordsCommon = [];
+            var ycoordsResume = [];
+            var ycoordsJob = [];
+            var ycoordsCommon = [];
             response.forEach(item => {
-                if (resumeTopics.includes(item['word']) && jobTopics.includes(item['word'])) {
-                    colors.push('#b1de69');
-                    opacities.push(1.0);
-                    sizes.push(20);
+                var word = item['word'];
+                var xcoord = item['coords'][0];
+                var ycoord = item['coords'][1];
+                if (resumeTopics.includes(word) && jobTopics.includes(word)) {
+                    wordsCommon.push(word);
+                    xcoordsCommon.push(xcoord);
+                    ycoordsCommon.push(ycoord);
                 }
-                else if (resumeTopics.includes(item['word'])) {
-                    colors.push('#FAEF87');
-                    opacities.push(1.0);
-                    sizes.push(14);
+                else if (resumeTopics.includes(word)) {
+                    wordsResume.push(word);
+                    xcoordsResume.push(xcoord);
+                    ycoordsResume.push(ycoord);
                 }
-                else if (jobTopics.includes(item['word'])) {
-                    colors.push('#FF0000');
-                    opacities.push(1.0);
-                    sizes.push(20);
+                else if (jobTopics.includes(word)) {
+                    wordsJob.push(word);
+                    xcoordsJob.push(xcoord);
+                    ycoordsJob.push(ycoord);
                 }
                 else {
-                    colors.push('#A6AFCB');
-                    opacities.push(0.6);
-                    sizes.push(14);
+                    words.push(word);
+                    xcoords.push(xcoord);
+                    ycoords.push(ycoord);
                 }
-                words.push(item['word']);
-                xcoords.push(item['coords'][0]);
-                ycoords.push(item['coords'][1]);
             });
 
-            data = [{
-                x: xcoords,
-                y: ycoords,
-                text: words,
-                type: 'scatter',
-                name: 'Embeddings',
-                hoverinfo: 'text',
-                mode: 'markers',
-                marker: {
-                    color: colors,
-                    opacity: opacities,
-                    size: sizes,
-                    line: {
-                        color: '#000000',
-                         width: 0.7
+            data = [{ x: xcoords, y: ycoords, text: words, type: 'scatter', name: 'Embeddings', hoverinfo: 'text', mode: 'markers',
+                    marker: {
+                        color: '#A6AFCB',
+                        opacity: 0.6,
+                        size: 14,
+                        line: {
+                            color: '#000000',
+                            width: 0.7
+                        }
                     }
-                }
-            }];
-
-            // TODO need to draw legends by ourselves - as having 4 separate scatter plots was causing hovering issues Cc @Antonio
-            // var words = [];
-            // var xcoords = [];
-            // var ycoords = [];
-            // var wordsResume = [];
-            // var wordsJob = [];
-            // var wordsCommon = [];
-            // var xcoordsResume = [];
-            // var xcoordsJob = [];
-            // var xcoordsCommon = [];
-            // var ycoordsResume = [];
-            // var ycoordsJob = [];
-            // var ycoordsCommon = [];
-            // response.forEach(item => {
-            //     var word = item['word'];
-            //     var xcoord = item['coords'][0];
-            //     var ycoord = item['coords'][1];
-            //     if (resumeTopics.includes(word) && jobTopics.includes(word)) {
-            //         wordsCommon.push(word);
-            //         xcoordsCommon.push(xcoord);
-            //         ycoordsCommon.push(ycoord);
-            //     }
-            //     else if (resumeTopics.includes(word)) {
-            //         wordsResume.push(word);
-            //         xcoordsResume.push(xcoord);
-            //         ycoordsResume.push(ycoord);
-            //     }
-            //     else if (jobTopics.includes(word)) {
-            //         wordsJob.push(word);
-            //         xcoordsJob.push(xcoord);
-            //         ycoordsJob.push(ycoord);
-            //     }
-            //     else {
-            //         words.push(word);
-            //         xcoords.push(xcoord);
-            //         ycoords.push(ycoord);
-            //     }
-            // });
-
-            // data = [{
-            //     x: xcoords,
-            //     y: ycoords,
-            //     text: words,
-            //     type: 'scatter',
-            //     name: 'Embeddings',
-            //     hoverinfo: 'text',
-            //     mode: 'markers',
-            //     marker: {
-            //         color: '#A6AFCB',
-            //         opacity: 0.6,
-            //         size: 14,
-            //         line: {
-            //             color: '#000000',
-            //              width: 0.7
-            //         }
-            //     }
-            // },
-            // {
-            //     x: xcoordsCommon,
-            //     y: ycoordsCommon,
-            //     text: wordsCommon,
-            //     type: 'scatter',
-            //     name: 'Common',
-            //     hoverinfo: 'text',
-            //     mode: 'markers',
-            //     marker: {
-            //         color: '#b1de69',
-            //         opacity: 1.0,
-            //         size: 14,
-            //         line: {
-            //             color: '#000000',
-            //              width: 0.7
-            //         }
-            //     }
-            // },
-            // {
-            //     x: xcoordsResume,
-            //     y: ycoordsResume,
-            //     text: wordsResume,
-            //     type: 'scatter',
-            //     name: 'Resume',
-            //     hoverinfo: 'text',
-            //     mode: 'markers',
-            //     marker: {
-            //         color: '#FAEF87',
-            //         opacity: 1.0,
-            //         size: 14,
-            //         line: {
-            //             color: '#000000',
-            //              width: 0.7
-            //         }
-            //     }
-            // },
-            // {
-            //     x: xcoordsJob,
-            //     y: ycoordsJob,
-            //     text: wordsJob,
-            //     type: 'scatter',
-            //     name: 'Job',
-            //     hoverinfo: 'text',
-            //     mode: 'markers',
-            //     marker: {
-            //         color: '#FF0000',
-            //         opacity: 1.0,
-            //         size: 14,
-            //         line: {
-            //             color: '#000000',
-            //              width: 0.7
-            //         }
-            //     }
-            // }];
+                },
+                {x: xcoordsCommon, y: ycoordsCommon, text: wordsCommon, type: 'scatter', name: 'Present', hoverinfo: 'text', mode: 'markers',
+                    marker: {
+                        color: '#b1de69',
+                        opacity: 1.0,
+                        size: 20,
+                        line: {
+                            color: '#000000',
+                            width: 0.7
+                        }
+                    }
+                },
+                {x: xcoordsJob, y: ycoordsJob, text: wordsJob, type: 'scatter', name: 'Missing', hoverinfo: 'text', mode: 'markers',
+                    marker: {
+                        color: '#FF0000',
+                        opacity: 1.0,
+                        size: 20,
+                        line: {
+                            color: '#000000',
+                            width: 0.7
+                        }
+                    }
+                },
+                {x: xcoordsResume, y: ycoordsResume, text: wordsResume, type: 'scatter', name: 'Resume', hoverinfo: 'text', mode: 'markers',
+                    marker: {
+                        color: '#FAEF87',
+                        opacity: 1.0,
+                        size: 14,
+                        line: {
+                            color: '#000000',
+                            width: 0.7
+                        }
+                    }
+                }];
 
             layout = {
                 title: 'Resume v/s Job',
@@ -532,18 +452,6 @@ function visualizeTopTopics() {
             };
 
             Plotly.newPlot('topics_plot', data, layout);
-
-            var plot = document.getElementById('topics_plot');
-            plot.on('plotly_hover', function (eventdata){
-            var points = eventdata.points[0],
-                pointNum = points.pointNumber;
-                Plotly.Fx.hover('topics_plot',[
-                    {curveNumber:0, pointNumber:pointNum},
-                    // {curveNumber:1, pointNumber:pointNum},
-                    // {curveNumber:2, pointNumber:pointNum},
-                    // {curveNumber:3, pointNumber:pointNum}
-                ]);
-            });
         },
         error: function(response) {
             console.log('error in trainEmbeddings()', response);
@@ -602,15 +510,6 @@ function visualize2dEmbeddings() {
             };
 
             Plotly.newPlot('embeddings_plot', data, layout);
-
-            var plot = document.getElementById('embeddings_plot');
-            plot.on('plotly_hover', function (eventdata){
-            var points = eventdata.points[0],
-                pointNum = points.pointNumber;
-                Plotly.Fx.hover('embeddings_plot',[
-                    {curveNumber:0, pointNumber:pointNum}
-                ]);
-            });
         },
         error: function(response) {
             console.log('error in trainEmbeddings()', response);
