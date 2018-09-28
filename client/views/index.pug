@@ -7,10 +7,9 @@ html
         script(src='https://cdn.plot.ly/plotly-latest.min.js')
         script(src='/js/Client.js')
     body
-        div(class='container-fluid')
+        div(class='container-fluid', style='padding-left:0px; padding-right:0px;')
+            div(class='home_page_header')=title
             div(class='center')
-                div(class='title')
-                    p=title
                 div(class='content')
                     div(class='upload')
                         div(class='upload-resume')
@@ -43,7 +42,7 @@ html
                                 onclick='showFilePicker("' + 'job-file' + '")')='Choose Job'
                             div()
                                 label(id='job-label', class='upload-label')='.txt only'
-                    div()
+                    div(style='padding-bottom:40px;')
                         button(id='analyze_button'
                             class='analyze_button',
                             type='button',

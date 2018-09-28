@@ -24,6 +24,14 @@ body {
     margin: 10px 10px 10px 10px;
 }
 
+.home_page_header {
+    font-size: 28px;
+    padding: 1em;
+    background-color: #4a90e2;
+    color: #ffffff;
+    text-align: left;
+}
+
 .title {
     font-size: 24px;
     margin-top: 1em;

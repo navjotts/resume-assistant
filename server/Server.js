@@ -38,12 +38,12 @@ app.use(function (req, res, next) {
 
 app.get('/', function (req, res) {
     console.log(req.url);
-    res.render('index', { title: 'Resume Assistant' });
+    res.render('index', {title: 'ResumeAI'});
 });
 
 app.get('/training', function (req, res) {
     console.log(req.url);
-    res.render('dashboard', { title: 'Resume Assistant' });
+    res.render('dashboard', {title: 'ResumeAI'});
 });
 
 app.get('/training/resumes', function (req, res, next) {
