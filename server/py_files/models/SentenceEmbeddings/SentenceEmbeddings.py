@@ -116,6 +116,7 @@ class SentenceEmbeddings(object):
                             score = self.model.docvecs.similarity_unseen_docs(self.model, sent, fromsent, steps=self.epochs)
                         else:
                             score = self.model.docvecs.similarity_unseen_docs(self.model, fromsent, sent, steps=self.epochs)
+                        score = float(score)
                         assert score <= 1.0
                         # score = (score + 1)/2
                         score = 0.0 if score < 0 else score
@@ -124,5 +125,5 @@ class SentenceEmbeddings(object):
                     raise Exception('Please provide a similarity scoring method!')
 
                 scores.append(max(group_scores))
-
+        print(scores)
         return scores
