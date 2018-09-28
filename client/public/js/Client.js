@@ -75,7 +75,7 @@ function analyzeFiles() {
                         output += "<div class=\"sentence\"><div class=\"left-child\" >" + resumeScores[i].sentence + "</div>" + scoreDiv + "</div>";
                     }
                     $('#document').html(output);
-                    visualizeTopTopics();
+                    visualizeTopTopics(response.resumeTopTopics, response.jobTopTopics);
                     $('#analyze_button').text('START ANALYZING');
                 },
                 error: function(response) {
@@ -342,17 +342,13 @@ function trainEmbeddings() {
     });
 }
 
-function visualizeTopTopics() {
+function visualizeTopTopics(resumeTopics, jobTopics) {
     var dimension = 2;
     $.ajax({
         url: `http://localhost:3000/training/embeddings/visualize/${dimension}`,
         success: function(response) {
             var output = "<div id=\"topics_plot\" style=\"margin:20px;\"></div>";
             $('#topic_visualization').html(output);
-
-            // TODO dynamic - pull from the LDA topic modeling - top25 topics
-            var resumeTopics = ['Javascript', 'Python', 'MySQL', 'React', 'Git', 'SVN', 'C++', 'manage', 'web', 'development', 'MongoDB', 'lead', 'programming', 'components', 'projects', 'Computer'];
-            var jobTopics = ['development', 'HTML', 'HTML5', 'Java', 'Javascript', 'C++', 'technical', 'Computer', 'management', 'leadership', 'planning', 'degree', 'projects', 'full-stack'];
 
             var words = [];
             var xcoords = [];
@@ -403,7 +399,7 @@ function visualizeTopTopics() {
                         }
                     }
                 },
-                {x: xcoordsCommon, y: ycoordsCommon, text: wordsCommon, type: 'scatter', name: 'Present', hoverinfo: 'text', mode: 'markers',
+                {x: xcoordsCommon, y: ycoordsCommon, text: wordsCommon, type: 'scatter', name: 'Common', hoverinfo: 'text', mode: 'markers',
                     marker: {
                         color: '#b1de69',
                         opacity: 1.0,
