@@ -60,7 +60,7 @@ function analyzeFiles() {
             $.ajax({
                 url: `http://localhost:3000/analyze/${resumeFileName}/${jobFileName}`,
                 success: function(response) {
-                    var output = "<div class=\"document-header\"><label class=\"document-header-label-left\">SENTENCE / PHRASE</label><label class=\"document-header-label-right\">SCORE</label></div>";
+                    var output = "<div class=\"document-header\"><label class=\"document-header-label-left\">SENTENCE / PART</label><label class=\"document-header-label-right\">SCORE</label></div>";
                     for (var i = 0; i < response.length; i++) {
                         var scoreDiv = response[i].score/100 == -1.0 ? "<div class=\"right-child\"></div>" : "<div class=\"right-child\" style=\"flex-basis:" + 8*response[i].score/100 + "%; background-color:" + getColor(response[i].score/100) + ";\">" + response[i].score + "%</div>";
                         output += "<div class=\"sentence\"><div class=\"left-child\" >" + response[i].sentence + "</div>" + scoreDiv + "</div>";
