@@ -104,15 +104,17 @@ class SentenceEmbeddings(object):
                         sent_vec = self.vector(sent)
                         sent_l2 = math.sqrt(np.dot(sent_vec, sent_vec))
                         score = np.dot(fromsent_vec, sent_vec) / (fromsent_l2 * sent_l2)
+                        assert score <= 1.0
                         # score = (score + 1)/2
-                        score = 1 if score > 1 else (0 if score < 0 else score)
+                        score = 0.0 if score < 0 else score
                         group_scores.append(score)
                 elif method == 'gensim':
                     for sent in tosents:
-                        self.model.random.seed(self.seed)
+                        self.model.random.seed(self.seed) # todo check why do we need to set this each time - shouldn't it just be once the model is loaded (https://github.com/RaRe-Technologies/gensim/issues/447)
                         score = self.model.docvecs.similarity_unseen_docs(self.model, fromsent, sent, steps=self.epochs)
+                        assert score <= 1.0
                         # score = (score + 1)/2
-                        score = 1 if score > 1 else (0 if score < 0 else score)
+                        score = 0.0 if score < 0 else score
                         group_scores.append(score)
                 else:
                     raise Exception('Please provide a similarity scoring method!')
