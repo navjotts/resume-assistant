@@ -1,1 +1,2 @@
 server/py_files/models/Embeddings/trained/glove.6B.100d.txt filter=lfs diff=lfs merge=lfs -text
+server/py_files/models/FastText/trained/jobs.bin filter=lfs diff=lfs merge=lfs -text
