@@ -440,10 +440,11 @@ app.get('/analyze/:resumeFile/:jobFile', async function (req, res, next) {
 
         var missingThreshold = 0.4; // TODO this should be much lower, like 0.1-0.25 (keeping high for demo to make sense)
         jobSamples.forEach((sent, index) => {
-            if (jobScores[index] < missingThreshold) {
+            var score = jobScores[index];
+            if (score != -1 && score < missingThreshold) {
                 data.missing.push({
                     sentence: sent.join(' '),
-                    score: Math.round(jobScores[index] * 1000) / 10
+                    score: Math.round(score * 1000) / 10
                 });
             }
         });
