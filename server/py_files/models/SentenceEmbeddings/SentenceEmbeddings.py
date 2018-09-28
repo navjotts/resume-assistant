@@ -61,15 +61,22 @@ class SentenceEmbeddings(object):
         self.model.random.seed(self.seed)
         return self.model.infer_vector(sent, steps=self.epochs)
 
-    def similarity_score(self, fromsent, tosent):
+    def similarity_score(self, fromsent, tosent, method='custom'):
         self.load()
-        fromsent_vec = self.vector(fromsent)
-        tosent_vec = self.vector(tosent)
-        fromsent_l2 = math.sqrt(np.dot(fromsent_vec, fromsent_vec))
-        tosent_l2 = math.sqrt(np.dot(tosent_vec, tosent_vec))
-        score = np.dot(fromsent_vec, tosent_vec) / (fromsent_l2 * tosent_l2)
-        score = 1 if score > 1 else (0 if score < 0 else score)
 
+        if method == 'custom':
+            fromsent_vec = self.vector(fromsent)
+            tosent_vec = self.vector(tosent)
+            fromsent_l2 = math.sqrt(np.dot(fromsent_vec, fromsent_vec))
+            tosent_l2 = math.sqrt(np.dot(tosent_vec, tosent_vec))
+            score = np.dot(fromsent_vec, tosent_vec) / (fromsent_l2 * tosent_l2)
+        elif method == 'gensim':
+            self.model.random.seed(self.seed)
+            score = self.model.docvecs.similarity_unseen_docs(self.model, fromsent, tosent, steps=self.epochs)
+        else:
+            raise Exception('Please provide a similarity scoring method!')
+
+        score = 1 if score > 1 else (0 if score < 0 else score)
         return score
 
     def group_similarity_score(self, groups_of_sents, method='custom'):
@@ -90,7 +97,7 @@ class SentenceEmbeddings(object):
             else:
                 group_scores = []
 
-                if(method == 'custom'):
+                if method == 'custom':
                     fromsent_vec = self.vector(fromsent)
                     fromsent_l2 = math.sqrt(np.dot(fromsent_vec, fromsent_vec))
                     for sent in tosents:
@@ -100,13 +107,15 @@ class SentenceEmbeddings(object):
                         score = (score + 1)/2
                         # score = 1 if score > 1 else (0 if score < 0 else score)
                         group_scores.append(score)
-                elif (method == 'gensim'):
+                elif method == 'gensim':
                     for sent in tosents:
                         self.model.random.seed(self.seed)
                         score = self.model.docvecs.similarity_unseen_docs(self.model, fromsent, sent, steps=self.epochs)
                         score = (score + 1)/2
                         # score = 1 if score > 1 else (0 if score < 0 else score)
                         group_scores.append(score)
+                else:
+                    raise Exception('Please provide a similarity scoring method!')
 
                 scores.append(max(group_scores))
 
