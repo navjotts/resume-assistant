@@ -63,7 +63,7 @@ function analyzeFiles() {
                     var output = "";
                     var missing = response.missing;
                     for (var i = 0; i < missing.length; i++) {
-                        output += "<div class=\"sentence\"><div class=\"left-child\" >" + missing[i].sentence + "</div>" + "<div class=\"right-child\" style=\"background-color:#FF0000; color:#FFFFFF;\">Missing</div>" + "</div>";
+                        output += "<div class=\"sentence\"><div class=\"left-child\" >" + missing[i].sentence + "</div>" + "<div class=\"right-child\" style=\"background-color:#FF0000; color:#FFFFFF;\">MISSING</div>" + "</div>";
                     }
 
                     output += "<div class=\"divider\"></div>";
@@ -71,7 +71,7 @@ function analyzeFiles() {
                     var resumeScores = response.resume;
                     output += "<div class=\"document-header\"><label class=\"document-header-label-left\">RESUME</label><label class=\"document-header-label-right\">SCORE</label></div>";
                     for (var i = 0; i < resumeScores.length; i++) {
-                        var scoreDiv = resumeScores[i].score/100 == -1.0 ? "<div class=\"right-child\"></div>" : "<div class=\"right-child\" style=\"flex-basis:" + 8*resumeScores[i].score/100 + "%; background-color:" + getColor(resumeScores[i].score/100) + ";\">" + resumeScores[i].score + "%</div>";
+                        var scoreDiv = resumeScores[i].score/100 == -1.0 ? "<div class=\"right-child\" style=\"border: 1px solid #979797; color:#5d5d5d;\">INFO</div>" : "<div class=\"right-child\" style=\"flex-basis:" + 8*resumeScores[i].score/100 + "%; background-color:" + getColor(resumeScores[i].score/100) + ";\">" + resumeScores[i].score + "%</div>";
                         output += "<div class=\"sentence\"><div class=\"left-child\" >" + resumeScores[i].sentence + "</div>" + scoreDiv + "</div>";
                     }
                     $('#document').html(output);
