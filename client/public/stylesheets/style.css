@@ -24,6 +24,14 @@ body {
     margin: 10px 10px 10px 10px;
 }
 
+.home_page_header {
+    font-size: 24px;
+    padding: 0.4em;
+    background-color: #4a90e2;
+    color: #ffffff;
+    text-align: left;
+}
+
 .title {
     font-size: 24px;
     margin-top: 1em;
@@ -152,6 +160,11 @@ body {
     flex-basis: 8%;
     text-align: right;
     vertical-align: middle;
+    padding-left: 5px;
+    padding-right: 5px;
+    border-radius: 6px;
+    font-size: 13px;
+    padding-top: 1px;
 }
 
 .prev-button {
@@ -308,6 +321,18 @@ button.train_test_button:hover {background-color: #000000;}
 .results {
     margin: 20px 0px 20px 0px;
     border: 1px solid #E1E5E8;
+    min-height: 40px;
+}
+
+.divider {
+    background-color: #fff;
+    text-align: center;
+    min-height: 72px;
+}
+
+.topics {
+    margin: 50px;
+    margin-top: 200px;
     min-height: 40px;
 }
 

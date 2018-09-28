@@ -1,6 +1,7 @@
 import os
-import numpy as np
 import pickle
+
+import numpy as np
 
 from py_files.models.SentenceClassifier import SentenceClassifier
 from py_files.models.Vectorizer.Vectorizer import Vectorizer
@@ -17,12 +18,14 @@ class SklearnSentenceClassifier(SentenceClassifier):
         self.labels_pred = self.model.predict(features)
 
         pickle.dump(self.model, open(self.path, 'wb'))
+        print('Saved model to disk...')
 
         return super().train(samples, labels)
 
     def load(self):
         if not self.model:
             self.model = pickle.load(open(self.path, 'rb'))
+            print('Loaded model from disk...')
 
         super().load()
 

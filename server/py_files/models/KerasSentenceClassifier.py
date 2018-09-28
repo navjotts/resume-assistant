@@ -1,10 +1,15 @@
 import os
+
+import numpy as np
 import keras
 from keras.models import load_model
+from keras.layers import Embedding
+from keras.preprocessing.sequence import pad_sequences
 
-from py_files.models.SentenceClassifier import SentenceClassifier
 from py_files.models.Vectorizer.Vectorizer import Vectorizer
 from py_files.models.Embeddings.Embeddings import Embeddings
+from py_files.models.SentenceLabelEncoder import SentenceLabelEncoder
+from py_files.models.SentenceClassifier import SentenceClassifier
 
 class KerasSentenceClassifier(SentenceClassifier):
     def __init__(self, name, feature_type):
@@ -23,12 +28,32 @@ class KerasSentenceClassifier(SentenceClassifier):
         if not self.model:
             self.model = load_model(self.path + '/model_weights.h5')
             print('Loaded model from disk...')
-            print(self.path)
 
         super().load()
 
     def test(self, samples, labels):
-        return super().train(samples, labels)
+        self.load()
+        features = self.choose_features(samples)
+
+        if self.feature_type == 'word-embeddings':
+            x_test = pad_sequences(features, maxlen=self.max_len, padding='post')
+        elif self.feature_type in ['tf-idf', 'bow']:
+            x_test = features
+        else:
+            raise Exception('Please select a valid feature')
+
+        y_test = SentenceLabelEncoder().encode_categorical(labels)
+
+        loss, accuracy = self.model.evaluate(x_test, y_test)
+        print('loss, accuracy:', loss, accuracy)
+
+        # todo try to write the models in 1 fashion (either functional or not) - so that we don't have to do the below stuff
+        try:
+            self.labels_pred = SentenceLabelEncoder().decode(self.model.predict_classes(x_test))
+        except Exception as e:
+            self.labels_pred = SentenceLabelEncoder().decode(np.argmax(self.model.predict(x_test), axis=1))
+
+        return super().test(samples, labels)
 
     def classify(self, samples):
         return super().classify(samples)

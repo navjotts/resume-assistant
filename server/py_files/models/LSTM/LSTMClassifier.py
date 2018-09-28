@@ -1,6 +1,6 @@
 import os
-import numpy as np
 
+import numpy as np
 from keras.models import Sequential
 from keras.layers import LSTM, Dense, Dropout, Embedding
 from keras.preprocessing.sequence import pad_sequences
@@ -35,12 +35,12 @@ class LSTMClassifier(KerasSentenceClassifier):
         else:
             raise Exception('Please select a valid feature')
 
-        model.add(LSTM(50))
-        model.add(Dense(16, activation='relu'))
-        model.add(Dropout(0.3))
-        model.add(Dense(32, activation='relu'))
-        model.add(Dense(8, activation='relu'))
-        model.add(Dense(self.num_classes, activation='softmax'))
+        model.add(LSTM(units=50))
+        model.add(Dense(units=16, activation='relu'))
+        model.add(Dropout(rate=0.3))
+        model.add(Dense(units=32, activation='relu'))
+        model.add(Dense(units=8, activation='relu'))
+        model.add(Dense(units=self.num_classes, activation='softmax'))
         model.compile(loss='categorical_crossentropy', optimizer='adam', metrics=['accuracy'])
         print(model.summary())
         self.model = model
@@ -49,7 +49,7 @@ class LSTMClassifier(KerasSentenceClassifier):
         class_weights = class_weight.compute_class_weight('balanced', np.unique(numeric_labels), numeric_labels)
         y_train = SentenceLabelEncoder().encode_categorical(labels)
 
-        self.model.fit(x_train, y_train, validation_split=0.2, epochs=5, batch_size=32,
+        self.model.fit(x_train, y_train, validation_split=0.2, epochs=10, batch_size=32,
                         verbose=2, shuffle=True, class_weight=class_weights)
         loss, accuracy = self.model.evaluate(x_train, y_train)
         print('loss, accuracy:', loss, accuracy)
@@ -57,26 +57,6 @@ class LSTMClassifier(KerasSentenceClassifier):
         self.labels_pred = SentenceLabelEncoder().decode(self.model.predict_classes(x_train))
 
         return super().train(samples, labels)
-
-    def test(self, samples, labels):
-        self.load()
-        features = self.choose_features(samples)
-
-        if self.feature_type == 'word-embeddings':
-            x_test = pad_sequences(features, maxlen=self.max_len, padding='post')
-        elif self.feature_type in ['tf-idf', 'bow']:
-            x_test = features
-        else:
-            raise Exception('Please select a valid feature')
-
-        y_test = SentenceLabelEncoder().encode_categorical(labels)
-
-        loss, accuracy = self.model.evaluate(x_test, y_test)
-        print('Accuracy:', accuracy)
-
-        self.labels_pred = SentenceLabelEncoder().decode(self.model.predict_classes(x_test))
-
-        return super().test(samples, labels)
 
     def classify(self, samples):
         self.load()

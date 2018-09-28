@@ -1,8 +1,8 @@
 import os
+import pickle
 
 from sklearn.feature_extraction.text import TfidfVectorizer
 from sklearn.feature_extraction.text import CountVectorizer
-import pickle
 
 class Vectorizer(object):
     def __init__(self, name, vec_type):
@@ -16,6 +16,7 @@ class Vectorizer(object):
             return TfidfVectorizer(max_df=0.5, min_df=1) # todo max_df and min_df should be hyperparams (and hence we need a CV setup) + todo bring in ngram_range as well
 
         if self.vec_type == 'bow':
+            # return CountVectorizer(max_features=565) # best for log reg on resumes
             return CountVectorizer()
 
     def train(self, samples):
