@@ -438,7 +438,7 @@ app.get('/analyze/:resumeFile/:jobFile', async function (req, res, next) {
             });
         });
 
-        var missingThreshold = 0.4; // TODO this should be much lower, like 0.1-0.25 (keeping high for demo to make sense)
+        var missingThreshold = 0.6; // TODO this should be much lower, like 0.1-0.25 (keeping high for demo to make sense)
         jobSamples.forEach((sent, index) => {
             var score = jobScores[index];
             if (score != -1 && score < missingThreshold) {
