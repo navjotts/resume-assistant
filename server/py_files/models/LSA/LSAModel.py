@@ -2,6 +2,8 @@ import os
 from sklearn.feature_extraction.text import CountVectorizer, TfidfVectorizer
 from sklearn.decomposition import LatentDirichletAllocation
 
+import numpy as np
+
 class LSAModel(object):
     def __init__(self, name):
         self.name = name

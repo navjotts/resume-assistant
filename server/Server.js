@@ -380,8 +380,8 @@ app.get('/analyze/:resumeFile/:jobFile', async function (req, res, next) {
         var resumeLabelsPredicted = await PythonConnector.invoke('classify_sentences', 'resumes', 'FastText', 'None', resumeSamples);
         console.assert(resumeLabelsPredicted.length == resumeSamples.length);
 
-        var jobFile = fs.readFileSync(jobFilePath).toString();
-        var jobSentences = await PythonConnector.invoke('sentences', jobFile);
+        var jobText = fs.readFileSync(jobFilePath).toString();
+        var jobSentences = await PythonConnector.invoke('sentences', jobText);
 
         var jobSamples = [];
         jobSentences.forEach(sent => jobSamples.push(sent)); // TODO use concat
@@ -448,6 +448,11 @@ app.get('/analyze/:resumeFile/:jobFile', async function (req, res, next) {
                 });
             }
         });
+
+        var resumeTopTopics = await PythonConnector.invoke('top_topics', 'resumes', text, 5, 5);
+        console.log('resumeTopTopics', resumeTopTopics);
+        var jobTopTopics = await PythonConnector.invoke('top_topics', 'jobs', jobText, 5, 5);
+        console.log('jobTopTopics', jobTopTopics);
 
         res.json(data);
     }
