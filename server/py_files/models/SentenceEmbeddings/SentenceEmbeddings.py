@@ -61,7 +61,7 @@ class SentenceEmbeddings(object):
         self.model.random.seed(self.seed)
         return self.model.infer_vector(sent, steps=self.epochs)
 
-    def similarity_score(self, fromsent, tosent, method='gensim'):
+    def similarity_score(self, fromsent, tosent, method):
         self.load()
 
         if method == 'custom':
@@ -79,7 +79,8 @@ class SentenceEmbeddings(object):
         score = 1 if score > 1 else (0 if score < 0 else score)
         return score
 
-    def group_similarity_score(self, groups_of_sents, method='gensim'):
+    # todo - remove the `reverse_comparison` hack - study why order of sentences is mattering in the (from, to) comparison (only happens for `similarity_unseen_docs`)
+    def group_similarity_score(self, groups_of_sents, reverse_comparison, method):
         '''
             sents is a list of dicts with 2 keys: 'from' and 'to'
             where 'from' is the base sentence we want to compare,
@@ -111,7 +112,10 @@ class SentenceEmbeddings(object):
                 elif method == 'gensim':
                     for sent in tosents:
                         self.model.random.seed(self.seed) # todo check why do we need to set this each time - shouldn't it just be once the model is loaded (https://github.com/RaRe-Technologies/gensim/issues/447)
-                        score = self.model.docvecs.similarity_unseen_docs(self.model, fromsent, sent, steps=self.epochs)
+                        if reverse_comparison:
+                            score = self.model.docvecs.similarity_unseen_docs(self.model, sent, fromsent, steps=self.epochs)
+                        else:
+                            score = self.model.docvecs.similarity_unseen_docs(self.model, fromsent, sent, steps=self.epochs)
                         assert score <= 1.0
                         # score = (score + 1)/2
                         score = 0.0 if score < 0 else score

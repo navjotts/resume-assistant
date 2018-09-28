@@ -71,12 +71,14 @@ class PythonServer(object):
         embeddings = Embeddings(model_name, dimension)
         embeddings.words_coordinates(reduced_dimension)
 
-    def sentence_group_similarity_score(self, model_name, dimension, sents):
+    def sentence_group_similarity_score(self, model_name, dimension, sents, reverse_comparison=False, method='gensim'):
         sent_embeddings = SentenceEmbeddings(model_name, dimension)
-        return sent_embeddings.group_similarity_score(sents)
+        return sent_embeddings.group_similarity_score(sents, reverse_comparison, method)
 
 # Embeddings('resumes', 100).vectors('glove') # for testing other classes directly (comment out the below zerorpc server if you do this)
-# print(SentenceEmbeddings('resumes_jobs', 100).similarity_score(('Full', 'Stack', 'Internship', '·', 'July', '2017', 'to', 'Oct.', '2017'), ('5', 'years', 'of', 'experience', 'in', 'technical', 'leadership', 'and', 'people', 'management', '.')))
+# print(SentenceEmbeddings('resumes_jobs', 100).similarity_score(('Full', 'Stack', 'Internship', '·', 'July', '2017', 'to', 'Oct.', '2017'), ('5', 'years', 'of', 'experience', 'in', 'technical', 'leadership', 'and', 'people', 'management', '.'), 'gensim'))
+# print(SentenceEmbeddings('resumes_jobs', 100).similarity_score(('5', 'years', 'of', 'experience', 'in', 'technical', 'leadership', 'and', 'people', 'management', '.'), ('Full', 'Stack', 'Internship', '·', 'July', '2017', 'to', 'Oct.', '2017'), 'gensim'))
+# print(SentenceEmbeddings('resumes_jobs', 100).similarity_score(('10', 'years', 'of', 'relevant', 'industry', 'experience', '.'), ('Software', 'Engineer', '·', 'Nov.', '2017', 'to', 'Current'), 'gensim')) # todo this where sentence comparison with the current embeddings is completely failing
 
 try:
     s = zerorpc.Server(PythonServer())

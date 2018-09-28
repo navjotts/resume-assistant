@@ -311,6 +311,12 @@ button.train_test_button:hover {background-color: #000000;}
     min-height: 40px;
 }
 
+.divider {
+    background-color: #fff;
+    text-align: center;
+    min-height: 100px;
+}
+
 .topics {
     margin: 50px;
     margin-top: 200px;

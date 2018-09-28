@@ -388,33 +388,64 @@ app.get('/analyze/:resumeFile/:jobFile', async function (req, res, next) {
         var jobLabelsPredicted = await PythonConnector.invoke('classify_sentences', 'jobs', 'FastText', 'None', jobSamples);
         console.assert(jobLabelsPredicted.length == jobSamples.length);
 
-        var jobsData = {};
+        var resumeData = {};
+        resumeSamples.forEach((sent, index) => {
+            var label = resumeLabelsPredicted[index][0];
+            if (!resumeData[label]) {
+                resumeData[label] = [];
+            }
+            resumeData[label].push(sent);
+        });
+
+        var jobData = {};
         jobSamples.forEach((sent, index) => {
             var label = jobLabelsPredicted[index][0];
-            if (!jobsData[label]) {
-                jobsData[label] = [];
+            if (!jobData[label]) {
+                jobData[label] = [];
             }
-            jobsData[label].push(sent);
+            jobData[label].push(sent);
         });
 
         // TODO this goes into a separate model class
-        var sentsToCompare = [];
+        var resumeSentsToCompare = [];
         resumeSamples.forEach((resumeSent, index) => {
             var resumeLabel = resumeLabelsPredicted[index][0];
             var jobSents = [];
             if (resumeLabel != 'OTHERS') { // if predicted OTHERS, then we don't really wish to generate a score (as OTHERS is the stuff which doesn't matter for our use-case)
-                jobSents = jobsData[resumeLabel];
+                jobSents = jobData[resumeLabel];
             }
-            sentsToCompare.push({'from': resumeSent, 'to': jobSents});
+            resumeSentsToCompare.push({'from': resumeSent, 'to': jobSents});
+        });
+        resumeScores = await PythonConnector.invoke('sentence_group_similarity_score', 'resumes_jobs', 100, resumeSentsToCompare);
+
+        var jobsSentsToCompare = [];
+        jobSamples.forEach((jobSent, index) => {
+            var jobLabel = jobLabelsPredicted[index][0];
+            var resumeSents = [];
+            if (jobLabel != 'OTHERS') { // if predicted OTHERS, then we don't really wish to generate a score (as OTHERS is the stuff which doesn't matter for our use-case)
+                resumeSents = resumeData[jobLabel];
+            }
+            jobsSentsToCompare.push({'from': jobSent, 'to': resumeSents});
+        });
+        jobScores = await PythonConnector.invoke('sentence_group_similarity_score', 'resumes_jobs', 100, jobsSentsToCompare, true);
+
+        var data = {missing: [], resume: []};
+
+        resumeSamples.forEach((sent, index) => {
+            data.resume.push({
+                sentence: sent.join(' '),
+                score: Math.round(resumeScores[index] * 1000) / 10
+            });
         });
 
-        scores = await PythonConnector.invoke('sentence_group_similarity_score', 'resumes_jobs', 100, sentsToCompare);
-        var data = [];
-        resumeSamples.forEach((sent, index) => {
-            data.push({
-                sentence: sent.join(' '),
-                score: Math.round(scores[index] * 1000) / 10
-            });
+        var missingThreshold = 0.4; // TODO this should be much lower, like 0.1-0.25 (keeping high for demo to make sense)
+        jobSamples.forEach((sent, index) => {
+            if (jobScores[index] < missingThreshold) {
+                data.missing.push({
+                    sentence: sent.join(' '),
+                    score: Math.round(jobScores[index] * 1000) / 10
+                });
+            }
         });
 
         res.json(data);
