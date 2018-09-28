@@ -9,6 +9,7 @@ from py_files.models.NaiveBayes.NaiveBayesClassifier import NaiveBayesClassifier
 from py_files.models.LSTM.LSTMClassifier import LSTMClassifier
 from py_files.models.NeuralNet.NeuralNetClassifier import NeuralNetClassifier
 from py_files.models.CNNClassifier.CNNClassifier import CNNClassifier
+from py_files.models.LSA.LSAModel import LSAModel
 from py_files.models.Embeddings.Embeddings import Embeddings
 from py_files.models.SentenceEmbeddings.SentenceEmbeddings import SentenceEmbeddings
 
@@ -74,6 +75,10 @@ class PythonServer(object):
     def sentence_group_similarity_score(self, model_name, dimension, sents, reverse_comparison=False, method='gensim'):
         sent_embeddings = SentenceEmbeddings(model_name, dimension)
         return sent_embeddings.group_similarity_score(sents, reverse_comparison, method)
+
+    def top_topics(self, model_name, text, num_topics, words_per_topic):
+        lsa = LSAModel(model_name)
+        return lsa.top_topics(text, num_topics, words_per_topic)
 
 # Embeddings('resumes', 100).vectors('glove') # for testing other classes directly (comment out the below zerorpc server if you do this)
 # print(SentenceEmbeddings('resumes_jobs', 100).similarity_score(('Full', 'Stack', 'Internship', '·', 'July', '2017', 'to', 'Oct.', '2017'), ('5', 'years', 'of', 'experience', 'in', 'technical', 'leadership', 'and', 'people', 'management', '.'), 'gensim'))
