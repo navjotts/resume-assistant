@@ -24,7 +24,7 @@ function fetchJobs() {
         success: function(response) {
             var output = "";
             for (var i = 0; i < response.length; i++) {
-                output += "<div id=" + i + " ><a class=\"file-link\" href=\"#\" onclick=\"fetchDoc('jobs', " + i + ")\">" +  "Job#" + i + "</a></div>";
+                output += "<div id=" + i + " ><a class=\"file-link\" href=\"#\" onclick=\"fetchDoc('jobs', " + i + ")\">" +  "Job#" + response[i] + "</a></div>";
             }
             $('#jobs-list').html(output);
         },
