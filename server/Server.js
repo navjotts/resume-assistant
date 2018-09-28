@@ -170,31 +170,31 @@ function collectData(parent, name) {
 app.get('/training/:trainOrTest/:dataset/:modelName/:modelType/:featureType', async function (req, res, next) {
     console.log(req.url);
     var modelName = req.params.modelName;
-    if (!['resumes', 'jobs'].includes(modelName)) {
-        console.log('wip');
+    if (['resumes', 'jobs'].includes(modelName)) {
+        var trainOrTest = req.params.trainOrTest;
+        var dataset = req.params.dataset;
+        if (trainOrTest == 'train') {
+            dataset = 'DB'; // training should always happens on the training dataset (testing can happen either on training or testing dataset)
+        }
+        var method = trainOrTest == 'train' ? 'train_sentence_classifier' : 'test_sentence_classifier';
+        var modelType = req.params.modelType;
+        var featureType = req.params.featureType;
+        try {
+            var data = collectData(dataset, modelName);
+            console.log(`Starting ${trainOrTest}ing for ${modelName}, on dataset ${dataset}, data size of (samples, labels): (${data.samples.length}, ${data.labels.length})`);
+
+            var result = await PythonConnector.invoke(method, modelName, modelType, featureType, data.samples, data.labels);
+            console.log(`Finished ${trainOrTest}ing.`);
+            res.json(result);
+        }
+        catch (e) {
+            console.log('error in /training', e);
+            res.send(404);
+        }
+    }
+    else {
+        console.log('wip', modelName);
         res.send(200);
-        return;
-    }
-
-    var trainOrTest = req.params.trainOrTest;
-    var dataset = req.params.dataset;
-    if (trainOrTest == 'train') {
-        dataset = 'DB'; // training should always happens on the training dataset (testing can happen either on training or testing dataset)
-    }
-    var method = trainOrTest == 'train' ? 'train_sentence_classifier' : 'test_sentence_classifier';
-    var modelType = req.params.modelType;
-    var featureType = req.params.featureType;
-    try {
-        var data = collectData(dataset, modelName);
-        console.log(`Starting ${trainOrTest}ing for ${modelName}, on dataset ${dataset}, data size of (samples, labels): (${data.samples.length}, ${data.labels.length})`);
-
-        var result = await PythonConnector.invoke(method, modelName, modelType, featureType, data.samples, data.labels);
-        console.log(`Finished ${trainOrTest}ing.`);
-        res.json(result);
-    }
-    catch (e) {
-        console.log('error in /training', e);
-        res.send(404);
     }
 });
 
