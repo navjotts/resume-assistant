@@ -363,9 +363,9 @@ function visualizeTopTopics() {
                     sizes.push(14);
                 }
                 else if (jobTopics.includes(item['word'])) {
-                    colors.push('rgb(247, 206, 133)');
+                    colors.push('rgb(247,143,136)');
                     opacities.push(1.0);
-                    sizes.push(14);
+                    sizes.push(20);
                 }
                 else {
                     colors.push('#A6AFCB');
