@@ -429,7 +429,7 @@ app.get('/analyze/:resumeFile/:jobFile', async function (req, res, next) {
         });
         jobScores = await PythonConnector.invoke('sentence_group_similarity_score', 'resumes_jobs', 100, jobsSentsToCompare, true);
 
-        var data = {missing: [], resume: []};
+        var data = {missing: [], resume: [], resumeTopTopics: [], jobTopTopics: []};
 
         resumeSamples.forEach((sent, index) => {
             data.resume.push({
@@ -450,9 +450,9 @@ app.get('/analyze/:resumeFile/:jobFile', async function (req, res, next) {
         });
 
         var resumeTopTopics = await PythonConnector.invoke('top_topics', 'resumes', text, 5, 5);
-        console.log('resumeTopTopics', resumeTopTopics);
+        resumeTopTopics.forEach(topic => data.resumeTopTopics.push(topic)); // TODO use concat
         var jobTopTopics = await PythonConnector.invoke('top_topics', 'jobs', jobText, 5, 5);
-        console.log('jobTopTopics', jobTopTopics);
+        jobTopTopics.forEach(topic => data.jobTopTopics.push(topic)); // TODO use concat
 
         res.json(data);
     }
