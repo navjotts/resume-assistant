@@ -317,7 +317,7 @@ button.train_test_button:hover {background-color: #000000;}
 .divider {
     background-color: #fff;
     text-align: center;
-    min-height: 100px;
+    min-height: 72px;
 }
 
 .topics {

@@ -62,7 +62,6 @@ function analyzeFiles() {
                 success: function(response) {
                     var output = "";
                     var missing = response.missing;
-                    output += "<div class=\"document-header\"><label class=\"document-header-label-left\">JOB</label></div>";
                     for (var i = 0; i < missing.length; i++) {
                         output += "<div class=\"sentence\"><div class=\"left-child\" >" + missing[i].sentence + "</div>" + "<div class=\"right-child\" style=\"background-color:#FF0000; color:#FFFFFF;\">Missing</div>" + "</div>";
                     }
