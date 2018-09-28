@@ -311,6 +311,12 @@ button.train_test_button:hover {background-color: #000000;}
     min-height: 40px;
 }
 
+.topics {
+    margin: 50px;
+    margin-top: 200px;
+    min-height: 40px;
+}
+
 .result_header {
     margin: 20px 20px 0px 20px;
     font-size: 16px;

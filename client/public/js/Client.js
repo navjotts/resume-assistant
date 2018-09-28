@@ -66,6 +66,7 @@ function analyzeFiles() {
                         output += "<div class=\"sentence\"><div class=\"left-child\" >" + response[i].sentence + "</div>" + scoreDiv + "</div>";
                     }
                     $('#document').html(output);
+                    visualizeTopTopics();
                     $('#analyze_button').text('START ANALYZING');
                 },
                 error: function(response) {
@@ -199,6 +200,7 @@ function summary(modelName) {
 }
 
 // TODO need an option to NOT really fire any training when the call is from the production URL (as then we have to manage the saving of the updated model weights etc)
+// (hide the Train button for production)
 function train(modelName) {
     fireTrainingOrTesting('train', modelName);
 }
@@ -331,21 +333,45 @@ function trainEmbeddings() {
     });
 }
 
-function visualize2dEmbeddings() {
+function visualizeTopTopics() {
     var dimension = 2;
     $.ajax({
         url: `http://localhost:3000/training/embeddings/visualize/${dimension}`,
         success: function(response) {
-            var output = "<div id=\"embeddings_plot\" style=\"margin:20px;\"></div>";
-            $('#embeddings_visualization').html(output);
-            console.log(response)
-            console.log('Inside 2d graph')
+            var output = "<div id=\"topics_plot\" style=\"margin:20px;\"></div>";
+            $('#topic_visualization').html(output);
 
-            words = [];
+            // TODO dynamic - pull from the LDA topic modeling - this could be top50 also
+            var resumeTopics = ['Javascript', 'Python', 'MySQL', 'React', 'Git', 'SVN', 'C++', 'manage', 'web', 'development', 'MongoDB', 'lead', 'programming', 'components', 'projects'];
+            var jobTopics = ['development', 'HTML', 'HTML5', 'Java', 'Javascript', 'C++', 'technical', 'Computer', 'management', 'leadership', 'planning', 'degree', 'projects', 'full-stack'];
+
+            var words = [];
             var xcoords = [];
             var ycoords = [];
+            var colors = [];
+            var opacities = [];
+            var sizes = []
             response.forEach(item => {
-
+                if (resumeTopics.includes(item['word']) && jobTopics.includes(item['word'])) {
+                    colors.push('#b1de69');
+                    opacities.push(1.0);
+                    sizes.push(20);
+                }
+                else if (resumeTopics.includes(item['word'])) {
+                    colors.push('rgb(250,239,135)');
+                    opacities.push(1.0);
+                    sizes.push(14);
+                }
+                else if (jobTopics.includes(item['word'])) {
+                    colors.push('rgb(247, 206, 133)');
+                    opacities.push(1.0);
+                    sizes.push(14);
+                }
+                else {
+                    colors.push('#A6AFCB');
+                    opacities.push(0.6);
+                    sizes.push(14);
+                }
                 words.push(item['word']);
                 xcoords.push(item['coords'][0]);
                 ycoords.push(item['coords'][1]);
@@ -359,11 +385,196 @@ function visualize2dEmbeddings() {
                 name: 'Embeddings',
                 hoverinfo: 'text',
                 mode: 'markers',
-                marker: {color: xcoords, opacity: 0.6, size: 14,
+                marker: {
+                    color: colors,
+                    opacity: opacities,
+                    size: sizes,
+                    line: {
+                        color: '#000000',
+                         width: 0.7
+                    }
+                }
+            }];
+
+            // TODO need to draw legends by ourselves - as having 4 separate scatter plots was causing hovering issues Cc @Antonio
+            // var words = [];
+            // var xcoords = [];
+            // var ycoords = [];
+            // var wordsResume = [];
+            // var wordsJob = [];
+            // var wordsCommon = [];
+            // var xcoordsResume = [];
+            // var xcoordsJob = [];
+            // var xcoordsCommon = [];
+            // var ycoordsResume = [];
+            // var ycoordsJob = [];
+            // var ycoordsCommon = [];
+            // response.forEach(item => {
+            //     var word = item['word'];
+            //     var xcoord = item['coords'][0];
+            //     var ycoord = item['coords'][1];
+            //     if (resumeTopics.includes(word) && jobTopics.includes(word)) {
+            //         wordsCommon.push(word);
+            //         xcoordsCommon.push(xcoord);
+            //         ycoordsCommon.push(ycoord);
+            //     }
+            //     else if (resumeTopics.includes(word)) {
+            //         wordsResume.push(word);
+            //         xcoordsResume.push(xcoord);
+            //         ycoordsResume.push(ycoord);
+            //     }
+            //     else if (jobTopics.includes(word)) {
+            //         wordsJob.push(word);
+            //         xcoordsJob.push(xcoord);
+            //         ycoordsJob.push(ycoord);
+            //     }
+            //     else {
+            //         words.push(word);
+            //         xcoords.push(xcoord);
+            //         ycoords.push(ycoord);
+            //     }
+            // });
+
+            // data = [{
+            //     x: xcoords,
+            //     y: ycoords,
+            //     text: words,
+            //     type: 'scatter',
+            //     name: 'Embeddings',
+            //     hoverinfo: 'text',
+            //     mode: 'markers',
+            //     marker: {
+            //         color: '#A6AFCB',
+            //         opacity: 0.6,
+            //         size: 14,
+            //         line: {
+            //             color: '#000000',
+            //              width: 0.7
+            //         }
+            //     }
+            // },
+            // {
+            //     x: xcoordsCommon,
+            //     y: ycoordsCommon,
+            //     text: wordsCommon,
+            //     type: 'scatter',
+            //     name: 'Common',
+            //     hoverinfo: 'text',
+            //     mode: 'markers',
+            //     marker: {
+            //         color: '#b1de69',
+            //         opacity: 1.0,
+            //         size: 14,
+            //         line: {
+            //             color: '#000000',
+            //              width: 0.7
+            //         }
+            //     }
+            // },
+            // {
+            //     x: xcoordsResume,
+            //     y: ycoordsResume,
+            //     text: wordsResume,
+            //     type: 'scatter',
+            //     name: 'Resume',
+            //     hoverinfo: 'text',
+            //     mode: 'markers',
+            //     marker: {
+            //         color: 'rgb(250,239,135)',
+            //         opacity: 1.0,
+            //         size: 14,
+            //         line: {
+            //             color: '#000000',
+            //              width: 0.7
+            //         }
+            //     }
+            // },
+            // {
+            //     x: xcoordsJob,
+            //     y: ycoordsJob,
+            //     text: wordsJob,
+            //     type: 'scatter',
+            //     name: 'Job',
+            //     hoverinfo: 'text',
+            //     mode: 'markers',
+            //     marker: {
+            //         color: 'rgb(247, 206, 133)',
+            //         opacity: 1.0,
+            //         size: 14,
+            //         line: {
+            //             color: '#000000',
+            //              width: 0.7
+            //         }
+            //     }
+            // }];
+
+            layout = {
+                title: 'Resume v/s Job',
+                titlefont:{
+                    size: 24,
+                    color: 'black'
+                },
+                autosize: false,
+                width: 1200,
+                height: 1200,
+                hovermode:'closest',
+                xaxis:{zeroline:false, hoverformat: '.2r'},
+                yaxis:{zeroline:false, hoverformat: '.2r'}
+            };
+
+            Plotly.newPlot('topics_plot', data, layout);
+
+            var plot = document.getElementById('topics_plot');
+            plot.on('plotly_hover', function (eventdata){
+            var points = eventdata.points[0],
+                pointNum = points.pointNumber;
+                Plotly.Fx.hover('topics_plot',[
+                    {curveNumber:0, pointNumber:pointNum},
+                    // {curveNumber:1, pointNumber:pointNum},
+                    // {curveNumber:2, pointNumber:pointNum},
+                    // {curveNumber:3, pointNumber:pointNum}
+                ]);
+            });
+        },
+        error: function(response) {
+            console.log('error in trainEmbeddings()', response);
+        }
+    });
+}
+
+function visualize2dEmbeddings() {
+    var dimension = 2;
+    $.ajax({
+        url: `http://localhost:3000/training/embeddings/visualize/${dimension}`,
+        success: function(response) {
+            var output = "<div id=\"embeddings_plot\" style=\"margin:20px;\"></div>";
+            $('#embeddings_visualization').html(output);
+
+            var words = [];
+            var xcoords = [];
+            var ycoords = [];
+            response.forEach(item => {
+                words.push(item['word']);
+                xcoords.push(item['coords'][0]);
+                ycoords.push(item['coords'][1]);
+            });
+
+            data = [{
+                x: xcoords,
+                y: ycoords,
+                text: words,
+                type: 'scatter',
+                name: 'Embeddings',
+                hoverinfo: 'text',
+                mode: 'markers',
+                marker: {
+                    color: xcoords,
+                    opacity: 0.6,
+                    size: 14,
                     line: {
                         color: 'rgb(231, 99, 250)',
                          width: 0.7
-                        }
+                    }
                 }
             }];
 
