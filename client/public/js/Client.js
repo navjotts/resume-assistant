@@ -71,7 +71,7 @@ function analyzeFiles() {
                     var resumeScores = response.resume;
                     output += "<div class=\"document-header\"><label class=\"document-header-label-left\">RESUME</label><label class=\"document-header-label-right\">SCORE</label></div>";
                     for (var i = 0; i < resumeScores.length; i++) {
-                        var scoreDiv = resumeScores[i].score/100 == -1.0 ? "<div class=\"right-child\" style=\"border: 1px solid #979797; color:#5d5d5d;\">Info / Others</div>" : "<div class=\"right-child\" style=\"flex-basis:" + 8*resumeScores[i].score/100 + "%; background-color:" + getColor(resumeScores[i].score/100) + ";\">" + resumeScores[i].score + "%</div>";
+                        var scoreDiv = resumeScores[i].score/100 == -1.0 ? "<div class=\"right-child\" style=\"border: 1px solid #979797; color:#5d5d5d;\">Info / Others</div>" : "<div class=\"right-child\" style=\"flex-basis:" + 8*resumeScores[i].score/100 + "%; background-color:" + colorFromScore(resumeScores[i].score/100) + ";\">" + resumeScores[i].score + "%</div>";
                         output += "<div class=\"sentence\"><div class=\"left-child\" >" + resumeScores[i].sentence + "</div>" + scoreDiv + "</div>";
                     }
                     $('#document').html(output);
@@ -614,7 +614,7 @@ function generateEmbeddingsCoordinates() {
     });
 }
 
-function getColor(score) {
+function colorFromScore(score) {
     score = Math.max(0.25, score < 0.5 ? score * (2 - score/0.5) : score); // restrict lower color boundary to start from a softer shade of red
     var hue = (score * 120).toString(10);
     return ['hsl(', hue, ', 100%, 50%)'].join('');
