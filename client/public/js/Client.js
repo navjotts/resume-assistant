@@ -55,7 +55,7 @@ function analyzeFiles() {
     var resumeFileName, jobFileName;
     function analyzeIfReady() {
         if (resumeFileName && jobFileName) {
-            $('#analyze_button').text('ANALYZING...');
+            $('#analyze-button').text('ANALYZING...');
             var files = {resume: resumeFileName, job: jobFileName};
             $.ajax({
                 url: `http://localhost:3000/analyze/${resumeFileName}/${jobFileName}`,
@@ -76,7 +76,7 @@ function analyzeFiles() {
                     }
                     $('#document').html(output);
                     visualizeTopTopics(response.resumeTopTopics, response.jobTopTopics);
-                    $('#analyze_button').text('START ANALYZING');
+                    $('#analyze-button').text('START ANALYZING');
                 },
                 error: function(response) {
                     console.log('error in analyzeIfReady()', response);
@@ -92,7 +92,7 @@ function analyzeFiles() {
         return;
     }
 
-    $('#analyze_button').text('UPLOADING...');
+    $('#analyze-button').text('UPLOADING...');
     var resumeFileData = new FormData();
     resumeFileData.append('userFile', resumeFiles[0]);
     $.ajax({
@@ -141,7 +141,7 @@ function summary(modelName) {
     $.ajax({
         url: `http://localhost:3000/training/summary`,
         success: function(response) {
-            var output = "<div class=\"result_header\">LATEST RESULTS</div>";
+            var output = "<div class=\"result-header\">LATEST RESULTS</div>";
             var plots = [];
             var barColors = ['#F7CE85', '#F78F88', '#FAEF87'];
             var stages = Object.keys(response);
@@ -250,17 +250,17 @@ function fireTrainingOrTesting(trainOrTest, modelName) {
 
             var score = response['score'];
             if (score) {
-                output += "<div class=\"result_header\">SCORE</div><table border=\"1\"><tr><th>precision</th><th>recall</th><th>f1-score</th></tr><tr><td>" +  (score['precision'] - 2*Math.random()/100) + "</td><td>" + (score['recall'] - 2*Math.random()/100) + "</td><td>" + (score['f1_score'] - 2*Math.random()/100) + "</td></tr></table>";
+                output += "<div class=\"result-header\">SCORE</div><table border=\"1\"><tr><th>precision</th><th>recall</th><th>f1-score</th></tr><tr><td>" +  (score['precision'] - 2*Math.random()/100) + "</td><td>" + (score['recall'] - 2*Math.random()/100) + "</td><td>" + (score['f1_score'] - 2*Math.random()/100) + "</td></tr></table>";
             }
 
             var report = response['report'];
             if (report) {
-                output += "<div class=\"result_header\">REPORT</div><table border=\"1\"><tr><td><div class=\"report\">" + report + "</div></td></tr></table>";
+                output += "<div class=\"result-header\">REPORT</div><table border=\"1\"><tr><td><div class=\"report\">" + report + "</div></td></tr></table>";
             }
 
             var misclassifications = response['misclassifications'];
             if (misclassifications) {
-                output += "<div class=\"result_header\">MISCLASSIFICATIONS</div><table border=\"1\"><tr><th>Sample</th><th>Actual</th><th>Predicted</th></tr>";
+                output += "<div class=\"result-header\">MISCLASSIFICATIONS</div><table border=\"1\"><tr><th>Sample</th><th>Actual</th><th>Predicted</th></tr>";
                 misclassifications.forEach(each => {
                     output += "<tr><td>" + each['sample'] + "</td><td>" + each['actual_label'] + "</td><td>" + each['pred_label'] + "</td></tr>";
                 });
@@ -320,11 +320,11 @@ function selectedDataset(modelName) {
 function selectDashboardTab(selectedTab) {
     ['resumes_tab', 'jobs_tab', 'comparison_tab'].forEach(tab => {
         if (selectedTab == tab) {
-            $('#' + tab).removeClass().addClass('dashboard_tab_focussed');
-            $('#' + tab + '_content').removeClass().addClass('dashboard_content');
+            $('#' + tab).removeClass().addClass('dashboard-tab-focussed');
+            $('#' + tab + '_content').removeClass().addClass('dashboard-content');
         }
         else {
-            $('#' + tab).removeClass().addClass('dashboard_tab');
+            $('#' + tab).removeClass().addClass('dashboard-tab');
             $('#' + tab + '_content').removeClass().addClass('no-display');
         }
     });
