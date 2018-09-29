@@ -52,7 +52,7 @@ class SentenceEmbeddings(object):
             self.model = d2v.Doc2Vec.load(self.path)
 
         if not self.model:
-            print('Embeddings: error: unable to load model')
+            print('SentenceEmbeddings: error: unable to load model')
 
     def vector(self, sent):
         self.load()

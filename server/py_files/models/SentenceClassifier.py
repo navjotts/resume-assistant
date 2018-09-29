@@ -24,7 +24,7 @@ class SentenceClassifier(object):
     # loads the model from local disk (if needed)
     def load(self):
         if not self.model:
-            print('Vectorizer: error: unable to load model')
+            print('SentenceClassifier: error: unable to load model')
 
     def test(self, samples, labels):
         # build the model and populate `self.labels_pred` in subclasses
