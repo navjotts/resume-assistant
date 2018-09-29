@@ -10,7 +10,7 @@ class LSAModel(object):
         self.name = name
         self.model = None # todo should be a dict => so that we can hold more than 1 models in memory together
         self.seed = 12 # fix the random seed for consistency of results
-        np.random.seed(self.seed) # todo => doesn't setting this gets rid of the need of the above? CHECK (then we don't need to set `random_state` everywhere)
+        np.random.seed(self.seed)
 
     def top_topics(self, samples, num_topics, words_per_topic):
         features = Vectorizer(self.name, 'tf-idf').vectors(samples, False).toarray() # todense()
