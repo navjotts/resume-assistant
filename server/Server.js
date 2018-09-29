@@ -213,6 +213,7 @@ app.get('/training/summary', async function (req, res, next) {
 
 // TODO get rid of this - we can take ALL job descriptions for training embeddings atleast
 // TODO tried above - but strangely its giving substantially different (wrong) results - need to study in depth whats happening
+// (potentially related with the imbalance of resumes data v/s jobs data - but should that really matter in case of the Sentence Embeddings model)
 function sampleSet(destFolder, fileName) {
     if (destFolder === 'jobs') {
         if (fileName.includes('google')) {
