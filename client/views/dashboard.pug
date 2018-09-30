@@ -136,8 +136,11 @@ html
                         input(type='radio', name='comparisonModelType', value='SentenceEmbeddings')
                         label(class='model-labels')='Sentence Embeddings'
                         <br/>
-                        input(type='radio', name='comparisonModelType', value='NER')
-                        label(class='model-labels')='NER'
+                        input(type='radio', name='comparisonModelType', value='NER-CRF')
+                        label(class='model-labels')='NER (CRF)'
+                        <br/>
+                        input(type='radio', name='comparisonModelType', value='NER-BiLSTM-CRF')
+                        label(class='model-labels')='NER (BiLSTM+CRF)'
                         <br/>
                     <br/>
                     button(class='train-test-button',
