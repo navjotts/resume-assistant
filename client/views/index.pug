@@ -4,15 +4,18 @@ html
         link(rel='stylesheet', href='https://stackpath.bootstrapcdn.com/bootstrap/4.1.0/css/bootstrap.min.css')
         link(rel='stylesheet', href='/stylesheets/style.css')
         script(src='https://code.jquery.com/jquery-3.1.1.min.js')
+        script(src='https://cdn.plot.ly/plotly-latest.min.js')
         script(src='/js/Client.js')
     body
-        div(class='container-fluid')
+        div(class='container-fluid', style='padding-left:0px; padding-right:0px;')
+            div(class='home-page-header')
+                img(src='images/logo.svg', width='143px', height='51px')
             div(class='center')
-                div(class='title')
-                    p=title
                 div(class='content')
                     div(class='upload')
                         div(class='upload-resume')
+                            div(style='padding:40px;')
+                                img(src='images/docx_icon.svg', width='55px', height='68px')
                             div(class='no-display')
                                 input(id='resume-file',
                                     class='no-display',
@@ -20,12 +23,14 @@ html
                                     accept='application/vnd.openxmlformats-officedocument.wordprocessingml.document',
                                     name='userFile',
                                     onchange='showFilePicked("' + 'resume-file' + '","' + 'resume-label' + '")')
-                            button(class='choose_file_button',
+                            button(class='choose-file-button',
                                 type='button',
                                 onclick='showFilePicker("' + 'resume-file' + '")')='Choose Resume'
                             div()
                                 label(id='resume-label', class='upload-label')='.docx only'
                         div(class='upload-job')
+                            div(style='padding:40px;')
+                                img(src='images/txt_icon.svg', width='55px', height='68px')
                             div(class='no-display')
                                 input(id='job-file',
                                     class='no-display',
@@ -33,14 +38,15 @@ html
                                     accept='text/plain',
                                     name='userFile',
                                     onchange='showFilePicked("' + 'job-file' + '","' + 'job-label' + '")')
-                            button(class='choose_file_button',
+                            button(class='choose-file-button',
                                 type='button',
                                 onclick='showFilePicker("' + 'job-file' + '")')='Choose Job'
                             div()
                                 label(id='job-label', class='upload-label')='.txt only'
-                    div()
-                        button(id='analyze_button'
-                            class='analyze_button',
+                    div(style='padding-bottom:40px;')
+                        button(id='analyze-button'
+                            class='analyze-button',
                             type='button',
                             onclick='analyzeFiles()')='START ANALYZING'
                     div(id='document', class='document')
+                    div(id='topic_visualization', class='topics')

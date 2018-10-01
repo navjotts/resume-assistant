@@ -9,6 +9,7 @@ from py_files.models.NaiveBayes.NaiveBayesClassifier import NaiveBayesClassifier
 from py_files.models.LSTM.LSTMClassifier import LSTMClassifier
 from py_files.models.NeuralNet.NeuralNetClassifier import NeuralNetClassifier
 from py_files.models.CNNClassifier.CNNClassifier import CNNClassifier
+from py_files.models.LSA.LSAModel import LSAModel
 from py_files.models.Embeddings.Embeddings import Embeddings
 from py_files.models.SentenceEmbeddings.SentenceEmbeddings import SentenceEmbeddings
 
@@ -26,11 +27,11 @@ class PythonServer(object):
                     sents.append(sentence)
         return sents
 
-    def train_classifier(self, model_name, model_type, feature_type, samples, labels):
+    def train_sentence_classifier(self, model_name, model_type, feature_type, samples, labels):
         model = self.choose_model(model_name, model_type, feature_type)
         return model.train(samples, labels)
 
-    def test_classifier(self, model_name, model_type, feature_type, samples, labels):
+    def test_sentence_classifier(self, model_name, model_type, feature_type, samples, labels):
         model = self.choose_model(model_name, model_type, feature_type)
         return model.test(samples, labels)
 
@@ -71,15 +72,18 @@ class PythonServer(object):
         embeddings = Embeddings(model_name, dimension)
         embeddings.words_coordinates(reduced_dimension)
 
-    def sentence_group_similarity_score(self, model_name, dimension, sents):
+    def sentence_group_similarity_score(self, model_name, dimension, sents, reverse_comparison=False, method='gensim'):
         sent_embeddings = SentenceEmbeddings(model_name, dimension)
-        return sent_embeddings.group_similarity_score(sents)
+        return sent_embeddings.group_similarity_score(sents, reverse_comparison, method)
 
-    def sentence_similarity_score(self, model_name, dimension, sent1, sent2):
-        sent_embeddings = SentenceEmbeddings(model_name, dimension)
-        return sent_embeddings.similarity_score(sent1, sent2)
+    def top_topics(self, model_name, samples, num_topics, words_per_topic):
+        lsa = LSAModel(model_name)
+        return lsa.top_topics(samples, num_topics, words_per_topic)
 
-# print(SentenceEmbeddings('resumes_jobs', 100).similarity_score(('Full', 'Stack', 'Internship', '·', 'July', '2017', 'to', 'Oct.', '2017'), ('5', 'years', 'of', 'experience', 'in', 'technical', 'leadership', 'and', 'people', 'management', '.'))) # for testing other classes directly (comment out the below zerorpc server if you do this)
+# Embeddings('resumes', 100).vectors('glove') # for testing other classes directly (comment out the below zerorpc server if you do this)
+# print(SentenceEmbeddings('resumes_jobs', 100).similarity_score(('Full', 'Stack', 'Internship', '·', 'July', '2017', 'to', 'Oct.', '2017'), ('5', 'years', 'of', 'experience', 'in', 'technical', 'leadership', 'and', 'people', 'management', '.'), 'gensim'))
+# print(SentenceEmbeddings('resumes_jobs', 100).similarity_score(('5', 'years', 'of', 'experience', 'in', 'technical', 'leadership', 'and', 'people', 'management', '.'), ('Full', 'Stack', 'Internship', '·', 'July', '2017', 'to', 'Oct.', '2017'), 'gensim'))
+# print(SentenceEmbeddings('resumes_jobs', 100).similarity_score(('10', 'years', 'of', 'relevant', 'industry', 'experience', '.'), ('Software', 'Engineer', '·', 'Nov.', '2017', 'to', 'Current'), 'gensim')) # todo this where sentence comparison with the current embeddings is completely failing
 
 try:
     s = zerorpc.Server(PythonServer())

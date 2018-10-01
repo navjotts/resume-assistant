@@ -24,7 +24,7 @@ function fetchJobs() {
         success: function(response) {
             var output = "";
             for (var i = 0; i < response.length; i++) {
-                output += "<div id=" + i + " ><a class=\"file-link\" href=\"#\" onclick=\"fetchDoc('jobs', " + i + ")\">" +  "Job#" + i + "</a></div>";
+                output += "<div id=" + i + " ><a class=\"file-link\" href=\"#\" onclick=\"fetchDoc('jobs', " + i + ")\">" +  "Job#" + response[i] + "</a></div>";
             }
             $('#jobs-list').html(output);
         },
@@ -55,17 +55,28 @@ function analyzeFiles() {
     var resumeFileName, jobFileName;
     function analyzeIfReady() {
         if (resumeFileName && jobFileName) {
-            $('#analyze_button').text('ANALYZING...');
+            $('#analyze-button').text('ANALYZING...');
             var files = {resume: resumeFileName, job: jobFileName};
             $.ajax({
                 url: `http://localhost:3000/analyze/${resumeFileName}/${jobFileName}`,
                 success: function(response) {
-                    var output = "<div class=\"document-header\"><label class=\"document-header-label-left\">SENTENCE / PHRASE</label><label class=\"document-header-label-right\">SCORE</label></div>";
-                    for (var i = 0; i < response.length; i++) {
-                        output += "<div class=\"sentence\"><div class=\"left-child\" >" + response[i].sentence + "</div><div class=\"right-child\" style=\"flex-basis:" + 8*response[i].score/100 + "%; background-color:" + getColor(response[i].score/100) + ";\">" + response[i].score + "%" + "</div></div>";
+                    var output = "";
+                    var missing = response.missing;
+                    for (var i = 0; i < missing.length; i++) {
+                        output += "<div class=\"sentence\"><div class=\"left-child\" >" + missing[i].sentence + "</div>" + "<div class=\"right-child\" style=\"background-color:#FF0000; color:#FFFFFF;\">Missing</div>" + "</div>";
+                    }
+
+                    output += "<div class=\"divider\"></div>";
+
+                    var resumeScores = response.resume;
+                    output += "<div class=\"document-header\"><label class=\"document-header-label-left\">RESUME</label><label class=\"document-header-label-right\">SCORE</label></div>";
+                    for (var i = 0; i < resumeScores.length; i++) {
+                        var scoreDiv = resumeScores[i].score/100 == -1.0 ? "<div class=\"right-child\" style=\"border: 1px solid #979797; color:#5d5d5d;\">Info / Others</div>" : "<div class=\"right-child\" style=\"flex-basis:" + 8*resumeScores[i].score/100 + "%; background-color:" + colorFromScore(resumeScores[i].score/100) + ";\">" + resumeScores[i].score + "%</div>";
+                        output += "<div class=\"sentence\"><div class=\"left-child\" >" + resumeScores[i].sentence + "</div>" + scoreDiv + "</div>";
                     }
                     $('#document').html(output);
-                    $('#analyze_button').text('START ANALYZING');
+                    visualizeTopTopics(response.resumeTopTopics, response.jobTopTopics);
+                    $('#analyze-button').text('START ANALYZING');
                 },
                 error: function(response) {
                     console.log('error in analyzeIfReady()', response);
@@ -81,7 +92,7 @@ function analyzeFiles() {
         return;
     }
 
-    $('#analyze_button').text('UPLOADING...');
+    $('#analyze-button').text('UPLOADING...');
     var resumeFileData = new FormData();
     resumeFileData.append('userFile', resumeFiles[0]);
     $.ajax({
@@ -130,17 +141,18 @@ function summary(modelName) {
     $.ajax({
         url: `http://localhost:3000/training/summary`,
         success: function(response) {
-            var output = "<div class=\"result_header\">LATEST RESULTS</div>";
+            var output = "<div class=\"result-header\">LATEST RESULTS</div>";
             var plots = [];
+            var barColors = ['#F7CE85', '#F78F88', '#FAEF87'];
             var stages = Object.keys(response);
             stages.forEach(stage => {
                 var divId = modelName + '_' + stage + '_summary_plot';
-                output += "<div id=\"" + divId + "\" style=\"margin:20px;\"></div>";
+                output += "<div id=\"" + divId + "\" style=\"margin:60px 20px 20px 20px;\"></div>";
                 var models = Object.keys(response[stage]);
                 if (models.length) {
                     var data = [];
                     var scores = Object.keys(response[stage][models[0]]);
-                    scores.forEach(scoreType => {
+                    scores.forEach((scoreType, index) => {
                         var scoreValues = models.map(model => response[stage][model][scoreType]);
                         var trace = {
                             x: models,
@@ -148,7 +160,16 @@ function summary(modelName) {
                             text: scoreValues,
                             textposition: 'auto',
                             name: scoreType,
-                            type: 'bar'
+                            type: 'bar',
+                            marker: {
+                                color: barColors[index],
+                                opacity: 0.8,
+                                line: {
+                                    color: '#000000',
+                                    width: 0.75
+                                }
+                            },
+                            hoverinfo: 'none'
                         };
                         data.push(trace);
                     });
@@ -157,23 +178,20 @@ function summary(modelName) {
                         barmode: 'group',
                         title: stage + ' Dataset',
                         titlefont:{
-                            family: 'Droid Sans Mono',
-                            size: 40,
+                            size: 24,
                             color: 'black'
                         },
                         xaxis: {
                             title: 'Model',
                             titlefont: {
-                                family: 'Droid Sans Mono',
-                                size: 25
+                                size: 16
                             },
                         },
                         yaxis: {
                             title: 'Accuracy',
                             range: [0,101],
                             titlefont: {
-                                family: 'Droid Sans Mono',
-                                size: 25
+                                size: 16
                             },
                         },
                     };
@@ -191,6 +209,7 @@ function summary(modelName) {
 }
 
 // TODO need an option to NOT really fire any training when the call is from the production URL (as then we have to manage the saving of the updated model weights etc)
+// (hide the Train button for production)
 function train(modelName) {
     fireTrainingOrTesting('train', modelName);
 }
@@ -231,17 +250,17 @@ function fireTrainingOrTesting(trainOrTest, modelName) {
 
             var score = response['score'];
             if (score) {
-                output += "<div class=\"result_header\">SCORE</div><table border=\"1\"><tr><th>precision</th><th>recall</th><th>f1-score</th></tr><tr><td>" +  (score['precision'] - 2*Math.random()/100) + "</td><td>" + (score['recall'] - 2*Math.random()/100) + "</td><td>" + (score['f1_score'] - 2*Math.random()/100) + "</td></tr></table>";
+                output += "<div class=\"result-header\">SCORE</div><table border=\"1\"><tr><th>precision</th><th>recall</th><th>f1-score</th></tr><tr><td>" +  (score['precision'] - 2*Math.random()/100) + "</td><td>" + (score['recall'] - 2*Math.random()/100) + "</td><td>" + (score['f1_score'] - 2*Math.random()/100) + "</td></tr></table>";
             }
 
             var report = response['report'];
             if (report) {
-                output += "<div class=\"result_header\">REPORT</div><table border=\"1\"><tr><td><div class=\"report\">" + report + "</div></td></tr></table>";
+                output += "<div class=\"result-header\">REPORT</div><table border=\"1\"><tr><td><div class=\"report\">" + report + "</div></td></tr></table>";
             }
 
             var misclassifications = response['misclassifications'];
             if (misclassifications) {
-                output += "<div class=\"result_header\">MISCLASSIFICATIONS</div><table border=\"1\"><tr><th>Sample</th><th>Actual</th><th>Predicted</th></tr>";
+                output += "<div class=\"result-header\">MISCLASSIFICATIONS</div><table border=\"1\"><tr><th>Sample</th><th>Actual</th><th>Predicted</th></tr>";
                 misclassifications.forEach(each => {
                     output += "<tr><td>" + each['sample'] + "</td><td>" + each['actual_label'] + "</td><td>" + each['pred_label'] + "</td></tr>";
                 });
@@ -301,11 +320,11 @@ function selectedDataset(modelName) {
 function selectDashboardTab(selectedTab) {
     ['resumes_tab', 'jobs_tab', 'comparison_tab'].forEach(tab => {
         if (selectedTab == tab) {
-            $('#' + tab).removeClass().addClass('dashboard_tab_focussed');
-            $('#' + tab + '_content').removeClass().addClass('dashboard_content');
+            $('#' + tab).removeClass().addClass('dashboard-tab-focussed');
+            $('#' + tab + '_content').removeClass().addClass('dashboard-content');
         }
         else {
-            $('#' + tab).removeClass().addClass('dashboard_tab');
+            $('#' + tab).removeClass().addClass('dashboard-tab');
             $('#' + tab + '_content').removeClass().addClass('no-display');
         }
     });
@@ -313,7 +332,7 @@ function selectDashboardTab(selectedTab) {
 
 function trainEmbeddings() {
     $.ajax({
-        url: `http://localhost:3000/training/sentenceembeddings/train`,
+        url: `http://localhost:3000/training/embeddings/train`,
         success: function(response) {
             console.log(response);
         },
@@ -323,86 +342,112 @@ function trainEmbeddings() {
     });
 }
 
-function visualize3dEmbeddings() {
-    var dimension = 3;
+function visualizeTopTopics(resumeTopics, jobTopics) {
+    var dimension = 2;
     $.ajax({
         url: `http://localhost:3000/training/embeddings/visualize/${dimension}`,
         success: function(response) {
-            var output = "<div id=\"embeddings_plot\" style=\"margin:20px;\"></div>";
-            $('#embeddings_visualization').html(output);
-            // TODO
-            console.log(response);
-            console.log('3d Graph Data')
+            var output = "<div id=\"topics_plot\" style=\"margin:20px;\"></div>";
+            $('#topic_visualization').html(output);
 
-
-            Plotly.d3.csv('https://raw.githubusercontent.com/plotly/datasets/master/3d-scatter.csv', function(err, rows){
-                function unpack(rows, key) {
-                    return rows.map(function(row)
-                    { return row[key]; });
-                }
-
-            words = [];
+            var words = [];
             var xcoords = [];
             var ycoords = [];
-            var zcoords = [];
+            var wordsResume = [];
+            var wordsJob = [];
+            var wordsCommon = [];
+            var xcoordsResume = [];
+            var xcoordsJob = [];
+            var xcoordsCommon = [];
+            var ycoordsResume = [];
+            var ycoordsJob = [];
+            var ycoordsCommon = [];
             response.forEach(item => {
-                /* The if statement underneath is a hack, the value was throwing off the
-                 proportions of the 3d embedding graph */
-                if(item['word'] === '\"19'){
-                    return;
-                };
-                words.push(item['word']);
-                xcoords.push(item['coords'][0]);
-                ycoords.push(item['coords'][1]);
-                zcoords.push(item['coords'][2]);
+                var word = item['word'];
+                var xcoord = item['coords'][0];
+                var ycoord = item['coords'][1];
+                if (resumeTopics.includes(word) && jobTopics.includes(word)) {
+                    wordsCommon.push(word);
+                    xcoordsCommon.push(xcoord);
+                    ycoordsCommon.push(ycoord);
+                }
+                else if (resumeTopics.includes(word)) {
+                    wordsResume.push(word);
+                    xcoordsResume.push(xcoord);
+                    ycoordsResume.push(ycoord);
+                }
+                else if (jobTopics.includes(word)) {
+                    wordsJob.push(word);
+                    xcoordsJob.push(xcoord);
+                    ycoordsJob.push(ycoord);
+                }
+                else {
+                    words.push(word);
+                    xcoords.push(xcoord);
+                    ycoords.push(ycoord);
+                }
             });
 
-            data = [{
-                x: xcoords,
-                y: ycoords,
-                z: zcoords,
-                text: words,
-                type: 'scatter3d',
-                name: '3D Embeddings',
-                hoverinfo: 'text',
-                mode: 'markers',
-                marker: {color: xcoords, opacity: 0.75, size: 3
-                }
-            }];
+            data = [{ x: xcoords, y: ycoords, text: words, type: 'scatter', name: 'Embeddings', hoverinfo: 'text', mode: 'markers',
+                    marker: {
+                        color: '#A6AFCB',
+                        opacity: 0.6,
+                        size: 14,
+                        line: {
+                            color: '#000000',
+                            width: 0.7
+                        }
+                    }
+                },
+                {x: xcoordsCommon, y: ycoordsCommon, text: wordsCommon, type: 'scatter', name: 'Common', hoverinfo: 'text', mode: 'markers',
+                    marker: {
+                        color: '#b1de69',
+                        opacity: 1.0,
+                        size: 20,
+                        line: {
+                            color: '#000000',
+                            width: 0.7
+                        }
+                    }
+                },
+                {x: xcoordsJob, y: ycoordsJob, text: wordsJob, type: 'scatter', name: 'Missing', hoverinfo: 'text', mode: 'markers',
+                    marker: {
+                        color: '#FF0000',
+                        opacity: 1.0,
+                        size: 20,
+                        line: {
+                            color: '#000000',
+                            width: 0.7
+                        }
+                    }
+                },
+                {x: xcoordsResume, y: ycoordsResume, text: wordsResume, type: 'scatter', name: 'Resume', hoverinfo: 'text', mode: 'markers',
+                    marker: {
+                        color: '#FAEF87',
+                        opacity: 1.0,
+                        size: 14,
+                        line: {
+                            color: '#000000',
+                            width: 0.7
+                        }
+                    }
+                }];
 
-            var layout = {
-                title: '3D Word Embeddings',
+            layout = {
+                title: 'Resume v/s Job',
                 titlefont:{
-                    family: 'Droid Sans Mono',
-                    size: 40,
+                    size: 24,
                     color: 'black'
                 },
-                dragmode: true,
+                autosize: false,
                 width: 1200,
                 height: 1200,
                 hovermode:'closest',
-                scene:{
-                	xaxis: {
-                	 backgroundcolor: "#FFFFFF",
-                	 gridcolor: "#E9E9E9",
-                	 showbackground: true,
-                     zerolinecolor: "rgb(255, 255, 255)",
-                	},
-                    yaxis: {
-                     backgroundcolor: "#FFFFFF",
-                     gridcolor: "#E9E9E9",
-                     showbackground: true,
-                     zerolinecolor: "rgb(255, 255, 255)",
-                    },
-                    zaxis: {
-                     backgroundcolor: "#FFFFFF",
-                     gridcolor: "#E9E9E9",
-                     showbackground: true,
-                     zerolinecolor: "rgb(255, 255, 255)",
-                    }}
+                xaxis:{zeroline:false, hoverformat: '.2r'},
+                yaxis:{zeroline:false, hoverformat: '.2r'}
             };
-            Plotly.newPlot('embeddings_plot', data, layout);
-        });
+
+            Plotly.newPlot('topics_plot', data, layout);
         },
         error: function(response) {
             console.log('error in trainEmbeddings()', response);
@@ -417,14 +462,11 @@ function visualize2dEmbeddings() {
         success: function(response) {
             var output = "<div id=\"embeddings_plot\" style=\"margin:20px;\"></div>";
             $('#embeddings_visualization').html(output);
-            console.log(response)
-            console.log('Inside 2d graph')
 
-            words = [];
+            var words = [];
             var xcoords = [];
             var ycoords = [];
             response.forEach(item => {
-
                 words.push(item['word']);
                 xcoords.push(item['coords'][0]);
                 ycoords.push(item['coords'][1]);
@@ -438,19 +480,21 @@ function visualize2dEmbeddings() {
                 name: 'Embeddings',
                 hoverinfo: 'text',
                 mode: 'markers',
-                marker: {color: xcoords, opacity: 0.6, size: 14,
+                marker: {
+                    color: xcoords,
+                    opacity: 0.6,
+                    size: 14,
                     line: {
-                        color: 'rgb(231, 99, 250)',
+                        color: '#E763FA',
                          width: 0.7
-                        }
+                    }
                 }
             }];
 
             layout = {
                 title: '2D Word Embeddings',
                 titlefont:{
-                    family: 'Droid Sans Mono',
-                    size: 40,
+                    size: 24,
                     color: 'black'
                 },
                 autosize: false,
@@ -462,14 +506,90 @@ function visualize2dEmbeddings() {
             };
 
             Plotly.newPlot('embeddings_plot', data, layout);
+        },
+        error: function(response) {
+            console.log('error in trainEmbeddings()', response);
+        }
+    });
+}
 
-            var plot = document.getElementById('embeddings_plot');
-            plot.on('plotly_hover', function (eventdata){
-            var points = eventdata.points[0],
-                pointNum = points.pointNumber;
-                Plotly.Fx.hover('embeddings_plot',[
-                    {curveNumber:0, pointNumber:pointNum}
-                ]);
+function visualize3dEmbeddings() {
+    var dimension = 3;
+    $.ajax({
+        url: `http://localhost:3000/training/embeddings/visualize/${dimension}`,
+        success: function(response) {
+            var output = "<div id=\"embeddings_plot\" style=\"margin:20px;\"></div>";
+            $('#embeddings_visualization').html(output);
+
+            Plotly.d3.csv('https://raw.githubusercontent.com/plotly/datasets/master/3d-scatter.csv', function(err, rows) {
+                function unpack(rows, key) {
+                    return rows.map(function(row)
+                    { return row[key]; });
+                }
+
+                words = [];
+                var xcoords = [];
+                var ycoords = [];
+                var zcoords = [];
+                response.forEach(item => {
+                    /* The if statement underneath is a hack, the value was throwing off the
+                    proportions of the 3d embedding graph */
+                    if(item['word'] === '\"19'){
+                        return;
+                    };
+                    words.push(item['word']);
+                    xcoords.push(item['coords'][0]);
+                    ycoords.push(item['coords'][1]);
+                    zcoords.push(item['coords'][2]);
+                });
+
+                data = [{
+                    x: xcoords,
+                    y: ycoords,
+                    z: zcoords,
+                    text: words,
+                    type: 'scatter3d',
+                    name: '3D Embeddings',
+                    hoverinfo: 'text',
+                    mode: 'markers',
+                    marker: {
+                        color: xcoords,
+                        opacity: 0.75,
+                        size: 3
+                    }
+                }];
+
+                var layout = {
+                    title: '3D Word Embeddings',
+                    titlefont:{
+                        size: 24,
+                        color: 'black'
+                    },
+                    dragmode: true,
+                    width: 1200,
+                    height: 1200,
+                    hovermode:'closest',
+                    scene: {
+                        xaxis: {
+                            backgroundcolor: "#FFFFFF",
+                            gridcolor: "#E9E9E9",
+                            showbackground: true,
+                            zerolinecolor: "#FFFFFF",
+                        },
+                        yaxis: {
+                            backgroundcolor: "#FFFFFF",
+                            gridcolor: "#E9E9E9",
+                            showbackground: true,
+                            zerolinecolor: "#FFFFFF",
+                        },
+                        zaxis: {
+                            backgroundcolor: "#FFFFFF",
+                            gridcolor: "#E9E9E9",
+                            showbackground: true,
+                            zerolinecolor: "#FFFFFF",
+                        }}
+                };
+                Plotly.newPlot('embeddings_plot', data, layout);
             });
         },
         error: function(response) {
@@ -494,7 +614,8 @@ function generateEmbeddingsCoordinates() {
     });
 }
 
-function getColor(score) {
-    var hue=((score)*120).toString(10);
-    return ["hsl(",hue,",100%,50%)"].join("");
+function colorFromScore(score) {
+    score = Math.max(0.25, score < 0.5 ? score * (2 - score/0.5) : score); // restrict lower color boundary to start from a softer shade of red
+    var hue = (score * 120).toString(10);
+    return ['hsl(', hue, ', 100%, 50%)'].join('');
 }

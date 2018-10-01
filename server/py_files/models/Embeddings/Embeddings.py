@@ -1,11 +1,12 @@
 import os
 import multiprocessing
+import numpy as np
+
 import gensim.models.word2vec as w2v
 from gensim.models import KeyedVectors
 import sklearn.manifold
 import pandas as pd
 import keras
-
 
 import logging
 logging.basicConfig(format='%(asctime)s : %(levelname)s : %(message)s', level=logging.INFO)
@@ -16,12 +17,13 @@ class Embeddings(object):
         self.dimension = dimension
         self.path = os.path.join(os.path.dirname(os.path.abspath(__file__)), 'trained', name + str(dimension) + 'd.txt')
         self.model = None
+        self.seed = 42
 
     def train(self, sentences):
         model = w2v.Word2Vec(min_count=1,
                             window=7,
                             size=self.dimension,
-                            seed=42,
+                            seed=self.seed,
                             workers=multiprocessing.cpu_count())
 
         model.build_vocab(sentences)
@@ -32,8 +34,8 @@ class Embeddings(object):
                     total_examples=len(sentences),
                     epochs=100)
 
-        print('saving the model at: %s' % self.path)
         model.wv.save_word2vec_format(self.path, binary = False)
+        print('Saved model to disk...')
 
         self.model = model
 
@@ -46,9 +48,32 @@ class Embeddings(object):
             print('Embeddings: error: unable to load model')
 
     # for integration into other ML/DL models
-    def vectors(self):
+    def vectors(self, model_name = 'resumes'): # todo this will change to 'resumes_jobs' once we include jobs data also
         self.load()
-        pretrained_vectors = self.model.wv.syn0
+
+        dimension = 100 # we are only using 100 dimensional embeddings for now
+
+        if model_name == 'glove':
+            embeddings_dict = dict()
+            f = open(os.path.join(os.path.dirname(os.path.abspath(__file__)), 'trained', 'glove.6B.' + str(dimension) + 'd.txt'), encoding ='utf-8' )
+            print('using glove model')
+            for line in f:
+                values = line.split()
+                word = values[0]
+                if self.word_to_index(word):
+                    embedding_vec = np.array(values[1:])
+                    embeddings_dict[word] = embedding_vec
+            f.close()
+
+            pretrained_vectors = np.zeros((len(self.model.wv.vocab), dimension))
+            for word, vocab_object in self.model.wv.vocab.items():
+                embedding_vec = embeddings_dict.get(word)
+                if embedding_vec is not None:
+                    pretrained_vectors[vocab_object.index] = embedding_vec
+        else:
+            print('using custom pretrained vectors')
+            pretrained_vectors = self.model.wv.syn0
+
         vocab_size, emdedding_size = pretrained_vectors.shape
         print('input dimension of the Embeddings layer (vocab size):', vocab_size)
         print('output dimension of the Embeddings layer (embedding dimensions):', emdedding_size)
