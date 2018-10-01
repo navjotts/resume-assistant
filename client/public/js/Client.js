@@ -343,8 +343,6 @@ function trainEmbeddings() {
 }
 
 function visualizeTopTopics(resumeTopics, jobTopics) {
-    console.log('resumeTopics', resumeTopics);
-    console.log('jobTopics', jobTopics);
     var dimension = 2;
     $.ajax({
         url: `http://localhost:3000/training/embeddings/visualize/${dimension}`,
@@ -401,7 +399,7 @@ function visualizeTopTopics(resumeTopics, jobTopics) {
                         }
                     }
                 },
-                {x: xcoordsCommon, y: ycoordsCommon, text: wordsCommon, type: 'scatter', name: 'Present', hoverinfo: 'text', mode: 'markers',
+                {x: xcoordsCommon, y: ycoordsCommon, text: wordsCommon, type: 'scatter', name: 'Common', hoverinfo: 'text', mode: 'markers',
                     marker: {
                         color: '#b1de69',
                         opacity: 1.0,

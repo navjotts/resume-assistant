@@ -133,8 +133,11 @@ html
                 div(id='comparison_tab_content', class='no-display')
                     label(class='dashboard_form_header_label')='Select Model'
                     form(class='dashboard_form', name='comparisonModelForm')
-                        input(type='radio', name='comparisonModelType', value='Baseline')
-                        label(class='model-labels')='Baseline'
+                        input(type='radio', name='comparisonModelType', value='SentenceEmbeddings')
+                        label(class='model-labels')='Sentence Embeddings'
+                        <br/>
+                        input(type='radio', name='comparisonModelType', value='NER')
+                        label(class='model-labels')='NER'
                         <br/>
                     <br/>
                     button(class='train_test_button',
