@@ -6,6 +6,7 @@ import numpy as np
 from py_files.models.SentenceClassifier import SentenceClassifier
 from py_files.models.Vectorizer.Vectorizer import Vectorizer
 from py_files.models.Embeddings.Embeddings import Embeddings
+from keras.preprocessing.sequence import pad_sequences   
 
 class SklearnSentenceClassifier(SentenceClassifier):
     def __init__(self, name, feature_type):
@@ -14,6 +15,8 @@ class SklearnSentenceClassifier(SentenceClassifier):
     def train(self, samples, labels):
         # create the model and in subclasses
         features = self.choose_features(samples, True)
+        if self.feature_type == 'word-embeddings':
+            features = pad_sequences(features,maxlen=100)
         self.model.fit(features, labels)
         self.labels_pred = self.model.predict(features)
 
@@ -32,6 +35,8 @@ class SklearnSentenceClassifier(SentenceClassifier):
     def test(self, samples, labels):
         self.load()
         features = self.choose_features(samples)
+        if self.feature_type == 'word-embeddings':
+            features = pad_sequences(features,maxlen=100)
         self.labels_pred = self.model.predict(features)
 
         return super().test(samples, labels)
