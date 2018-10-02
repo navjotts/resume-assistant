@@ -305,6 +305,7 @@ app.get('/training/embeddings/train', async function (req, res, next) {
         }
         console.log('total sents', sents.length);
 
+        var sampledJobs = sampleJobs();
         var srcFolder = 'jobs-txt';
         console.log(`Collecting sentences from ${srcFolder}...`);
         var srcDir = path.join(__dirname, 'data', srcFolder);
@@ -312,6 +313,10 @@ app.get('/training/embeddings/train', async function (req, res, next) {
         for (var i = 0; i < files.length; i++) {
             var fileName = files[i];
             if (fileName.split('.').pop() === 'txt') {
+                if (!sampledJobs.includes(fileName.split('.')[0])) {
+                    continue;
+                }
+
                 console.log(`#${i} Collecting sentences for: ${fileName}`);
                 var sentences = await PythonConnector.invoke('sentences', fs.readFileSync(path.join(srcDir, fileName)).toString(), true, true);
                 sents = sents.concat(sentences);
