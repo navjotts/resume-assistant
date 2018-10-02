@@ -59,18 +59,11 @@ class Spacy(object):
 
         return sents
 
-    def tokenize(self, text, drop_stop, drop_punct, pos_tag = True):
+    def tokenize(self, text, drop_stop, drop_punct):
         tokens = []
         text = Spacy.anonymize_phone_number(self, text)
-        pos=[]
-        if pos_tag:
-            for t in nlp(str(text)):
-                if not t.is_space and not (drop_stop and t.is_stop) and not (drop_punct and t.is_punct):
-                    tokens.append(Spacy.anonymize_token(self, t))
-                    pos.append(t.tag_)
-        else:
-            for t in nlp(str(text)):
-                if not t.is_space and not (drop_stop and t.is_stop) and not (drop_punct and t.is_punct):
-                    tokens.append(Spacy.anonymize_token(self, t))
-        print(pos)
-        return tokens, pos
+        for t in nlp(str(text)):
+            if not t.is_space and not (drop_stop and t.is_stop) and not (drop_punct and t.is_punct):
+                tokens.append(Spacy.anonymize_token(self, t))
+
+        return tokens
