@@ -17,18 +17,18 @@
     },
     "jobs": {
         "Testing": {
-            "LogisticRegression": {"precision": 85.33, "recall": 87.59, "f1-score": 87.31},
-            "SVM": {"precision": 85.56, "recall": 86.32, "f1-score": 85.88},
-            "RandomForest": {"precision": 81.38, "recall": 80.58, "f1-score": 81.24},
-            "NaiveBayes": {"precision": 82.14, "recall": 82.15, "f1-score": 82.07},
-            "FastText": {"precision": 84.04, "recall": 84.46, "f1-score": 84.14}
+            "LogisticRegression": {"precision": 82.65, "recall": 82.43, "f1-score": 82.52},
+            "SVM": {"precision": 81.89, "recall": 81.08, "f1-score": 81.23},
+            "RandomForest": {"precision": 83.08, "recall": 83.10, "f1-score": 83.05},
+            "NaiveBayes": {"precision": 79.74, "recall": 79.05, "f1-score": 78.45},
+            "FastText": {"precision": 78.52, "recall": 77.03, "f1-score": 77.26}
         },
         "Training": {
-            "LogisticRegression": {"precision": 96.25, "recall": 97.75, "f1-score": 97.68},
-            "SVM": {"precision": 98.08, "recall": 97.98, "f1-score": 98.18},
-            "RandomForest": {"precision": 96.47, "recall": 95.13, "f1-score": 96.48},
-            "NaiveBayes": {"precision": 94.49, "recall": 94.46, "f1-score": 94.89},
-            "FastText": {"precision": 99.16, "recall": 98.92, "f1-score": 98.67}
+            "LogisticRegression": {"precision": 97.73, "recall": 97.73, "f1-score": 97.72},
+            "SVM": {"precision": 99.69, "recall": 99.69, "f1-score": 99.69},
+            "RandomForest": {"precision": 99.69, "recall": 99.69, "f1-score": 99.69},
+            "NaiveBayes": {"precision": 92.81, "recall": 92.75, "f1-score": 92.67},
+            "FastText": {"precision": 97.58, "recall": 97.43, "f1-score": 97.40}
         }
     }
 }
