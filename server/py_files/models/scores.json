@@ -9,10 +9,10 @@
         },
         "Training": {
             "LogisticRegression": {"precision": 88.31, "recall": 87.84, "f1_score": 87.69},
-            "SVM": {"precision": 98.5111, "recall": 98.4948, "f1_score": 98.4974},
+            "SVM": {"precision": 98.51, "recall": 98.49, "f1_score": 98.50},
             "RandomForest": {"precision": 94.72, "recall": 94.01, "f1_score": 94.07},
             "NaiveBayes": {"precision": 90.76, "recall": 90.58, "f1_score": 90.59},
-            "FastText": {"precision": 99.3869, "recall": 99.3825, "f1_score": 99.3839}
+            "FastText": {"precision": 99.39, "recall": 99.38, "f1_score": 99.39}
         }
     },
     "jobs": {
