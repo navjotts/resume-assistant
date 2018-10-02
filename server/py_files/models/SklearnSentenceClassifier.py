@@ -26,8 +26,8 @@ class SklearnSentenceClassifier(SentenceClassifier):
 
         #fit modeol on train data and get cross val score on test data
         self.model.fit(x_train, y_train)
-        score = cross_val_score(self.model,x_test,y_test, cv=5)
-        print('##########################\n\n Model Validation score {score} \n\n##########################')
+        score = cross_val_score(self.model,x_test,y_test, cv=5, scoring='accuracy').mean()
+        print(f'##########################\n\n\t Model Validation score: {score} \n\n\t##########################')
         
         self.model.fit(features, labels)
         self.labels_pred = self.model.predict(features)
