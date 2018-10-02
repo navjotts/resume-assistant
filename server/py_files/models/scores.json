@@ -1,14 +1,14 @@
 {
     "resumes": {
         "Testing": {
-            "LogisticRegression": {"precision": 83.35, "recall": 82.91, "f1_score": 83.03},
+            "LogisticRegression": {"precision": 87.44, "recall": 87.18, "f1_score": 87.26},
             "SVM": {"precision": 84.23, "recall": 82.48, "f1_score": 82.78},
             "RandomForest": {"precision": 78.19, "recall": 77.78, "f1_score": 77.66},
             "NaiveBayes": {"precision": 81.57, "recall": 77.35, "f1_score": 76.76},
             "FastText": {"precision": 82.04, "recall": 79.49, "f1_score": 79.83}
         },
         "Training": {
-            "LogisticRegression": {"precision": 95.04, "recall": 94.94, "f1_score": 94.93},
+            "LogisticRegression": {"precision": 88.31, "recall": 87.84, "f1_score": 87.69},
             "SVM": {"precision": 98.5111, "recall": 98.4948, "f1_score": 98.4974},
             "RandomForest": {"precision": 94.72, "recall": 94.01, "f1_score": 94.07},
             "NaiveBayes": {"precision": 90.76, "recall": 90.58, "f1_score": 90.59},
