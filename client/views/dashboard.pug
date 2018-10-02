@@ -84,7 +84,7 @@ html
                             onclick='test("' + 'resumes' + '")')='Test'
                     button(class='train-test-button',
                             type='button',
-                            onclick='summary("' + 'resumes' + '")')='Summary'
+                            onclick='showTrainTestSummary("' + 'resumes' + '")')='Summary'
                     div(id='resumes_results', class='results')
                 div(id='jobs_tab_content', class='no-display')
                     label(class='dashboard-form-header-label')='Select Model'
@@ -129,6 +129,9 @@ html
                     button(class='train-test-button',
                             type='button',
                             onclick='test("' + 'jobs' + '")')='Test'
+                    button(class='train-test-button',
+                            type='button',
+                            onclick='showTrainTestSummary("' + 'jobs' + '")')='Summary'
                     div(id='jobs_results', class='results')
                 div(id='comparison_tab_content', class='no-display')
                     label(class='dashboard-form-header-label')='Select Model'

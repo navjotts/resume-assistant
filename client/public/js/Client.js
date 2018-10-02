@@ -140,23 +140,24 @@ function showFilePicked(inputId, labelId) {
     }
 }
 
-function summary(modelName) {
+function showTrainTestSummary(modelName) {
     $.ajax({
         url: `${HOSTURL}/training/summary`,
         success: function(response) {
             var output = "<div class=\"result-header\">LATEST RESULTS</div>";
             var plots = [];
             var barColors = ['#F7CE85', '#F78F88', '#FAEF87'];
-            var stages = Object.keys(response);
+            var scoresData = response[modelName];
+            var stages = Object.keys(scoresData);
             stages.forEach(stage => {
                 var divId = modelName + '_' + stage + '_summary_plot';
                 output += "<div id=\"" + divId + "\" style=\"margin:60px 20px 20px 20px;\"></div>";
-                var models = Object.keys(response[stage]);
+                var models = Object.keys(scoresData[stage]);
                 if (models.length) {
                     var data = [];
-                    var scores = Object.keys(response[stage][models[0]]);
+                    var scores = Object.keys(scoresData[stage][models[0]]);
                     scores.forEach((scoreType, index) => {
-                        var scoreValues = models.map(model => response[stage][model][scoreType]);
+                        var scoreValues = models.map(model => scoresData[stage][model][scoreType]);
                         var trace = {
                             x: models,
                             y: scoreValues,
@@ -206,7 +207,7 @@ function summary(modelName) {
             plots.forEach(plot => Plotly.newPlot(plot.divId, plot.data, plot.layout));
         },
         error: function(response) {
-            console.log('error in summary()', response);
+            console.log('error in showTrainTestSummary()', response);
         }
     });
 }
