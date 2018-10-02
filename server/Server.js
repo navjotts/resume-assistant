@@ -214,20 +214,28 @@ app.get('/training/summary', async function (req, res, next) {
 // TODO get rid of this - we can take ALL job descriptions for training embeddings atleast
 // TODO tried above - but strangely its giving substantially different (wrong) results - need to study in depth whats happening
 // (potentially related with the imbalance of resumes data v/s jobs data - but should that really matter in case of the Sentence Embeddings model)
-function sampleSet(destFolder, fileName) {
-    if (destFolder === 'jobs') {
-        if (fileName.includes('google')) {
-            return true;
-        }
+function sampleJobs() {
+    var fileNames = [];
 
-        if (fileName.includes('dice')) {
-            return Math.floor((Math.random()*100)+1) === 100 ? true : false;
+    var dbDir = path.join(__dirname, 'data', 'DB', 'jobs');
+    var files = fs.readdirSync(dbDir);
+    for (var i = 0; i < files.length; i++) {
+        var fileName = files[i];
+        if (fileName.split('.').pop() === 'json') {
+            fileNames.push(fileName.split('.')[0]);
         }
-
-        return Math.floor((Math.random()*100)+1) === 100 ? true : false;
     }
 
-    return true;
+    var dbDir = path.join(__dirname, 'data', 'testDB', 'jobs');
+    var files = fs.readdirSync(dbDir);
+    for (var i = 0; i < files.length; i++) {
+        var fileName = files[i];
+        if (fileName.split('.').pop() === 'json') {
+            fileNames.push(fileName.split('.')[0]);
+        }
+    }
+
+    return fileNames;
 }
 
 // TODO combine with '/training/embeddings/train'
@@ -250,6 +258,7 @@ app.get('/training/sentenceembeddings/train', async function (req, res, next) {
         }
         console.log('total sents', sents.length);
 
+        var sampledJobs = sampleJobs();
         var srcFolder = 'jobs-txt';
         console.log(`Collecting sentences from ${srcFolder}...`);
         var srcDir = path.join(__dirname, 'data', srcFolder);
@@ -257,7 +266,7 @@ app.get('/training/sentenceembeddings/train', async function (req, res, next) {
         for (var i = 0; i < files.length; i++) {
             var fileName = files[i];
             if (fileName.split('.').pop() === 'txt') {
-                if (!sampleSet('jobs', fileName)) {
+                if (!sampledJobs.includes(fileName.split('.')[0])) {
                     continue;
                 }
 
