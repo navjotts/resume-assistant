@@ -214,20 +214,28 @@ app.get('/training/summary', async function (req, res, next) {
 // TODO get rid of this - we can take ALL job descriptions for training embeddings atleast
 // TODO tried above - but strangely its giving substantially different (wrong) results - need to study in depth whats happening
 // (potentially related with the imbalance of resumes data v/s jobs data - but should that really matter in case of the Sentence Embeddings model)
-function sampleSet(destFolder, fileName) {
-    if (destFolder === 'jobs') {
-        if (fileName.includes('google')) {
-            return true;
-        }
+function sampleJobs() {
+    var fileNames = [];
 
-        if (fileName.includes('dice')) {
-            return Math.floor((Math.random()*100)+1) === 100 ? true : false;
+    var dbDir = path.join(__dirname, 'data', 'DB', 'jobs');
+    var files = fs.readdirSync(dbDir);
+    for (var i = 0; i < files.length; i++) {
+        var fileName = files[i];
+        if (fileName.split('.').pop() === 'json') {
+            fileNames.push(fileName.split('.')[0]);
         }
-
-        return Math.floor((Math.random()*100)+1) === 100 ? true : false;
     }
 
-    return true;
+    var dbDir = path.join(__dirname, 'data', 'testDB', 'jobs');
+    var files = fs.readdirSync(dbDir);
+    for (var i = 0; i < files.length; i++) {
+        var fileName = files[i];
+        if (fileName.split('.').pop() === 'json') {
+            fileNames.push(fileName.split('.')[0]);
+        }
+    }
+
+    return fileNames;
 }
 
 // TODO combine with '/training/embeddings/train'
@@ -250,6 +258,7 @@ app.get('/training/sentenceembeddings/train', async function (req, res, next) {
         }
         console.log('total sents', sents.length);
 
+        var sampledJobs = sampleJobs();
         var srcFolder = 'jobs-txt';
         console.log(`Collecting sentences from ${srcFolder}...`);
         var srcDir = path.join(__dirname, 'data', srcFolder);
@@ -257,7 +266,7 @@ app.get('/training/sentenceembeddings/train', async function (req, res, next) {
         for (var i = 0; i < files.length; i++) {
             var fileName = files[i];
             if (fileName.split('.').pop() === 'txt') {
-                if (!sampleSet('jobs', fileName)) {
+                if (!sampledJobs.includes(fileName.split('.')[0])) {
                     continue;
                 }
 
@@ -296,6 +305,7 @@ app.get('/training/embeddings/train', async function (req, res, next) {
         }
         console.log('total sents', sents.length);
 
+        var sampledJobs = sampleJobs();
         var srcFolder = 'jobs-txt';
         console.log(`Collecting sentences from ${srcFolder}...`);
         var srcDir = path.join(__dirname, 'data', srcFolder);
@@ -303,6 +313,10 @@ app.get('/training/embeddings/train', async function (req, res, next) {
         for (var i = 0; i < files.length; i++) {
             var fileName = files[i];
             if (fileName.split('.').pop() === 'txt') {
+                if (!sampledJobs.includes(fileName.split('.')[0])) {
+                    continue;
+                }
+
                 console.log(`#${i} Collecting sentences for: ${fileName}`);
                 var sentences = await PythonConnector.invoke('sentences', fs.readFileSync(path.join(srcDir, fileName)).toString(), true, true);
                 sents = sents.concat(sentences);
@@ -380,7 +394,12 @@ app.get('/analyze/:resumeFile/:jobFile', async function (req, res, next) {
         resumeSentences.forEach(sent => resumeSamples.push(sent)); // TODO use concat
         var resumeLabelsPredicted = await PythonConnector.invoke('classify_sentences', 'resumes', 'FastText', 'None', resumeSamples);
         console.assert(resumeLabelsPredicted.length == resumeSamples.length);
-        var resumeTopTopics = await PythonConnector.invoke('top_topics', 'resumes', resumeSamples, 5, 5);
+
+        // TODO change DB structure
+        var resumeSamplesForTopics = [];
+        var resumeSentencesForTopics = await PythonConnector.invoke('sentences_from_file_lines', tempFilePath, true, true);
+        resumeSentencesForTopics.forEach(sent => resumeSamplesForTopics.push(sent)); // TODO use concat
+        var resumeTopTopics = await PythonConnector.invoke('top_topics', 'resumes', resumeSamplesForTopics, 5, 5);
 
         var jobText = fs.readFileSync(jobFilePath).toString();
         var jobSentences = await PythonConnector.invoke('sentences', jobText);
@@ -389,7 +408,12 @@ app.get('/analyze/:resumeFile/:jobFile', async function (req, res, next) {
         jobSentences.forEach(sent => jobSamples.push(sent)); // TODO use concat
         var jobLabelsPredicted = await PythonConnector.invoke('classify_sentences', 'jobs', 'FastText', 'None', jobSamples);
         console.assert(jobLabelsPredicted.length == jobSamples.length);
-        var jobTopTopics = await PythonConnector.invoke('top_topics', 'jobs', jobSamples, 5, 5);
+
+        // TODO change DB structure
+        var jobSamplesForTopics = [];
+        var jobSentencesForTopics = await PythonConnector.invoke('sentences', jobText, true, true);
+        jobSentencesForTopics.forEach(sent => jobSamplesForTopics.push(sent)); // TODO use concat
+        var jobTopTopics = await PythonConnector.invoke('top_topics', 'jobs', jobSamplesForTopics, 5, 5);
 
         var resumeData = {};
         resumeSamples.forEach((sent, index) => {

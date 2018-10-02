@@ -40,7 +40,7 @@ class Spacy(object):
             if len(tokens) > 0 and t.is_sent_start:
                 prev_has_lf = '\n' in tokens[-1]['trailing_whitespace']
                 prev_has_punct = re.match("\.|\!|\?|\:|\;|\¡|\¿", tokens[-1]['text'])
-                if prev_has_lf or prev_has_punct and len(sentence) > 0:
+                if (prev_has_lf or prev_has_punct) and len(sentence) > 0:
                     sents.append(sentence)
                     sentence = []
 
@@ -54,7 +54,7 @@ class Spacy(object):
                 if not is_bullet:
                     sentence.append(text)
 
-        if len(sents) == 0 and len(sentence) > 0:
+        if len(sentence) > 0:
             sents.append(sentence)
 
         return sents
