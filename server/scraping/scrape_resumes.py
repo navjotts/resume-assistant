@@ -1,7 +1,8 @@
-from selenium import webdriver
-from selenium.webdriver.common.keys import Keys
 import os
 import time
+
+from selenium import webdriver
+from selenium.webdriver.common.keys import Keys
 
 # create a new fireforx session
 driver = webdriver.Firefox()
@@ -11,7 +12,7 @@ driver.get('https://resumes.indeed.com')
 
 # Read the resume links from the text file
 resumes_url = ['']
-with open('/home/antonio/repos/resume-assistant/resume_links.txt', 'r') as resume_links:
+with open(os.path.join(os.path.dirname(os.path.abspath(__file__)), 'scraped_resume_links.txt'), 'r') as resume_links:
     for link in resume_links:
         resumes_url.append(link)
 resumes_url.pop(0)
@@ -19,11 +20,11 @@ resumes_url.pop(0)
 
 # Create the resumes
 for url in resumes_url:
-    
+
     resume_index = str(resumes_url.index(url))
     resume_name = ''.join(['indeed_resume_', resume_index])
 
-    # Navigate to the resume's location 
+    # Navigate to the resume's location
     driver.get(url)
     resume_body = driver.find_elements_by_class_name('rezemp-ResumeDisplay-body')
 
@@ -34,5 +35,5 @@ for url in resumes_url:
         for element in resume_body:
             write_resume.write(element.text)
 
-    # Wait 10 seconds before going to the next resume    
+    # Wait 10 seconds before going to the next resume
     time.sleep(10)

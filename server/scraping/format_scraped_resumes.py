@@ -1,11 +1,12 @@
 import os
-base_resume_name = '/home/antonio/indeed/Indeed_resume_'
+
+base_resume_name = 'Indeed_resume_'
 
 for i in range(1000):
     resume = ''.join([base_resume_name, str(i)])
-    with open(resume, 'r') as original_file:
+    with open(os.path.join(os.path.dirname(os.path.abspath(__file__)), 'indeed', resume), 'r') as original_file:
         formatted_resume = ''.join([resume, '.txt'])
-        with open(formatted_resume, 'w') as new_resume:
+        with open(os.path.join(os.path.dirname(os.path.abspath(__file__)), 'indeed', formatted_resume), 'w') as new_resume:
             for line in original_file:
                 if line.strip() == 'ResumeAI[indeed.com]':
                     new_resume.write(line.replace('ResumeAI[indeed.com]', 'ResumeAI[Source]'))
@@ -21,4 +22,3 @@ for i in range(1000):
                     new_resume.write(line.replace('Additional Information', 'ResumeAI[Additional Information]'))
                 else:
                     new_resume.write(line)
-                

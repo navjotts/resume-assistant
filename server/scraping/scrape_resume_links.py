@@ -37,12 +37,12 @@ resume_links.pop(0)
 
 print('There are', len(resume_links), 'links now!')
 
-# Write the resume links to file resume_links.txt
-print("Creating resume_links.txt file.")
-with open('resume_links.txt', 'w') as f:
+# Write the resume links to file scraped_resume_links.txt
+print("Creating scraped_resume_links.txt file.")
+with open('scraped_resume_links.txt', 'w') as f:
     for link in resume_links:
         if link:
             f.write(link)
             f.write("\n")
 
-print("Done creating resume_links.txt file.")
+print("Done creating scraped_resume_links.txt file.")
