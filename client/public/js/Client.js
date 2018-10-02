@@ -1,4 +1,5 @@
 const HOSTURL = 'http://localhost:3000';
+const TIMEOUT = 60*60; // in seconds (training can take a long time depending on the model)
 
 function loadTraining() {
     $(location).attr('href', `${HOSTURL}/training`);
@@ -243,7 +244,6 @@ function fireTrainingOrTesting(trainOrTest, modelName) {
 
     console.log(`${trainOrTest} (dataset, model, feature): (${datasetName}, ${modelType}, ${featureType})`);
 
-    const TIMEOUT = 60*60; // in seconds (training can take a long time depending on the model)
     $.ajax({
         url: `${HOSTURL}/training/${trainOrTest}/${datasetName}/${modelName}/${modelType}/${featureType}`,
         timeout: TIMEOUT*1000,
@@ -602,7 +602,6 @@ function visualize3dEmbeddings() {
 
 function generateEmbeddingsCoordinates() {
     var dimension = 2;
-    const TIMEOUT = 60*60; // in seconds (training can take a long time depending on the model)
     $.ajax({
         url: `${HOSTURL}/training/embeddings/generatecoordinates/${dimension}`,
         timeout: TIMEOUT*1000,
