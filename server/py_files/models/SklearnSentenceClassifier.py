@@ -6,9 +6,9 @@ import numpy as np
 from py_files.models.SentenceClassifier import SentenceClassifier
 from py_files.models.Vectorizer.Vectorizer import Vectorizer
 from py_files.models.Embeddings.Embeddings import Embeddings
-from keras.preprocessing.sequence import pad_sequences  
+from keras.preprocessing.sequence import pad_sequences
 from sklearn.model_selection import train_test_split
-from sklearn.model_selection import cross_val_score 
+from sklearn.model_selection import cross_val_score
 
 class SklearnSentenceClassifier(SentenceClassifier):
     def __init__(self, name, feature_type):
@@ -20,15 +20,14 @@ class SklearnSentenceClassifier(SentenceClassifier):
         if self.feature_type == 'word-embeddings':
             features = pad_sequences(features,maxlen=100)
 
-        # split data into test train split
         x_train, x_test, y_train, y_test = train_test_split(features, labels,
                                                             test_size=0.25, random_state=42)
 
-        #fit modeol on train data and get cross val score on test data
+        # generate cross_val score (fit model on train data and get cross val score on test data)
         self.model.fit(x_train, y_train)
-        score = cross_val_score(self.model,x_test,y_test, cv=5, scoring='accuracy').mean()
+        score = cross_val_score(self.model, x_test, y_test, cv=5, scoring='accuracy').mean()
         print(f'##########################\n\n\t Model Validation score: {score} \n\n\t##########################')
-        
+
         self.model.fit(features, labels)
         self.labels_pred = self.model.predict(features)
 
