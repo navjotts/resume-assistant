@@ -452,7 +452,7 @@ function visualizeTopTopics(resumeTopics, jobTopics) {
             Plotly.newPlot('topics_plot', data, layout);
         },
         error: function(response) {
-            console.log('error in trainEmbeddings()', response);
+            console.log('error in visualizeTopTopics()', response);
         }
     });
 }
@@ -510,7 +510,7 @@ function visualize2dEmbeddings() {
             Plotly.newPlot('embeddings_plot', data, layout);
         },
         error: function(response) {
-            console.log('error in trainEmbeddings()', response);
+            console.log('error in visualize2dEmbeddings()', response);
         }
     });
 }
@@ -595,7 +595,7 @@ function visualize3dEmbeddings() {
             });
         },
         error: function(response) {
-            console.log('error in trainEmbeddings()', response);
+            console.log('error in visualize3dEmbeddings()', response);
         }
     });
 }
