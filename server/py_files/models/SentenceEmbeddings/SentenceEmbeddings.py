@@ -52,7 +52,7 @@ class SentenceEmbeddings(object):
             self.model = d2v.Doc2Vec.load(self.path)
 
         if not self.model:
-            print('Embeddings: error: unable to load model')
+            print('SentenceEmbeddings: error: unable to load model')
 
     def vector(self, sent):
         self.load()
@@ -106,7 +106,6 @@ class SentenceEmbeddings(object):
                         sent_l2 = math.sqrt(np.dot(sent_vec, sent_vec))
                         score = np.dot(fromsent_vec, sent_vec) / (fromsent_l2 * sent_l2)
                         assert score <= 1.0
-                        # score = (score + 1)/2
                         score = 0.0 if score < 0 else score
                         group_scores.append(score)
                 elif method == 'gensim':
@@ -116,9 +115,8 @@ class SentenceEmbeddings(object):
                             score = self.model.docvecs.similarity_unseen_docs(self.model, sent, fromsent, steps=self.epochs)
                         else:
                             score = self.model.docvecs.similarity_unseen_docs(self.model, fromsent, sent, steps=self.epochs)
-                        score = float(score)
+                        score = float(score) # todo check why this was needed on the Windows machine - earlier it was working (check if 'custom' is also not working)
                         assert score <= 1.0
-                        # score = (score + 1)/2
                         score = 0.0 if score < 0 else score
                         group_scores.append(score)
                 else:

@@ -11,22 +11,22 @@ html
             div(class='center' style='padding-bottom: 200px;')
                 div(class='title')
                     p='Dashboard'
-                div(class='dashboard_tabs')
+                div(class='dashboard-tabs')
                     button(id= 'resumes_tab',
-                            class='dashboard_tab_focussed',
+                            class='dashboard-tab-focussed',
                             type='button',
                             onclick='selectDashboardTab("' + 'resumes_tab' + '")')='Resumes'
                     button(id= 'jobs_tab',
-                            class='dashboard_tab',
+                            class='dashboard-tab',
                             type='button',
                             onclick='selectDashboardTab("' + 'jobs_tab' + '")')='Jobs'
                     button(id= 'comparison_tab',
-                            class='dashboard_tab',
+                            class='dashboard-tab',
                             type='button',
                             onclick='selectDashboardTab("' + 'comparison_tab' + '")')='Comparison'
-                div(id='resumes_tab_content', class='dashboard_content')
-                    label(class='dashboard_form_header_label')='Select Model'
-                    form(class='dashboard_form', name='resumesModelForm')
+                div(id='resumes_tab_content', class='dashboard-content')
+                    label(class='dashboard-form-header-label')='Select Model'
+                    form(class='dashboard-form', name='resumesModelForm')
                         input(type='radio', name='resumesModelType', value='LogisticRegression')
                         label(class='model-labels')='Logistic Regression'
                         <br/>
@@ -52,8 +52,8 @@ html
                         label(class='model-labels')='CNN'
                         <br/>
                     <br/>
-                    label(class='dashboard_form_header_label')='Select Feature'
-                    form(class='dashboard_form', name='resumesFeatureForm')
+                    label(class='dashboard-form-header-label')='Select Feature'
+                    form(class='dashboard-form', name='resumesFeatureForm')
                         input(type='radio', name='resumesFeatureType', value='bow')
                         label(class='model-labels')='BoW'
                         <br/>
@@ -67,8 +67,8 @@ html
                         label(class='model-labels')='sentence embeddings'
                         <br/>
                     <br/>
-                    label(class='dashboard_form_header_label')='Select Dataset'
-                    form(class='dashboard_form', name='resumesDatasetForm')
+                    label(class='dashboard-form-header-label')='Select Dataset'
+                    form(class='dashboard-form', name='resumesDatasetForm')
                         input(type='radio', name='resumesDataset', value='DB')
                         label(class='model-labels')='Training dataset'
                         <br/>
@@ -76,19 +76,19 @@ html
                         label(class='model-labels')='Test dataset'
                         <br/>
                     <br/>
-                    button(class='train_test_button',
+                    button(class='train-test-button',
                             type='button',
                             onclick='train("' + 'resumes' + '")')='Train'
-                    button(class='train_test_button',
+                    button(class='train-test-button',
                             type='button',
                             onclick='test("' + 'resumes' + '")')='Test'
-                    button(class='train_test_button',
+                    button(class='train-test-button',
                             type='button',
                             onclick='summary("' + 'resumes' + '")')='Summary'
                     div(id='resumes_results', class='results')
                 div(id='jobs_tab_content', class='no-display')
-                    label(class='dashboard_form_header_label')='Select Model'
-                    form(class='dashboard_form', name='jobsModelForm')
+                    label(class='dashboard-form-header-label')='Select Model'
+                    form(class='dashboard-form', name='jobsModelForm')
                         input(type='radio', name='jobsModelType', value='LogisticRegression')
                         label(class='model-labels')='Logistic Regression'
                         <br/>
@@ -99,8 +99,8 @@ html
                         label(class='model-labels')='FastText'
                         <br/>
                     <br/>
-                    label(class='dashboard_form_header_label')='Select Feature'
-                    form(class='dashboard_form', name='jobsFeatureForm')
+                    label(class='dashboard-form-header-label')='Select Feature'
+                    form(class='dashboard-form', name='jobsFeatureForm')
                         input(type='radio', name='jobsFeatureType', value='bow')
                         label(class='model-labels')='BoW'
                         <br/>
@@ -114,8 +114,8 @@ html
                         label(class='model-labels')='sentence embeddings'
                         <br/>
                     <br/>
-                    label(class='dashboard_form_header_label')='Select Dataset'
-                    form(class='dashboard_form', name='jobsDatasetForm')
+                    label(class='dashboard-form-header-label')='Select Dataset'
+                    form(class='dashboard-form', name='jobsDatasetForm')
                         input(type='radio', name='jobsDataset', value='DB')
                         label(class='model-labels')='Training dataset'
                         <br/>
@@ -123,40 +123,43 @@ html
                         label(class='model-labels')='Test dataset'
                         <br/>
                     <br/>
-                    button(class='train_test_button',
+                    button(class='train-test-button',
                             type='button',
                             onclick='train("' + 'jobs' + '")')='Train'
-                    button(class='train_test_button',
+                    button(class='train-test-button',
                             type='button',
                             onclick='test("' + 'jobs' + '")')='Test'
                     div(id='jobs_results', class='results')
                 div(id='comparison_tab_content', class='no-display')
-                    label(class='dashboard_form_header_label')='Select Model'
-                    form(class='dashboard_form', name='comparisonModelForm')
+                    label(class='dashboard-form-header-label')='Select Model'
+                    form(class='dashboard-form', name='comparisonModelForm')
                         input(type='radio', name='comparisonModelType', value='SentenceEmbeddings')
                         label(class='model-labels')='Sentence Embeddings'
                         <br/>
-                        input(type='radio', name='comparisonModelType', value='NER')
-                        label(class='model-labels')='NER'
+                        input(type='radio', name='comparisonModelType', value='NER-CRF')
+                        label(class='model-labels')='NER (CRF)'
+                        <br/>
+                        input(type='radio', name='comparisonModelType', value='NER-BiLSTM-CRF')
+                        label(class='model-labels')='NER (BiLSTM+CRF)'
                         <br/>
                     <br/>
-                    button(class='train_test_button',
+                    button(class='train-test-button',
                             type='button')='Train'
-                    button(class='train_test_button',
+                    button(class='train-test-button',
                             type='button')='Test'
                     div(id='comparison_results', class='results')
             div(class='center' style='padding-bottom: 200px;')
                 div(class='title')
                     p='Embeddings'
-                div(class='dashboard_content', style='border: 0px;')
-                    button(class='train_test_button',
+                div(class='dashboard-content', style='border: 0px;')
+                    button(class='train-test-button',
                         type='button',
                         onclick='trainEmbeddings()')='Train'
-                    button(class='train_test_button',
+                    button(class='train-test-button',
                         style='width:120px;',
                         type='button',
                         onclick='visualize2dEmbeddings()')='Visualize 2D'
-                    button(class='train_test_button',
+                    button(class='train-test-button',
                         style='width:120px;',
                         type='button',
                         onclick='visualize3dEmbeddings()')='Visualize 3D'
@@ -164,7 +167,7 @@ html
             div(class='center' style='padding-bottom: 200px;')
                 div(class='title')
                     p='Training Data'
-                div(class='dashboard_content', style='border: 0px;')
+                div(class='dashboard-content', style='border: 0px;')
                     div(id='training-header', class='training-header')
                         a(class='left-link', href='#', onclick='fetchResumes()')='Resumes'
                         a(class='right-link', href='#', onclick='fetchJobs()')='Jobs'
