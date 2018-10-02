@@ -5,14 +5,18 @@
             "SVM": {"precision": 84.23, "recall": 82.48, "f1-score": 82.78},
             "RandomForest": {"precision": 78.19, "recall": 77.78, "f1-score": 77.66},
             "NaiveBayes": {"precision": 81.57, "recall": 77.35, "f1-score": 76.76},
-            "FastText": {"precision": 82.04, "recall": 79.49, "f1-score": 79.83}
+            "FastText": {"precision": 82.04, "recall": 79.49, "f1-score": 79.83},
+            "CNN": {"precision": 87.01, "recall": 85.47, "f1-score": 85.93},
+            "NeuralNet": {"precision": 82.90, "recall": 79.49, "f1-score": 80.14}
         },
         "Training": {
             "LogisticRegression": {"precision": 95.04, "recall": 94.94, "f1-score": 94.93},
             "SVM": {"precision": 98.51, "recall": 98.49, "f1-score": 98.50},
             "RandomForest": {"precision": 94.72, "recall": 94.01, "f1-score": 94.07},
             "NaiveBayes": {"precision": 90.76, "recall": 90.58, "f1-score": 90.59},
-            "FastText": {"precision": 99.39, "recall": 99.38, "f1-score": 99.39}
+            "FastText": {"precision": 99.39, "recall": 99.38, "f1-score": 99.39},
+            "CNN": {"precision": 89.24, "recall": 88.85, "f1-score": 88.84},
+            "NeuralNet": {"precision": 95.94, "recall": 95.87, "f1-score": 95.89}
         }
     },
     "jobs": {
