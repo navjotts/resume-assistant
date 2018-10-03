@@ -38,7 +38,12 @@ class LSAModel(object):
 
     def document_similarity_score(self, doc1, doc2):
         # use the below to get tf-idf vectors from a given `doc`
-        # vectors = Vectorizer(self.name, 'tf-idf').vectors(doc, False).toarray()
+        # vectors = Vectorizer('name of model - resumes or jobs', 'tf-idf').vectors(doc, False).toarray()
+        # note: study what are the inputs to this function by printing them
+        doc1_vectors = Vectorizer(doc1['model'], 'tf-idf').vectors(doc1['data'], False).toarray()
+        print(doc1_vectors.shape)
+        doc2_vectors = Vectorizer(doc2['model'], 'tf-idf').vectors(doc2['data'], False).toarray()
+        print(doc2_vectors.shape)
 
         # todo calculate document similarity score using the vectors
         score = 0.5

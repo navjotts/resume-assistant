@@ -415,6 +415,10 @@ app.get('/analyze/:resumeFile/:jobFile', async function (req, res, next) {
         jobSentencesForTopics.forEach(sent => jobSamplesForTopics.push(sent)); // TODO use concat
         var jobTopTopics = await PythonConnector.invoke('top_topics', 'jobs', jobSamplesForTopics, 5, 5);
 
+        // TODO temporary call for testing LSA document_similarity
+        var similarityScore = await PythonConnector.invoke('document_similarity_score', 'resumes_jobs', {'model': 'resumes', 'data': resumeSamplesForTopics}, {'model': 'jobs', 'data': jobSamplesForTopics});
+        console.log('similarityScore:', similarityScore);
+
         var resumeData = {};
         resumeSamples.forEach((sent, index) => {
             var label = resumeLabelsPredicted[index][0];

@@ -80,6 +80,10 @@ class PythonServer(object):
         lsa = LSAModel(model_name)
         return lsa.top_topics(samples, num_topics, words_per_topic)
 
+    def document_similarity_score(self, model_name, doc1, doc2):
+        lsa = LSAModel(model_name)
+        return lsa.document_similarity_score(doc1, doc2)
+
 # Embeddings('resumes', 100).vectors('glove') # for testing other classes directly (comment out the below zerorpc server if you do this)
 # print(SentenceEmbeddings('resumes_jobs', 100).similarity_score(('Full', 'Stack', 'Internship', '·', 'July', '2017', 'to', 'Oct.', '2017'), ('5', 'years', 'of', 'experience', 'in', 'technical', 'leadership', 'and', 'people', 'management', '.'), 'gensim'))
 # print(SentenceEmbeddings('resumes_jobs', 100).similarity_score(('5', 'years', 'of', 'experience', 'in', 'technical', 'leadership', 'and', 'people', 'management', '.'), ('Full', 'Stack', 'Internship', '·', 'July', '2017', 'to', 'Oct.', '2017'), 'gensim'))
