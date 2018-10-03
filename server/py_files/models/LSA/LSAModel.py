@@ -35,3 +35,12 @@ class LSAModel(object):
         selected_topics = list(filter(lambda each: not each.isdigit(), selected_topics))
 
         return selected_topics
+
+    def document_similarity_score(self, doc1, doc2):
+        # use the below to get tf-idf vectors from a given `doc`
+        # vectors = Vectorizer(self.name, 'tf-idf').vectors(doc, False).toarray()
+
+        # todo calculate document similarity score using the vectors
+        score = 0.5
+        print('LSAModel: document_similarity_score:', score)
+        return score
