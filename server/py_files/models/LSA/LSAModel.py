@@ -12,26 +12,26 @@ class LSAModel(object):
         self.seed = 12 # fix the random seed for consistency of results
         np.random.seed(self.seed)
 
-    def top_topics(self, samples, num_topics, words_per_topic):
-        vectors = Vectorizer(self.name, 'tf-idf').vectors(samples, False).toarray() # todo try todense()
+    def top_topics(self, doc, num_topics, words_per_topic):
+        vectors = Vectorizer(self.name, 'tf-idf').vectors(doc, False).toarray() # todo try todense()
 
         lda = LatentDirichletAllocation(n_components=num_topics)
         lda_dtf = lda.fit_transform(vectors) # todo do we need this `lda_dtf`? (or we just needed the dtf)
 
-        sorting = np.argsort(lda.components_)[:,::-1]
+        sorting = np.argsort(lda.components_)[:, ::-1]
         features = np.array(Vectorizer(self.name, 'tf-idf').feature_names())
         topics = range(num_topics)
 
-        ret = []
+        selected_topics = []
         for i in range(0, 5, num_topics): # todo what is the significance of 5?
-            these_topics = topics[i: i + num_topics]
+            these_topics = topics[i:i+num_topics]
             for i in range(words_per_topic):
-                ret.extend(features[sorting[these_topics, i]])
+                selected_topics.extend(features[sorting[these_topics, i]])
 
-        for sent in samples:
-            for w in sent:
-                if w.isupper() and w not in ret:
-                    ret.append(w)
-        ret = list(filter(lambda each: not each.isdigit(), ret))
+        for sent in doc:
+            for word in sent:
+                if word.isupper() and word not in selected_topics:
+                    selected_topics.append(word)
+        selected_topics = list(filter(lambda each: not each.isdigit(), selected_topics))
 
-        return ret
+        return selected_topics
