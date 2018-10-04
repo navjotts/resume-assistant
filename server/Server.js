@@ -390,33 +390,24 @@ app.get('/analyze/:resumeFile/:jobFile', async function (req, res, next) {
         fs.writeFileSync(tempFilePath, text);
         var resumeSentences = await PythonConnector.invoke('sentences_from_file_lines', tempFilePath);
 
-        var resumeSamples = [];
-        resumeSentences.forEach(sent => resumeSamples.push(sent)); // TODO use concat
-        var resumeLabelsPredicted = await PythonConnector.invoke('classify_sentences', 'resumes', 'FastText', 'None', resumeSamples);
-        console.assert(resumeLabelsPredicted.length == resumeSamples.length);
+        var resumeLabelsPredicted = await PythonConnector.invoke('classify_sentences', 'resumes', 'FastText', 'None', resumeSentences);
+        console.assert(resumeLabelsPredicted.length == resumeSentences.length);
 
-        // TODO change DB structure
-        var resumeSamplesForTopics = [];
-        var resumeSentencesForTopics = await PythonConnector.invoke('sentences_from_file_lines', tempFilePath, true, true);
-        resumeSentencesForTopics.forEach(sent => resumeSamplesForTopics.push(sent)); // TODO use concat
-        var resumeTopTopics = await PythonConnector.invoke('top_topics', 'resumes', resumeSamplesForTopics, 5, 5);
+        var resumeSentencesForTopics = await PythonConnector.invoke('sentences_from_file_lines', tempFilePath, true, true); // TODO change DB structure (no need of an extra call)
+        var resumeTopTopics = await PythonConnector.invoke('top_topics', 'resumes', resumeSentencesForTopics, 5, 5);
 
         var jobText = fs.readFileSync(jobFilePath).toString();
         var jobSentences = await PythonConnector.invoke('sentences', jobText);
 
-        var jobSamples = [];
-        jobSentences.forEach(sent => jobSamples.push(sent)); // TODO use concat
-        var jobLabelsPredicted = await PythonConnector.invoke('classify_sentences', 'jobs', 'FastText', 'None', jobSamples);
-        console.assert(jobLabelsPredicted.length == jobSamples.length);
+        var jobLabelsPredicted = await PythonConnector.invoke('classify_sentences', 'jobs', 'FastText', 'None', jobSentences);
+        console.assert(jobLabelsPredicted.length == jobSentences.length);
 
-        // TODO change DB structure
-        var jobSamplesForTopics = [];
-        var jobSentencesForTopics = await PythonConnector.invoke('sentences', jobText, true, true);
-        jobSentencesForTopics.forEach(sent => jobSamplesForTopics.push(sent)); // TODO use concat
-        var jobTopTopics = await PythonConnector.invoke('top_topics', 'jobs', jobSamplesForTopics, 5, 5);
+        var jobSentencesForTopics = await PythonConnector.invoke('sentences', jobText, true, true); // TODO change DB structure (no need of an extra call)
+        var jobTopTopics = await PythonConnector.invoke('top_topics', 'jobs', jobSentencesForTopics, 5, 5);
 
+        // TODO all this goes into a separate ComparisonModel class
         var resumeData = {};
-        resumeSamples.forEach((sent, index) => {
+        resumeSentences.forEach((sent, index) => {
             var label = resumeLabelsPredicted[index][0];
             if (!resumeData[label]) {
                 resumeData[label] = [];
@@ -425,7 +416,7 @@ app.get('/analyze/:resumeFile/:jobFile', async function (req, res, next) {
         });
 
         var jobData = {};
-        jobSamples.forEach((sent, index) => {
+        jobSentences.forEach((sent, index) => {
             var label = jobLabelsPredicted[index][0];
             if (!jobData[label]) {
                 jobData[label] = [];
@@ -433,12 +424,11 @@ app.get('/analyze/:resumeFile/:jobFile', async function (req, res, next) {
             jobData[label].push(sent);
         });
 
-        // TODO this goes into a separate model class
         var resumeSentsToCompare = [];
-        resumeSamples.forEach((resumeSent, index) => {
+        resumeSentences.forEach((resumeSent, index) => {
             var resumeLabel = resumeLabelsPredicted[index][0];
             var jobSents = [];
-            if (resumeLabel != 'OTHERS') { // if predicted OTHERS, then we don't really wish to generate a score (as OTHERS is the stuff which doesn't matter for our use-case)
+            if (resumeLabel != 'OTHERS') { // if predicted OTHERS, then we don't really wish to generate a score (marked as Info/Others in the UI)
                 jobSents = jobData[resumeLabel];
             }
             resumeSentsToCompare.push({'from': resumeSent, 'to': jobSents});
@@ -446,19 +436,24 @@ app.get('/analyze/:resumeFile/:jobFile', async function (req, res, next) {
         resumeScores = await PythonConnector.invoke('sentence_group_similarity_score', 'resumes_jobs', 100, resumeSentsToCompare);
 
         var jobsSentsToCompare = [];
-        jobSamples.forEach((jobSent, index) => {
+        jobSentences.forEach((jobSent, index) => {
             var jobLabel = jobLabelsPredicted[index][0];
             var resumeSents = [];
-            if (jobLabel != 'OTHERS') { // if predicted OTHERS, then we don't really wish to generate a score (as OTHERS is the stuff which doesn't matter for our use-case)
+            if (jobLabel != 'OTHERS') {
                 resumeSents = resumeData[jobLabel];
             }
             jobsSentsToCompare.push({'from': jobSent, 'to': resumeSents});
         });
         jobScores = await PythonConnector.invoke('sentence_group_similarity_score', 'resumes_jobs', 100, jobsSentsToCompare, true);
 
-        var data = {missing: [], resume: [], resumeTopTopics: [], jobTopTopics: []};
+        var data = {
+            missing: [],
+            resume: [],
+            resumeTopTopics: resumeTopTopics,
+            jobTopTopics: jobTopTopics
+        };
 
-        resumeSamples.forEach((sent, index) => {
+        resumeSentences.forEach((sent, index) => {
             data.resume.push({
                 sentence: sent.join(' '),
                 score: Math.round(resumeScores[index] * 1000) / 10
@@ -466,7 +461,7 @@ app.get('/analyze/:resumeFile/:jobFile', async function (req, res, next) {
         });
 
         var missingThreshold = 0.6; // TODO this should be much lower, like 0.1-0.25 (keeping high for demo to make sense)
-        jobSamples.forEach((sent, index) => {
+        jobSentences.forEach((sent, index) => {
             var score = jobScores[index];
             if (score != -1 && score < missingThreshold) {
                 data.missing.push({
@@ -475,9 +470,6 @@ app.get('/analyze/:resumeFile/:jobFile', async function (req, res, next) {
                 });
             }
         });
-
-        resumeTopTopics.forEach(topic => data.resumeTopTopics.push(topic)); // TODO use concat
-        jobTopTopics.forEach(topic => data.jobTopTopics.push(topic)); // TODO use concat
 
         res.json(data);
     }
