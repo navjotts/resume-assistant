@@ -214,16 +214,8 @@ app.get('/training/summary', async function (req, res, next) {
 // TODO get rid of this - we can take ALL job descriptions for training embeddings atleast
 // TODO tried above - but strangely its giving substantially different (wrong) results - need to study in depth whats happening
 // (potentially related with the imbalance of resumes data v/s jobs data - but should that really matter in case of the Sentence Embeddings model)
-<<<<<<< HEAD
-function sampleSet(destFolder, fileName) {
-    if (destFolder === 'jobs') {
-        if (fileName.includes('google')) {
-            return true;
-        }
-=======
 function sampleJobs() {
     var fileNames = [];
->>>>>>> af8c34cc2c332019e2bd74476277f8bc31db8e27
 
     var dbDir = path.join(__dirname, 'data', 'DB', 'jobs');
     var files = fs.readdirSync(dbDir);
@@ -312,23 +304,6 @@ app.get('/training/embeddings/train', async function (req, res, next) {
             }
         }
         console.log('total sents', sents.length);
-<<<<<<< HEAD
-
-        var srcFolder = 'jobs-txt';
-        console.log(`Collecting sentences from ${srcFolder}...`);
-        var srcDir = path.join(__dirname, 'data', srcFolder);
-        var files = fs.readdirSync(srcDir);
-        for (var i = 0; i < files.length; i++) {
-            var fileName = files[i];
-            if (fileName.split('.').pop() === 'txt') {
-                console.log(`#${i} Collecting sentences for: ${fileName}`);
-                var sentences = await PythonConnector.invoke('sentences', fs.readFileSync(path.join(srcDir, fileName)).toString(), true, true);
-                sents = sents.concat(sentences);
-            }
-        }
-        console.log('total sents', sents.length);
-
-=======
 
         var sampledJobs = sampleJobs();
         var srcFolder = 'jobs-txt';
@@ -349,7 +324,6 @@ app.get('/training/embeddings/train', async function (req, res, next) {
         }
         console.log('total sents', sents.length);
 
->>>>>>> af8c34cc2c332019e2bd74476277f8bc31db8e27
 
         await PythonConnector.invoke('train_embeddings', 'resumes_jobs', 100, sents);
         res.json(200);
@@ -420,17 +394,13 @@ app.get('/analyze/:resumeFile/:jobFile', async function (req, res, next) {
         resumeSentences.forEach(sent => resumeSamples.push(sent)); // TODO use concat
         var resumeLabelsPredicted = await PythonConnector.invoke('classify_sentences', 'resumes', 'FastText', 'None', resumeSamples);
         console.assert(resumeLabelsPredicted.length == resumeSamples.length);
-        var resumeTopTopics = await PythonConnector.invoke('top_topics', 'resumes', resumeSamples, 5, 5);
 
-<<<<<<< HEAD
-=======
         // TODO change DB structure
         var resumeSamplesForTopics = [];
         var resumeSentencesForTopics = await PythonConnector.invoke('sentences_from_file_lines', tempFilePath, true, true);
         resumeSentencesForTopics.forEach(sent => resumeSamplesForTopics.push(sent)); // TODO use concat
         var resumeTopTopics = await PythonConnector.invoke('top_topics', 'resumes', resumeSamplesForTopics, 5, 5);
 
->>>>>>> af8c34cc2c332019e2bd74476277f8bc31db8e27
         var jobText = fs.readFileSync(jobFilePath).toString();
         var jobSentences = await PythonConnector.invoke('sentences', jobText);
 
@@ -438,19 +408,7 @@ app.get('/analyze/:resumeFile/:jobFile', async function (req, res, next) {
         jobSentences.forEach(sent => jobSamples.push(sent)); // TODO use concat
         var jobLabelsPredicted = await PythonConnector.invoke('classify_sentences', 'jobs', 'FastText', 'None', jobSamples);
         console.assert(jobLabelsPredicted.length == jobSamples.length);
-        var jobTopTopics = await PythonConnector.invoke('top_topics', 'jobs', jobSamples, 5, 5);
 
-        var resumeData = {};
-        resumeSamples.forEach((sent, index) => {
-            var label = resumeLabelsPredicted[index][0];
-            if (!resumeData[label]) {
-                resumeData[label] = [];
-            }
-            resumeData[label].push(sent);
-        });
-
-<<<<<<< HEAD
-=======
         // TODO change DB structure
         var jobSamplesForTopics = [];
         var jobSentencesForTopics = await PythonConnector.invoke('sentences', jobText, true, true);
@@ -466,7 +424,6 @@ app.get('/analyze/:resumeFile/:jobFile', async function (req, res, next) {
             resumeData[label].push(sent);
         });
 
->>>>>>> af8c34cc2c332019e2bd74476277f8bc31db8e27
         var jobData = {};
         jobSamples.forEach((sent, index) => {
             var label = jobLabelsPredicted[index][0];
@@ -483,7 +440,6 @@ app.get('/analyze/:resumeFile/:jobFile', async function (req, res, next) {
             var jobSents = [];
             if (resumeLabel != 'OTHERS') { // if predicted OTHERS, then we don't really wish to generate a score (as OTHERS is the stuff which doesn't matter for our use-case)
                 jobSents = jobData[resumeLabel];
-<<<<<<< HEAD
             }
             resumeSentsToCompare.push({'from': resumeSent, 'to': jobSents});
         });
@@ -498,22 +454,6 @@ app.get('/analyze/:resumeFile/:jobFile', async function (req, res, next) {
             }
             jobsSentsToCompare.push({'from': jobSent, 'to': resumeSents});
         });
-=======
-            }
-            resumeSentsToCompare.push({'from': resumeSent, 'to': jobSents});
-        });
-        resumeScores = await PythonConnector.invoke('sentence_group_similarity_score', 'resumes_jobs', 100, resumeSentsToCompare);
-
-        var jobsSentsToCompare = [];
-        jobSamples.forEach((jobSent, index) => {
-            var jobLabel = jobLabelsPredicted[index][0];
-            var resumeSents = [];
-            if (jobLabel != 'OTHERS') { // if predicted OTHERS, then we don't really wish to generate a score (as OTHERS is the stuff which doesn't matter for our use-case)
-                resumeSents = resumeData[jobLabel];
-            }
-            jobsSentsToCompare.push({'from': jobSent, 'to': resumeSents});
-        });
->>>>>>> af8c34cc2c332019e2bd74476277f8bc31db8e27
         jobScores = await PythonConnector.invoke('sentence_group_similarity_score', 'resumes_jobs', 100, jobsSentsToCompare, true);
 
         var data = {missing: [], resume: [], resumeTopTopics: [], jobTopTopics: []};

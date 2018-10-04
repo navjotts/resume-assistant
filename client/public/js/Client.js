@@ -147,18 +147,6 @@ function showTrainTestSummary(modelName) {
             var output = "<div class=\"result-header\">LATEST RESULTS</div>";
             var plots = [];
             var barColors = ['#F7CE85', '#F78F88', '#FAEF87'];
-<<<<<<< HEAD
-            var stages = Object.keys(response);
-            stages.forEach(stage => {
-                var divId = modelName + '_' + stage + '_summary_plot';
-                output += "<div id=\"" + divId + "\" style=\"margin:60px 20px 20px 20px;\"></div>";
-                var models = Object.keys(response[stage]);
-                if (models.length) {
-                    var data = [];
-                    var scores = Object.keys(response[stage][models[0]]);
-                    scores.forEach((scoreType, index) => {
-                        var scoreValues = models.map(model => response[stage][model][scoreType]);
-=======
             var scoresData = response[modelName];
             var stages = Object.keys(scoresData);
             stages.forEach(stage => {
@@ -170,7 +158,6 @@ function showTrainTestSummary(modelName) {
                     var scores = Object.keys(scoresData[stage][models[0]]);
                     scores.forEach((scoreType, index) => {
                         var scoreValues = models.map(model => scoresData[stage][model][scoreType]);
->>>>>>> af8c34cc2c332019e2bd74476277f8bc31db8e27
                         var trace = {
                             x: models,
                             y: scoreValues,
@@ -266,11 +253,7 @@ function fireTrainingOrTesting(trainOrTest, modelName) {
 
             var score = response['score'];
             if (score) {
-<<<<<<< HEAD
-                output += "<div class=\"result-header\">SCORE</div><table border=\"1\"><tr><th>precision</th><th>recall</th><th>f1-score</th></tr><tr><td>" +  (score['precision'] - 2*Math.random()/100) + "</td><td>" + (score['recall'] - 2*Math.random()/100) + "</td><td>" + (score['f1_score'] - 2*Math.random()/100) + "</td></tr></table>";
-=======
                 output += "<div class=\"result-header\">SCORE</div><table border=\"1\"><tr><th>precision</th><th>recall</th><th>f1-score</th></tr><tr><td>" +  score['precision'] + "</td><td>" + score['recall'] + "</td><td>" + score['f1_score'] + "</td></tr></table>";
->>>>>>> af8c34cc2c332019e2bd74476277f8bc31db8e27
             }
 
             var report = response['report'];
@@ -352,11 +335,7 @@ function selectDashboardTab(selectedTab) {
 
 function trainEmbeddings() {
     $.ajax({
-<<<<<<< HEAD
-        url: `http://localhost:3000/training/embeddings/train`,
-=======
         url: `${HOSTURL}/training/embeddings/train`,
->>>>>>> af8c34cc2c332019e2bd74476277f8bc31db8e27
         success: function(response) {
             console.log(response);
         },
@@ -532,11 +511,7 @@ function visualize2dEmbeddings() {
             Plotly.newPlot('embeddings_plot', data, layout);
         },
         error: function(response) {
-<<<<<<< HEAD
-            console.log('error in trainEmbeddings()', response);
-=======
             console.log('error in visualize2dEmbeddings()', response);
->>>>>>> af8c34cc2c332019e2bd74476277f8bc31db8e27
         }
     });
 }
@@ -544,11 +519,7 @@ function visualize2dEmbeddings() {
 function visualize3dEmbeddings() {
     var dimension = 3;
     $.ajax({
-<<<<<<< HEAD
-        url: `http://localhost:3000/training/embeddings/visualize/${dimension}`,
-=======
         url: `${HOSTURL}/training/embeddings/visualize/${dimension}`,
->>>>>>> af8c34cc2c332019e2bd74476277f8bc31db8e27
         success: function(response) {
             var output = "<div id=\"embeddings_plot\" style=\"margin:20px;\"></div>";
             $('#embeddings_visualization').html(output);

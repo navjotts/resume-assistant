@@ -76,15 +76,9 @@ class PythonServer(object):
         sent_embeddings = SentenceEmbeddings(model_name, dimension)
         return sent_embeddings.group_similarity_score(sents, reverse_comparison, method)
 
-<<<<<<< HEAD
-    def top_topics(self, model_name, samples, num_topics, words_per_topic):
-        lsa = LSAModel(model_name)
-        return lsa.top_topics(samples, num_topics, words_per_topic)
-=======
     def top_topics(self, model_name, doc, num_topics, words_per_topic):
         lsa = LSAModel(model_name)
         return lsa.top_topics(doc, num_topics, words_per_topic)
->>>>>>> af8c34cc2c332019e2bd74476277f8bc31db8e27
 
 # Embeddings('resumes', 100).vectors('glove') # for testing other classes directly (comment out the below zerorpc server if you do this)
 # print(SentenceEmbeddings('resumes_jobs', 100).similarity_score(('Full', 'Stack', 'Internship', '·', 'July', '2017', 'to', 'Oct.', '2017'), ('5', 'years', 'of', 'experience', 'in', 'technical', 'leadership', 'and', 'people', 'management', '.'), 'gensim'))

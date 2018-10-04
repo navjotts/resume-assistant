@@ -48,11 +48,7 @@ class Embeddings(object):
             print('Embeddings: error: unable to load model')
 
     # for integration into other ML/DL models
-<<<<<<< HEAD
-    def vectors(self, model_name = 'resumes'): # todo this will change to 'resumes_jobs' once we include jobs data also
-=======
     def vectors(self, model_name='resumes_jobs'): # todo this will change to 'resumes_jobs' once we include jobs data also
->>>>>>> af8c34cc2c332019e2bd74476277f8bc31db8e27
         self.load()
 
         dimension = 100 # we are only using 100 dimensional embeddings for now
