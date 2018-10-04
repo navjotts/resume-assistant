@@ -7,7 +7,7 @@ class AccuracyAnalysis(object):
             given y and y_predict,
             returns a score object with keys 'precision', 'recall' and 'f1_score'
         '''
-        precision, recall, fscore, _ = precision_recall_fscore_support(y_true, y_predict, average='micro')
+        precision, recall, fscore, _ = precision_recall_fscore_support(y_true, y_predict, average='weighted')
         return {'precision':precision, 'recall':recall, 'f1_score':fscore}
 
     def misclassifications(self, y_true, y_predict, samples):

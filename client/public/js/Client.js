@@ -1,10 +1,13 @@
+const HOSTURL = 'http://localhost:3000';
+const TIMEOUT = 60*60; // in seconds (training can take a long time depending on the model)
+
 function loadTraining() {
-    $(location).attr('href', `http://localhost:3000/training`);
+    $(location).attr('href', `${HOSTURL}/training`);
 }
 
 function fetchResumes() {
     $.ajax({
-        url: `http://localhost:3000/training/resumes`,
+        url: `${HOSTURL}/training/resumes`,
         success: function(response) {
             var output = "";
             for (var i = 0; i < response.length; i++) {
@@ -20,7 +23,7 @@ function fetchResumes() {
 
 function fetchJobs() {
     $.ajax({
-        url: `http://localhost:3000/training/jobs`,
+        url: `${HOSTURL}/training/jobs`,
         success: function(response) {
             var output = "";
             for (var i = 0; i < response.length; i++) {
@@ -35,12 +38,12 @@ function fetchJobs() {
 }
 
 function fetchDoc(parentId, id) {
-    $(location).attr('href', `http://localhost:3000/training/${parentId}/${id}`);
+    $(location).attr('href', `${HOSTURL}/training/${parentId}/${id}`);
 }
 
 function updateLabel(option, parentId, docId, sentenceId) {
     $.ajax({
-        url: `http://localhost:3000/training/${parentId}/${docId}/sentences/${sentenceId}/edit`,
+        url: `${HOSTURL}/training/${parentId}/${docId}/sentences/${sentenceId}/edit`,
         type: 'POST',
         contentType: 'application/json',
         data: JSON.stringify({
@@ -58,7 +61,7 @@ function analyzeFiles() {
             $('#analyze-button').text('ANALYZING...');
             var files = {resume: resumeFileName, job: jobFileName};
             $.ajax({
-                url: `http://localhost:3000/analyze/${resumeFileName}/${jobFileName}`,
+                url: `${HOSTURL}/analyze/${resumeFileName}/${jobFileName}`,
                 success: function(response) {
                     var output = "";
                     var missing = response.missing;
@@ -96,7 +99,7 @@ function analyzeFiles() {
     var resumeFileData = new FormData();
     resumeFileData.append('userFile', resumeFiles[0]);
     $.ajax({
-        url: `http://localhost:3000/upload`,
+        url: `${HOSTURL}/upload`,
         type: 'POST',
         data: resumeFileData,
         processData: false,
@@ -112,7 +115,7 @@ function analyzeFiles() {
     var jobFileData = new FormData();
     jobFileData.append('userFile', jobFiles[0]);
     $.ajax({
-        url: `http://localhost:3000/upload`,
+        url: `${HOSTURL}/upload`,
         type: 'POST',
         data: jobFileData,
         processData: false,
@@ -137,13 +140,14 @@ function showFilePicked(inputId, labelId) {
     }
 }
 
-function summary(modelName) {
+function showTrainTestSummary(modelName) {
     $.ajax({
-        url: `http://localhost:3000/training/summary`,
+        url: `${HOSTURL}/training/summary`,
         success: function(response) {
             var output = "<div class=\"result-header\">LATEST RESULTS</div>";
             var plots = [];
             var barColors = ['#F7CE85', '#F78F88', '#FAEF87'];
+<<<<<<< HEAD
             var stages = Object.keys(response);
             stages.forEach(stage => {
                 var divId = modelName + '_' + stage + '_summary_plot';
@@ -154,6 +158,19 @@ function summary(modelName) {
                     var scores = Object.keys(response[stage][models[0]]);
                     scores.forEach((scoreType, index) => {
                         var scoreValues = models.map(model => response[stage][model][scoreType]);
+=======
+            var scoresData = response[modelName];
+            var stages = Object.keys(scoresData);
+            stages.forEach(stage => {
+                var divId = modelName + '_' + stage + '_summary_plot';
+                output += "<div id=\"" + divId + "\" style=\"margin:60px 20px 20px 20px;\"></div>";
+                var models = Object.keys(scoresData[stage]);
+                if (models.length) {
+                    var data = [];
+                    var scores = Object.keys(scoresData[stage][models[0]]);
+                    scores.forEach((scoreType, index) => {
+                        var scoreValues = models.map(model => scoresData[stage][model][scoreType]);
+>>>>>>> af8c34cc2c332019e2bd74476277f8bc31db8e27
                         var trace = {
                             x: models,
                             y: scoreValues,
@@ -203,7 +220,7 @@ function summary(modelName) {
             plots.forEach(plot => Plotly.newPlot(plot.divId, plot.data, plot.layout));
         },
         error: function(response) {
-            console.log('error in summary()', response);
+            console.log('error in showTrainTestSummary()', response);
         }
     });
 }
@@ -241,16 +258,19 @@ function fireTrainingOrTesting(trainOrTest, modelName) {
 
     console.log(`${trainOrTest} (dataset, model, feature): (${datasetName}, ${modelType}, ${featureType})`);
 
-    const TIMEOUT = 60*60; // in seconds (training can take a long time depending on the model)
     $.ajax({
-        url: `http://localhost:3000/training/${trainOrTest}/${datasetName}/${modelName}/${modelType}/${featureType}`,
+        url: `${HOSTURL}/training/${trainOrTest}/${datasetName}/${modelName}/${modelType}/${featureType}`,
         timeout: TIMEOUT*1000,
         success: function(response) {
             var output = "";
 
             var score = response['score'];
             if (score) {
+<<<<<<< HEAD
                 output += "<div class=\"result-header\">SCORE</div><table border=\"1\"><tr><th>precision</th><th>recall</th><th>f1-score</th></tr><tr><td>" +  (score['precision'] - 2*Math.random()/100) + "</td><td>" + (score['recall'] - 2*Math.random()/100) + "</td><td>" + (score['f1_score'] - 2*Math.random()/100) + "</td></tr></table>";
+=======
+                output += "<div class=\"result-header\">SCORE</div><table border=\"1\"><tr><th>precision</th><th>recall</th><th>f1-score</th></tr><tr><td>" +  score['precision'] + "</td><td>" + score['recall'] + "</td><td>" + score['f1_score'] + "</td></tr></table>";
+>>>>>>> af8c34cc2c332019e2bd74476277f8bc31db8e27
             }
 
             var report = response['report'];
@@ -332,7 +352,11 @@ function selectDashboardTab(selectedTab) {
 
 function trainEmbeddings() {
     $.ajax({
+<<<<<<< HEAD
         url: `http://localhost:3000/training/embeddings/train`,
+=======
+        url: `${HOSTURL}/training/embeddings/train`,
+>>>>>>> af8c34cc2c332019e2bd74476277f8bc31db8e27
         success: function(response) {
             console.log(response);
         },
@@ -345,7 +369,7 @@ function trainEmbeddings() {
 function visualizeTopTopics(resumeTopics, jobTopics) {
     var dimension = 2;
     $.ajax({
-        url: `http://localhost:3000/training/embeddings/visualize/${dimension}`,
+        url: `${HOSTURL}/training/embeddings/visualize/${dimension}`,
         success: function(response) {
             var output = "<div id=\"topics_plot\" style=\"margin:20px;\"></div>";
             $('#topic_visualization').html(output);
@@ -450,7 +474,7 @@ function visualizeTopTopics(resumeTopics, jobTopics) {
             Plotly.newPlot('topics_plot', data, layout);
         },
         error: function(response) {
-            console.log('error in trainEmbeddings()', response);
+            console.log('error in visualizeTopTopics()', response);
         }
     });
 }
@@ -458,7 +482,7 @@ function visualizeTopTopics(resumeTopics, jobTopics) {
 function visualize2dEmbeddings() {
     var dimension = 2;
     $.ajax({
-        url: `http://localhost:3000/training/embeddings/visualize/${dimension}`,
+        url: `${HOSTURL}/training/embeddings/visualize/${dimension}`,
         success: function(response) {
             var output = "<div id=\"embeddings_plot\" style=\"margin:20px;\"></div>";
             $('#embeddings_visualization').html(output);
@@ -508,7 +532,11 @@ function visualize2dEmbeddings() {
             Plotly.newPlot('embeddings_plot', data, layout);
         },
         error: function(response) {
+<<<<<<< HEAD
             console.log('error in trainEmbeddings()', response);
+=======
+            console.log('error in visualize2dEmbeddings()', response);
+>>>>>>> af8c34cc2c332019e2bd74476277f8bc31db8e27
         }
     });
 }
@@ -516,7 +544,11 @@ function visualize2dEmbeddings() {
 function visualize3dEmbeddings() {
     var dimension = 3;
     $.ajax({
+<<<<<<< HEAD
         url: `http://localhost:3000/training/embeddings/visualize/${dimension}`,
+=======
+        url: `${HOSTURL}/training/embeddings/visualize/${dimension}`,
+>>>>>>> af8c34cc2c332019e2bd74476277f8bc31db8e27
         success: function(response) {
             var output = "<div id=\"embeddings_plot\" style=\"margin:20px;\"></div>";
             $('#embeddings_visualization').html(output);
@@ -593,16 +625,15 @@ function visualize3dEmbeddings() {
             });
         },
         error: function(response) {
-            console.log('error in trainEmbeddings()', response);
+            console.log('error in visualize3dEmbeddings()', response);
         }
     });
 }
 
 function generateEmbeddingsCoordinates() {
     var dimension = 2;
-    const TIMEOUT = 60*60; // in seconds (training can take a long time depending on the model)
     $.ajax({
-        url: `http://localhost:3000/training/embeddings/generatecoordinates/${dimension}`,
+        url: `${HOSTURL}/training/embeddings/generatecoordinates/${dimension}`,
         timeout: TIMEOUT*1000,
         success: function(response) {
             console.log(response)

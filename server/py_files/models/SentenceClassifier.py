@@ -1,4 +1,5 @@
 import os
+
 import numpy as np
 
 from py_files.AccuracyAnalysis import AccuracyAnalysis
@@ -10,7 +11,7 @@ class SentenceClassifier(object):
         self.feature_type = feature_type
         self.model = None # todo should be a dict => so that we can hold more than 1 models in memory together
         self.seed = 12 # fix the random seed for consistency of results
-        np.random.seed(self.seed) # todo => doesn't setting this gets rid of the need of the above? CHECK (then we don't need to set `random_state` everywhere)
+        np.random.seed(self.seed)
 
     def train(self, samples, labels):
         # build the model and populate `self.labels_pred` in subclasses
@@ -23,7 +24,7 @@ class SentenceClassifier(object):
     # loads the model from local disk (if needed)
     def load(self):
         if not self.model:
-            print('Vectorizer: error: unable to load model')
+            print('SentenceClassifier: error: unable to load model')
 
     def test(self, samples, labels):
         # build the model and populate `self.labels_pred` in subclasses
