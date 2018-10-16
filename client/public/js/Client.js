@@ -69,7 +69,9 @@ function analyzeFiles() {
                         output += "<div class=\"sentence\"><div class=\"left-child\" >" + missing[i].sentence + "</div>" + "<div class=\"right-child\" style=\"background-color:#FF0000; color:#FFFFFF;\">Missing</div>" + "</div>";
                     }
 
-                    output += "<div class=\"divider\"></div>";
+                    if (missing.length) {
+                        output += "<div class=\"divider\"></div>";
+                    }
 
                     var resumeScores = response.resume;
                     output += "<div class=\"document-header\"><label class=\"document-header-label-left\">RESUME</label><label class=\"document-header-label-right\">SCORE</label></div>";
