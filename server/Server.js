@@ -460,16 +460,17 @@ app.get('/analyze/:resumeFile/:jobFile', async function (req, res, next) {
             });
         });
 
-        var missingThreshold = 0.6; // TODO this should be much lower, like 0.1-0.25 (keeping high for demo to make sense)
-        jobSentences.forEach((sent, index) => {
-            var score = jobScores[index];
-            if (score != -1 && score < missingThreshold) {
-                data.missing.push({
-                    sentence: sent.join(' '),
-                    score: Math.round(score * 1000) / 10
-                });
-            }
-        });
+        // TODO we need better scoring mechanism (wip) for this to work as expected
+        // var missingThreshold = 0.6;
+        // jobSentences.forEach((sent, index) => {
+        //     var score = jobScores[index];
+        //     if (score != -1 && score < missingThreshold) {
+        //         data.missing.push({
+        //             sentence: sent.join(' '),
+        //             score: Math.round(score * 1000) / 10
+        //         });
+        //     }
+        // });
 
         res.json(data);
     }
