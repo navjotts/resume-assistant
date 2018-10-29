@@ -1,4 +1,4 @@
-const HOSTURL = 'http://localhost:3000';
+const HOSTURL = 'https://resume-assistant.herokuapp.com';
 const TIMEOUT = 60*60; // in seconds (training can take a long time depending on the model)
 
 function loadTraining() {
