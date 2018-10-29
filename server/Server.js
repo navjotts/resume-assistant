@@ -390,7 +390,7 @@ app.get('/analyze/:resumeFile/:jobFile', async function (req, res, next) {
         fs.writeFileSync(tempFilePath, text);
         var resumeSentences = await PythonConnector.invoke('sentences_from_file_lines', tempFilePath);
 
-        var resumeLabelsPredicted = await PythonConnector.invoke('classify_sentences', 'resumes', 'LogisticRegression', 'bow', resumeSentences);
+        var resumeLabelsPredicted = await PythonConnector.invoke('classify_sentences', 'resumes', 'FastText', 'None', resumeSentences);
         console.assert(resumeLabelsPredicted.length == resumeSentences.length);
 
         var resumeSentencesForTopics = await PythonConnector.invoke('sentences_from_file_lines', tempFilePath, true, true); // TODO change DB structure (no need of an extra call)
@@ -399,7 +399,7 @@ app.get('/analyze/:resumeFile/:jobFile', async function (req, res, next) {
         var jobText = fs.readFileSync(jobFilePath).toString();
         var jobSentences = await PythonConnector.invoke('sentences', jobText);
 
-        var jobLabelsPredicted = await PythonConnector.invoke('classify_sentences', 'jobs', 'LogisticRegression', 'bow', jobSentences);
+        var jobLabelsPredicted = await PythonConnector.invoke('classify_sentences', 'jobs', 'FastText', 'None', jobSentences);
         console.assert(jobLabelsPredicted.length == jobSentences.length);
 
         var jobSentencesForTopics = await PythonConnector.invoke('sentences', jobText, true, true); // TODO change DB structure (no need of an extra call)
