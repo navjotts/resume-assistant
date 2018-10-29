@@ -1,0 +1,10 @@
+<svg xmlns="http://www.w3.org/2000/svg" width="55" height="68" viewBox="0 0 55 68">
+    <g fill="none" fill-rule="evenodd">
+        <rect width="51" height="64" x=".5" y="3.5" fill="#F4F8FF" fill-rule="nonzero" stroke="#7DA6E2" rx="4"/>
+        <rect width="51" height="64" x="3.5" y=".5" fill="#F4F8FF" fill-rule="nonzero" stroke="#7DA6E2" rx="4"/>
+        <path stroke="#7DA6E2" stroke-linecap="square" d="M10.5 42.25h37M10.5 47.25h37M10.5 15.25h37M10.5 10.25h11M10.5 52.25h37M10.5 57.25h37"/>
+        <text fill="#3376DD" font-family="Avenir-Light, Avenir" font-size="18" font-weight="300" letter-spacing="-.416">
+            <tspan x="15" y="34">.txt</tspan>
+        </text>
+    </g>
+</svg>

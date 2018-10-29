@@ -7,9 +7,9 @@ html
         script(src='/js/Client.js')
     body
         div(class='container-fluid')
-            a(class='home-button', href='#', onclick='loadTraining()')='TRAINING'
-            a(class='prev-button', href='#', onclick='fetchDoc("' + parentId + '", "' + (Number(id) - 1) + '")')='PREV'
-            a(class='next-button', href='#', onclick='fetchDoc("' + parentId + '", "' + (Number(id) + 1) + '")')='NEXT'
+            a(class='home-button', href='#', onclick='loadTraining()')='< TRAINING'
+            a(class='prev-button', href='#', onclick='fetchDoc("' + parentId + '", "' + (Number(id) - 1) + '")')='< PREV'
+            a(class='next-button', href='#', onclick='fetchDoc("' + parentId + '", "' + (Number(id) + 1) + '")')='NEXT >'
             div(class='center')
                 div(class='title')
                     p=title

@@ -9,8 +9,8 @@ body {
 .center {
     margin: auto;
     padding: 10px;
-    padding-left:50px;
-    padding-right:50px;
+    padding-left: 50px;
+    padding-right: 50px;
     text-align: center;
     font-size: 14px;
 }
@@ -19,9 +19,17 @@ body {
     text-align: left;
     font-size: 14px;
     padding: 10px 10px 10px 10px;
-    padding-left:20px;
-    padding-right:20px;
+    padding-left: 20px;
+    padding-right: 20px;
     margin: 10px 10px 10px 10px;
+}
+
+.home-page-header {
+    font-size: 24px;
+    padding: 0.4em;
+    background-color: #4a90e2;
+    color: #ffffff;
+    text-align: left;
 }
 
 .title {
@@ -31,7 +39,7 @@ body {
     border-bottom: 1px solid #4a90e2;
 }
 
-.navigation {
+.content {
     margin-top: 2em;
     margin-bottom: 5em;
 }
@@ -51,7 +59,6 @@ body {
     flex: 1;
     width: 0;
     text-align: left;
-    margin-left: 50px;
     text-decoration: underline;
     color: #000;
 }
@@ -60,12 +67,11 @@ body {
     flex: 1;
     width: 0;
     text-align: right;
-    margin-right: 50px;
     text-decoration: underline;
     color: #000;
 }
 
-.training-list {
+.model-list {
     display: flex;
     justify-content: space-between;
     text-align: center;
@@ -74,16 +80,39 @@ body {
     margin-right: 50px;
 }
 
+.model-list-left {
+    flex: 1;
+    width: 0;
+    text-align: left;
+    border-right: 1px solid #F0F0F0;
+}
+
+.model-list-right {
+    flex: 1;
+    width: 0;
+    text-align: right;
+    border-left: 1px solid #F0F0F0;
+}
+
+.training-list {
+    display: flex;
+    justify-content: space-between;
+    text-align: center;
+    margin-top: 20px;
+}
+
 .training-list-left {
     flex: 1;
     width: 0;
     text-align: left;
+    border-right: 1px solid #F0F0F0;
 }
 
 .training-list-right {
     flex: 1;
     width: 0;
     text-align: right;
+    border-left: 1px solid #F0F0F0;
 }
 
 .file-link {
@@ -121,16 +150,21 @@ body {
 
 .left-child {
     flex: 1;
-    width: 0;
+    flex-basis: 92%;
     text-align: left;
     vertical-align: middle;
 }
 
 .right-child {
     flex: 1;
-    width: 0;
+    flex-basis: 8%;
     text-align: right;
     vertical-align: middle;
+    padding-left: 5px;
+    padding-right: 5px;
+    border-radius: 6px;
+    font-size: 13px;
+    padding-top: 1px;
 }
 
 .prev-button {
@@ -167,7 +201,7 @@ body {
     font-size: 12px;
 }
 
-button.analyze_button {
+button.analyze-button {
     width: 219px;
     height: 40px;
     border: solid 1px #4a90e2;
@@ -176,7 +210,7 @@ button.analyze_button {
     color: #ffffff;
 }
 
-button.choose_file_button {
+button.choose-file-button {
   width: 283px;
   height: 40px;
   border-radius: 2px;
@@ -186,7 +220,39 @@ button.choose_file_button {
   color: #3a7cc9;
 }
 
+button.dashboard-tab {
+  width: 150px;
+  height: 40px;
+  border-radius: 2px;
+  background-color: #ffffff;
+  border: solid 1px #E1E5E8;
+  font-size: 13px;
+  color: #000000;
+}
+
+button.dashboard-tab-focussed {
+  width: 150px;
+  height: 40px;
+  border-radius: 2px;
+  background-color: #F0F0F0;
+  border: solid 1px #E1E5E8;
+  font-size: 13px;
+  color: #000000;
+}
+
+button.train-test-button {
+    width: 80px;
+    height: 30px;
+    border: solid 1px #282C31;
+    border-radius: 4px;
+    background-color: #282C31;
+    color: #ffffff;
+    margin-right: 20px;
+}
+
 button:focus {outline:0;}
+
+button.train-test-button:hover {background-color: #000000;}
 
 .document {
     margin: auto;
@@ -222,4 +288,76 @@ button:focus {outline:0;}
     padding:8px;
     padding-right:20px;
     color: #3a7cc9;
+}
+
+.model-labels {
+    padding-left: 5px;
+    padding-right: 5px;
+}
+
+.dashboard-form {
+    margin-right: 10px;
+}
+
+.dashboard-tabs {
+    text-align: center;
+}
+
+.dashboard-content {
+    border-top: 1px solid #E1E5E8;
+    text-align: left;
+    padding: 20px;
+}
+
+.dashboard-form-header-label {
+    margin-bottom: 0.5em;
+    font-weight: 500;
+    font-size: 1.25em;
+    line-height: 1.2;
+    border-bottom: 1px solid #000000;
+    padding-bottom: 2px;
+}
+
+.results {
+    margin: 20px 0px 20px 0px;
+    border: 1px solid #E1E5E8;
+    min-height: 40px;
+}
+
+.divider {
+    background-color: #fff;
+    text-align: center;
+    min-height: 72px;
+}
+
+.topics {
+    margin: 50px;
+    margin-top: 200px;
+    min-height: 40px;
+}
+
+.result-header {
+    margin: 20px 20px 0px 20px;
+    font-size: 16px;
+    font-weight: bold;
+}
+
+table, th, td {
+   border: 1px solid #E1E5E8;
+}
+
+table {
+    margin: 2px 20px 50px 20px;
+    font-size: 14px;
+}
+
+th, td {
+    padding: 10px;
+    text-align: left;
+}
+
+.report {
+    white-space: pre-wrap;
+    padding: 10px;
+    text-align: right;
 }

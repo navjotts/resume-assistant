@@ -7,5 +7,10 @@
 **/data/**/**/*.json
 **/uploads/*.docx
 **/uploads/*.txt
+*geckodriver.log
+*scraped_resume_links.txt
 *.pyc
 *.env
+.vscode/settings.json
+*.DS_Store
+*~

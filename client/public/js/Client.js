@@ -1,34 +1,49 @@
+const HOSTURL = 'http://localhost:3000';
+const TIMEOUT = 60*60; // in seconds (training can take a long time depending on the model)
+
 function loadTraining() {
-    $(location).attr('href', `http://localhost:3000/training`);
+    $(location).attr('href', `${HOSTURL}/training`);
 }
 
 function fetchResumes() {
-    $.get(`http://localhost:3000/training/resumes`, function(response) {
-        var output = "";
-        for (var i = 0; i < response.length; i++) {
-            output += "<div id=" + i + " ><a class=\"file-link\" href=\"#\" onclick=\"fetchDoc('resumes', " + i + ")\">" +  "Resume#" + i + "</a></div>";
+    $.ajax({
+        url: `${HOSTURL}/training/resumes`,
+        success: function(response) {
+            var output = "";
+            for (var i = 0; i < response.length; i++) {
+                output += "<div id=" + i + " ><a class=\"file-link\" href=\"#\" onclick=\"fetchDoc('resumes', " + i + ")\">" +  "Resume#" + i + "</a></div>";
+            }
+            $('#resumes-list').html(output);
+        },
+        error: function(response) {
+            console.log('error in fetchResumes()', response);
         }
-        $('#resumes-list').html(output);
     });
 }
 
 function fetchJobs() {
-    $.get(`http://localhost:3000/training/jobs`, function(response) {
-        var output = "";
-        for (var i = 0; i < response.length; i++) {
-            output += "<div id=" + i + " ><a class=\"file-link\" href=\"#\" onclick=\"fetchDoc('jobs', " + i + ")\">" +  "Job#" + i + "</a></div>";
+    $.ajax({
+        url: `${HOSTURL}/training/jobs`,
+        success: function(response) {
+            var output = "";
+            for (var i = 0; i < response.length; i++) {
+                output += "<div id=" + i + " ><a class=\"file-link\" href=\"#\" onclick=\"fetchDoc('jobs', " + i + ")\">" +  "Job#" + response[i] + "</a></div>";
+            }
+            $('#jobs-list').html(output);
+        },
+        error: function(response) {
+            console.log('error in fetchJobs()', response);
         }
-        $('#jobs-list').html(output);
     });
 }
 
 function fetchDoc(parentId, id) {
-    $(location).attr('href', `http://localhost:3000/training/${parentId}/${id}`);
+    $(location).attr('href', `${HOSTURL}/training/${parentId}/${id}`);
 }
 
 function updateLabel(option, parentId, docId, sentenceId) {
     $.ajax({
-        url: `http://localhost:3000/training/${parentId}/${docId}/sentences/${sentenceId}/edit`,
+        url: `${HOSTURL}/training/${parentId}/${docId}/sentences/${sentenceId}/edit`,
         type: 'POST',
         contentType: 'application/json',
         data: JSON.stringify({
@@ -43,15 +58,34 @@ function analyzeFiles() {
     var resumeFileName, jobFileName;
     function analyzeIfReady() {
         if (resumeFileName && jobFileName) {
-            $('#analyze_button').text('ANALYZING...');
+            $('#analyze-button').text('ANALYZING...');
             var files = {resume: resumeFileName, job: jobFileName};
-            $.get(`http://localhost:3000/analyze/${resumeFileName}/${jobFileName}`, function(response) {
-                var output = "<div class=\"document-header\"><label class=\"document-header-label-left\">SENTENCE / PHRASE</label><label class=\"document-header-label-right\">PREDICTION (Confidence%)</label></div>";
-                for (var i = 0; i < response.length; i++) {
-                    output += "<div class=\"sentence\" ><div class=\"left-child\" >" + response[i].sentence + "</div><div class=\"right-child\" >" + response[i].label + " (" + response[i].confidence + "%)" + "</div></div>";
+            $.ajax({
+                url: `${HOSTURL}/analyze/${resumeFileName}/${jobFileName}`,
+                success: function(response) {
+                    var output = "";
+                    var missing = response.missing;
+                    for (var i = 0; i < missing.length; i++) {
+                        output += "<div class=\"sentence\"><div class=\"left-child\" >" + missing[i].sentence + "</div>" + "<div class=\"right-child\" style=\"background-color:#FF0000; color:#FFFFFF;\">Missing</div>" + "</div>";
+                    }
+
+                    if (missing.length) {
+                        output += "<div class=\"divider\"></div>";
+                    }
+
+                    var resumeScores = response.resume;
+                    output += "<div class=\"document-header\"><label class=\"document-header-label-left\">RESUME</label><label class=\"document-header-label-right\">SCORE</label></div>";
+                    for (var i = 0; i < resumeScores.length; i++) {
+                        var scoreDiv = resumeScores[i].score/100 == -1.0 ? "<div class=\"right-child\" style=\"border: 1px solid #979797; color:#5d5d5d;\">Info / Others</div>" : "<div class=\"right-child\" style=\"flex-basis:" + 8*resumeScores[i].score/100 + "%; background-color:" + colorFromScore(resumeScores[i].score/100) + ";\">" + resumeScores[i].score + "%</div>";
+                        output += "<div class=\"sentence\"><div class=\"left-child\" >" + resumeScores[i].sentence + "</div>" + scoreDiv + "</div>";
+                    }
+                    $('#document').html(output);
+                    visualizeTopTopics(response.resumeTopTopics, response.jobTopTopics);
+                    $('#analyze-button').text('START ANALYZING');
+                },
+                error: function(response) {
+                    console.log('error in analyzeIfReady()', response);
                 }
-                $('#document').html(output);
-                $('#analyze_button').text('START ANALYZING');
             });
         }
     }
@@ -63,11 +97,11 @@ function analyzeFiles() {
         return;
     }
 
-    $('#analyze_button').text('UPLOADING...');
+    $('#analyze-button').text('UPLOADING...');
     var resumeFileData = new FormData();
     resumeFileData.append('userFile', resumeFiles[0]);
     $.ajax({
-        url: `http://localhost:3000/upload`,
+        url: `${HOSTURL}/upload`,
         type: 'POST',
         data: resumeFileData,
         processData: false,
@@ -83,7 +117,7 @@ function analyzeFiles() {
     var jobFileData = new FormData();
     jobFileData.append('userFile', jobFiles[0]);
     $.ajax({
-        url: `http://localhost:3000/upload`,
+        url: `${HOSTURL}/upload`,
         type: 'POST',
         data: jobFileData,
         processData: false,
@@ -106,4 +140,486 @@ function showFilePicked(inputId, labelId) {
     if (files.length == 1) {
         $(`#${labelId}`).text(files[0].name);
     }
+}
+
+function showTrainTestSummary(modelName) {
+    $.ajax({
+        url: `${HOSTURL}/training/summary`,
+        success: function(response) {
+            var output = "<div class=\"result-header\">LATEST RESULTS</div>";
+            var plots = [];
+            var barColors = ['#F7CE85', '#F78F88', '#FAEF87'];
+            var scoresData = response[modelName];
+            var stages = Object.keys(scoresData);
+            stages.forEach(stage => {
+                var divId = modelName + '_' + stage + '_summary_plot';
+                output += "<div id=\"" + divId + "\" style=\"margin:60px 20px 20px 20px;\"></div>";
+                var models = Object.keys(scoresData[stage]);
+                if (models.length) {
+                    var data = [];
+                    var scores = Object.keys(scoresData[stage][models[0]]);
+                    scores.forEach((scoreType, index) => {
+                        var scoreValues = models.map(model => scoresData[stage][model][scoreType]);
+                        var trace = {
+                            x: models,
+                            y: scoreValues,
+                            text: scoreValues,
+                            textposition: 'auto',
+                            name: scoreType,
+                            type: 'bar',
+                            marker: {
+                                color: barColors[index],
+                                opacity: 0.8,
+                                line: {
+                                    color: '#000000',
+                                    width: 0.75
+                                }
+                            },
+                            hoverinfo: 'none'
+                        };
+                        data.push(trace);
+                    });
+
+                    var layout = {
+                        barmode: 'group',
+                        title: stage + ' Dataset',
+                        titlefont:{
+                            size: 24,
+                            color: 'black'
+                        },
+                        xaxis: {
+                            title: 'Model',
+                            titlefont: {
+                                size: 16
+                            },
+                        },
+                        yaxis: {
+                            title: 'Accuracy',
+                            range: [0,101],
+                            titlefont: {
+                                size: 16
+                            },
+                        },
+                    };
+                    plots.push({divId, data, layout});
+                }
+            });
+            output += "</div>";
+            $('#' + modelName + '_' + 'results').html(output);
+            plots.forEach(plot => Plotly.newPlot(plot.divId, plot.data, plot.layout));
+        },
+        error: function(response) {
+            console.log('error in showTrainTestSummary()', response);
+        }
+    });
+}
+
+// TODO need an option to NOT really fire any training when the call is from the production URL (as then we have to manage the saving of the updated model weights etc)
+// (hide the Train button for production)
+function train(modelName) {
+    fireTrainingOrTesting('train', modelName);
+}
+
+function test(modelName) {
+    fireTrainingOrTesting('test', modelName);
+}
+
+function fireTrainingOrTesting(trainOrTest, modelName) {
+    var model = selectedModelType(modelName);
+    if (!model) {
+        alert(`Please select a model to ${trainOrTest}`);
+        return;
+    }
+
+    var modelType = model.value;
+
+    var featureType = 'None';
+    var feature = selectedFeatureType(modelName);
+    if (feature) {
+        featureType = feature.value;
+    }
+
+    var datasetName = 'DB';
+    var dataset = selectedDataset(modelName);
+    if (dataset) {
+        datasetName = dataset.value;
+    }
+
+    console.log(`${trainOrTest} (dataset, model, feature): (${datasetName}, ${modelType}, ${featureType})`);
+
+    $.ajax({
+        url: `${HOSTURL}/training/${trainOrTest}/${datasetName}/${modelName}/${modelType}/${featureType}`,
+        timeout: TIMEOUT*1000,
+        success: function(response) {
+            var output = "";
+
+            var score = response['score'];
+            if (score) {
+                output += "<div class=\"result-header\">SCORE</div><table border=\"1\"><tr><th>precision</th><th>recall</th><th>f1-score</th></tr><tr><td>" +  score['precision'] + "</td><td>" + score['recall'] + "</td><td>" + score['f1_score'] + "</td></tr></table>";
+            }
+
+            var report = response['report'];
+            if (report) {
+                output += "<div class=\"result-header\">REPORT</div><table border=\"1\"><tr><td><div class=\"report\">" + report + "</div></td></tr></table>";
+            }
+
+            var misclassifications = response['misclassifications'];
+            if (misclassifications) {
+                output += "<div class=\"result-header\">MISCLASSIFICATIONS</div><table border=\"1\"><tr><th>Sample</th><th>Actual</th><th>Predicted</th></tr>";
+                misclassifications.forEach(each => {
+                    output += "<tr><td>" + each['sample'] + "</td><td>" + each['actual_label'] + "</td><td>" + each['pred_label'] + "</td></tr>";
+                });
+                output += "</table>";
+            }
+
+            $('#' + modelName + '_' + 'results').html(output);
+        },
+        error: function(response) {
+            console.log('error in fireTrainingOrTesting()', response);
+        }
+    });
+}
+
+function selectedModelType(modelName) {
+    var model;
+    var formName = modelName + 'ModelForm';
+    var inputName = modelName + 'ModelType';
+    var radios = document[formName][inputName];
+    radios.forEach(rad => {
+        if (rad.checked) {
+            model = rad;
+        }
+    });
+
+    return model;
+}
+
+function selectedFeatureType(modelName) {
+    var feature;
+    var formName = modelName + 'FeatureForm';
+    var inputName = modelName + 'FeatureType';
+    var radios = document[formName][inputName];
+    radios.forEach(rad => {
+        if (rad.checked) {
+            feature = rad;
+        }
+    });
+
+    return feature;
+}
+
+function selectedDataset(modelName) {
+    var dataset;
+    var formName = modelName + 'DatasetForm';
+    var inputName = modelName + 'Dataset';
+    var radios = document[formName][inputName];
+    radios.forEach(rad => {
+        if (rad.checked) {
+            dataset = rad;
+        }
+    });
+
+    return dataset;
+}
+
+function selectDashboardTab(selectedTab) {
+    ['resumes_tab', 'jobs_tab', 'comparison_tab'].forEach(tab => {
+        if (selectedTab == tab) {
+            $('#' + tab).removeClass().addClass('dashboard-tab-focussed');
+            $('#' + tab + '_content').removeClass().addClass('dashboard-content');
+        }
+        else {
+            $('#' + tab).removeClass().addClass('dashboard-tab');
+            $('#' + tab + '_content').removeClass().addClass('no-display');
+        }
+    });
+}
+
+function trainEmbeddings() {
+    $.ajax({
+        url: `${HOSTURL}/training/embeddings/train`,
+        success: function(response) {
+            console.log(response);
+        },
+        error: function(response) {
+            console.log('error in trainEmbeddings()', response);
+        }
+    });
+}
+
+function visualizeTopTopics(resumeTopics, jobTopics) {
+    var dimension = 2;
+    $.ajax({
+        url: `${HOSTURL}/training/embeddings/visualize/${dimension}`,
+        success: function(response) {
+            var output = "<div id=\"topics_plot\" style=\"margin:20px;\"></div>";
+            $('#topic_visualization').html(output);
+
+            var words = [];
+            var xcoords = [];
+            var ycoords = [];
+            var wordsResume = [];
+            var wordsJob = [];
+            var wordsCommon = [];
+            var xcoordsResume = [];
+            var xcoordsJob = [];
+            var xcoordsCommon = [];
+            var ycoordsResume = [];
+            var ycoordsJob = [];
+            var ycoordsCommon = [];
+            response.forEach(item => {
+                var word = item['word'];
+                var xcoord = item['coords'][0];
+                var ycoord = item['coords'][1];
+                if (resumeTopics.includes(word) && jobTopics.includes(word)) {
+                    wordsCommon.push(word);
+                    xcoordsCommon.push(xcoord);
+                    ycoordsCommon.push(ycoord);
+                }
+                else if (resumeTopics.includes(word)) {
+                    wordsResume.push(word);
+                    xcoordsResume.push(xcoord);
+                    ycoordsResume.push(ycoord);
+                }
+                else if (jobTopics.includes(word)) {
+                    wordsJob.push(word);
+                    xcoordsJob.push(xcoord);
+                    ycoordsJob.push(ycoord);
+                }
+                else {
+                    words.push(word);
+                    xcoords.push(xcoord);
+                    ycoords.push(ycoord);
+                }
+            });
+
+            data = [{ x: xcoords, y: ycoords, text: words, type: 'scatter', name: 'Embeddings', hoverinfo: 'text', mode: 'markers',
+                    marker: {
+                        color: '#A6AFCB',
+                        opacity: 0.6,
+                        size: 14,
+                        line: {
+                            color: '#000000',
+                            width: 0.7
+                        }
+                    }
+                },
+                {x: xcoordsCommon, y: ycoordsCommon, text: wordsCommon, type: 'scatter', name: 'Common', hoverinfo: 'text', mode: 'markers',
+                    marker: {
+                        color: '#b1de69',
+                        opacity: 1.0,
+                        size: 20,
+                        line: {
+                            color: '#000000',
+                            width: 0.7
+                        }
+                    }
+                },
+                {x: xcoordsJob, y: ycoordsJob, text: wordsJob, type: 'scatter', name: 'Missing', hoverinfo: 'text', mode: 'markers',
+                    marker: {
+                        color: '#FF0000',
+                        opacity: 1.0,
+                        size: 20,
+                        line: {
+                            color: '#000000',
+                            width: 0.7
+                        }
+                    }
+                },
+                {x: xcoordsResume, y: ycoordsResume, text: wordsResume, type: 'scatter', name: 'Resume', hoverinfo: 'text', mode: 'markers',
+                    marker: {
+                        color: '#FAEF87',
+                        opacity: 1.0,
+                        size: 14,
+                        line: {
+                            color: '#000000',
+                            width: 0.7
+                        }
+                    }
+                }];
+
+            layout = {
+                title: 'Resume v/s Job',
+                titlefont:{
+                    size: 24,
+                    color: 'black'
+                },
+                autosize: false,
+                width: 1200,
+                height: 1200,
+                hovermode:'closest',
+                xaxis:{zeroline:false, hoverformat: '.2r'},
+                yaxis:{zeroline:false, hoverformat: '.2r'}
+            };
+
+            Plotly.newPlot('topics_plot', data, layout);
+        },
+        error: function(response) {
+            console.log('error in visualizeTopTopics()', response);
+        }
+    });
+}
+
+function visualize2dEmbeddings() {
+    var dimension = 2;
+    $.ajax({
+        url: `${HOSTURL}/training/embeddings/visualize/${dimension}`,
+        success: function(response) {
+            var output = "<div id=\"embeddings_plot\" style=\"margin:20px;\"></div>";
+            $('#embeddings_visualization').html(output);
+
+            var words = [];
+            var xcoords = [];
+            var ycoords = [];
+            response.forEach(item => {
+                words.push(item['word']);
+                xcoords.push(item['coords'][0]);
+                ycoords.push(item['coords'][1]);
+            });
+
+            data = [{
+                x: xcoords,
+                y: ycoords,
+                text: words,
+                type: 'scatter',
+                name: 'Embeddings',
+                hoverinfo: 'text',
+                mode: 'markers',
+                marker: {
+                    color: xcoords,
+                    opacity: 0.6,
+                    size: 14,
+                    line: {
+                        color: '#E763FA',
+                         width: 0.7
+                    }
+                }
+            }];
+
+            layout = {
+                title: '2D Word Embeddings',
+                titlefont:{
+                    size: 24,
+                    color: 'black'
+                },
+                autosize: false,
+                width: 1200,
+                height: 1200,
+                hovermode:'closest',
+                xaxis:{zeroline:false, hoverformat: '.2r'},
+                yaxis:{zeroline:false, hoverformat: '.2r'}
+            };
+
+            Plotly.newPlot('embeddings_plot', data, layout);
+        },
+        error: function(response) {
+            console.log('error in visualize2dEmbeddings()', response);
+        }
+    });
+}
+
+function visualize3dEmbeddings() {
+    var dimension = 3;
+    $.ajax({
+        url: `${HOSTURL}/training/embeddings/visualize/${dimension}`,
+        success: function(response) {
+            var output = "<div id=\"embeddings_plot\" style=\"margin:20px;\"></div>";
+            $('#embeddings_visualization').html(output);
+
+            Plotly.d3.csv('https://raw.githubusercontent.com/plotly/datasets/master/3d-scatter.csv', function(err, rows) {
+                function unpack(rows, key) {
+                    return rows.map(function(row)
+                    { return row[key]; });
+                }
+
+                words = [];
+                var xcoords = [];
+                var ycoords = [];
+                var zcoords = [];
+                response.forEach(item => {
+                    /* The if statement underneath is a hack, the value was throwing off the
+                    proportions of the 3d embedding graph */
+                    if(item['word'] === '\"19'){
+                        return;
+                    };
+                    words.push(item['word']);
+                    xcoords.push(item['coords'][0]);
+                    ycoords.push(item['coords'][1]);
+                    zcoords.push(item['coords'][2]);
+                });
+
+                data = [{
+                    x: xcoords,
+                    y: ycoords,
+                    z: zcoords,
+                    text: words,
+                    type: 'scatter3d',
+                    name: '3D Embeddings',
+                    hoverinfo: 'text',
+                    mode: 'markers',
+                    marker: {
+                        color: xcoords,
+                        opacity: 0.75,
+                        size: 3
+                    }
+                }];
+
+                var layout = {
+                    title: '3D Word Embeddings',
+                    titlefont:{
+                        size: 24,
+                        color: 'black'
+                    },
+                    dragmode: true,
+                    width: 1200,
+                    height: 1200,
+                    hovermode:'closest',
+                    scene: {
+                        xaxis: {
+                            backgroundcolor: "#FFFFFF",
+                            gridcolor: "#E9E9E9",
+                            showbackground: true,
+                            zerolinecolor: "#FFFFFF",
+                        },
+                        yaxis: {
+                            backgroundcolor: "#FFFFFF",
+                            gridcolor: "#E9E9E9",
+                            showbackground: true,
+                            zerolinecolor: "#FFFFFF",
+                        },
+                        zaxis: {
+                            backgroundcolor: "#FFFFFF",
+                            gridcolor: "#E9E9E9",
+                            showbackground: true,
+                            zerolinecolor: "#FFFFFF",
+                        }}
+                };
+                Plotly.newPlot('embeddings_plot', data, layout);
+            });
+        },
+        error: function(response) {
+            console.log('error in visualize3dEmbeddings()', response);
+        }
+    });
+}
+
+function generateEmbeddingsCoordinates() {
+    var dimension = 2;
+    $.ajax({
+        url: `${HOSTURL}/training/embeddings/generatecoordinates/${dimension}`,
+        timeout: TIMEOUT*1000,
+        success: function(response) {
+            console.log(response)
+
+        },
+        error: function(response) {
+            console.log('error in generateEmbeddingsCoordinates()', response);
+        }
+    });
+}
+
+function colorFromScore(score) {
+    score = Math.max(0.25, score < 0.5 ? score * (2 - score/0.5) : score); // restrict lower color boundary to start from a softer shade of red
+    var hue = (score * 120).toString(10);
+    return ['hsl(', hue, ', 100%, 50%)'].join('');
 }
