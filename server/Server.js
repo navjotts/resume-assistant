@@ -406,15 +406,6 @@ app.get('/analyze/:resumeFile/:jobFile', async function (req, res, next) {
         var jobTopTopics = await PythonConnector.invoke('top_topics', 'jobs', jobSentencesForTopics, 5, 5);
 
         // TODO all this goes into a separate ComparisonModel class
-        var resumeData = {};
-        resumeSentences.forEach((sent, index) => {
-            var label = resumeLabelsPredicted[index][0];
-            if (!resumeData[label]) {
-                resumeData[label] = [];
-            }
-            resumeData[label].push(sent);
-        });
-
         var jobData = {};
         jobSentences.forEach((sent, index) => {
             var label = jobLabelsPredicted[index][0];
@@ -435,17 +426,6 @@ app.get('/analyze/:resumeFile/:jobFile', async function (req, res, next) {
         });
         resumeScores = await PythonConnector.invoke('sentence_group_similarity_score', 'resumes_jobs', 100, resumeSentsToCompare);
 
-        var jobsSentsToCompare = [];
-        jobSentences.forEach((jobSent, index) => {
-            var jobLabel = jobLabelsPredicted[index][0];
-            var resumeSents = [];
-            if (jobLabel != 'OTHERS') {
-                resumeSents = resumeData[jobLabel];
-            }
-            jobsSentsToCompare.push({'from': jobSent, 'to': resumeSents});
-        });
-        jobScores = await PythonConnector.invoke('sentence_group_similarity_score', 'resumes_jobs', 100, jobsSentsToCompare, true);
-
         var data = {
             missing: [],
             resume: [],
@@ -459,18 +439,6 @@ app.get('/analyze/:resumeFile/:jobFile', async function (req, res, next) {
                 score: Math.round(resumeScores[index] * 1000) / 10
             });
         });
-
-        // TODO we need better scoring mechanism (wip) for this to work as expected
-        // var missingThreshold = 0.6;
-        // jobSentences.forEach((sent, index) => {
-        //     var score = jobScores[index];
-        //     if (score != -1 && score < missingThreshold) {
-        //         data.missing.push({
-        //             sentence: sent.join(' '),
-        //             score: Math.round(score * 1000) / 10
-        //         });
-        //     }
-        // });
 
         res.json(data);
     }
