@@ -389,21 +389,17 @@ app.get('/analyze/:resumeFile/:jobFile', async function (req, res, next) {
         var tempFilePath = path.join(__dirname, 'uploads', resumeFileName.split('.')[0] + '.txt');
         fs.writeFileSync(tempFilePath, text);
         var resumeSentences = await PythonConnector.invoke('sentences_from_file_lines', tempFilePath);
-
         var resumeLabelsPredicted = await PythonConnector.invoke('classify_sentences', 'resumes', 'LogisticRegression', 'bow', resumeSentences);
         console.assert(resumeLabelsPredicted.length == resumeSentences.length);
-
-        var resumeSentencesForTopics = await PythonConnector.invoke('sentences_from_file_lines', tempFilePath, true, true); // TODO change DB structure (no need of an extra call)
-        var resumeTopTopics = await PythonConnector.invoke('top_topics', 'resumes', resumeSentencesForTopics, 5, 5);
+        // var resumeSentencesForTopics = await PythonConnector.invoke('sentences_from_file_lines', tempFilePath, true, true); // TODO change DB structure (no need of an extra call)
+        // var resumeTopTopics = await PythonConnector.invoke('top_topics', 'resumes', resumeSentencesForTopics, 5, 5);
 
         var jobText = fs.readFileSync(jobFilePath).toString();
         var jobSentences = await PythonConnector.invoke('sentences', jobText);
-
         var jobLabelsPredicted = await PythonConnector.invoke('classify_sentences', 'jobs', 'LogisticRegression', 'bow', jobSentences);
         console.assert(jobLabelsPredicted.length == jobSentences.length);
-
-        var jobSentencesForTopics = await PythonConnector.invoke('sentences', jobText, true, true); // TODO change DB structure (no need of an extra call)
-        var jobTopTopics = await PythonConnector.invoke('top_topics', 'jobs', jobSentencesForTopics, 5, 5);
+        // var jobSentencesForTopics = await PythonConnector.invoke('sentences', jobText, true, true); // TODO change DB structure (no need of an extra call)
+        // var jobTopTopics = await PythonConnector.invoke('top_topics', 'jobs', jobSentencesForTopics, 5, 5);
 
         // TODO all this goes into a separate ComparisonModel class
         var jobData = {};
@@ -429,8 +425,8 @@ app.get('/analyze/:resumeFile/:jobFile', async function (req, res, next) {
         var data = {
             missing: [],
             resume: [],
-            resumeTopTopics: resumeTopTopics,
-            jobTopTopics: jobTopTopics
+            resumeTopTopics: [],
+            jobTopTopics: []
         };
 
         resumeSentences.forEach((sent, index) => {
