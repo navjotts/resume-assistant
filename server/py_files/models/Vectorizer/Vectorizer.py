@@ -16,8 +16,8 @@ class Vectorizer(object):
             return TfidfVectorizer(max_df=0.5, min_df=1) # todo max_df and min_df should be hyperparams (and hence we need a CV setup) + todo bring in ngram_range as well
 
         if self.vec_type == 'bow':
-            # return CountVectorizer(max_features=565) # best for log reg on resumes
-            return CountVectorizer()
+            return CountVectorizer(max_features=565) # best for LogReg on resumes
+            # return CountVectorizer()
 
     def train(self, samples):
         self.model = self.create_vectorizer()
