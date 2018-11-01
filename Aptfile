@@ -1,4 +1,8 @@
+libtool
 pkg-config
-libzmq3-dbg
-libzmq3-dev
-libzmq3
+build-essential
+autoconf
+automake
+libzmq-dbg
+libzmq-dev
+libzmq
