@@ -1,7 +1,10 @@
 {
   "name": "resume-assistant",
-  "version": "1.0.0",
   "description": "Given a resume and a job description, highlights parts of the resume which are not a good match.",
+  "version": "1.0.0",
+   "engines": {
+    "node": "8.1.3"
+  },
   "main": "server/Server.js",
   "scripts": {
     "start": "node server/Server.js",
