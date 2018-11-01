@@ -3,6 +3,4 @@ pkg-config
 build-essential
 autoconf
 automake
-libzmq-dbg
 libzmq-dev
-libzmq
