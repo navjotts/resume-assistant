@@ -1,8 +1,8 @@
 # Resume Assistant
 Tailor your resume to a given job posting. See how your resume stands against a job posting - and locate areas of improvement.<br/><br/>
 
-<img alt="" src="https://www.dropbox.com/s/x33g37oi4q7p7r5/rezume_comparison.png?dl=0">
-<img alt="" src="https://www.dropbox.com/s/i8wqw3wbhepjq33/topic_plot.png?dl=0">
+<img alt="" src="https://www.dropbox.com/s/x33g37oi4q7p7r5/rezume_comparison.png?raw=1" alt="resume_comparison" width="50%" height="50%">
+<img alt="" src="https://www.dropbox.com/s/i8wqw3wbhepjq33/topic_plot.png?raw=1" alt="topic_plot" width="50%" height="50%">
 
 # Setup
 ## Installing nodejs and python environment
