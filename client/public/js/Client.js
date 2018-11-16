@@ -81,7 +81,7 @@ function analyzeFiles() {
                         output += "<div class=\"sentence\"><div class=\"left-child\" >" + resumeScores[i].sentence + "</div>" + scoreDiv + "</div>";
                     }
                     $('#document').html(output);
-                    visualizeTopTopics(response.resumeTopTopics, response.jobTopTopics);
+                    analyzeTopics();
                     $('#analyze-button').text('START ANALYZING');
                 },
                 error: function(response) {
@@ -89,6 +89,18 @@ function analyzeFiles() {
                 }
             });
         }
+    }
+
+    function analyzeTopics() {
+        $.ajax({
+            url: `${HOSTURL}/analyzetopics/${resumeFileName}/${jobFileName}`,
+            success: function(response) {
+                visualizeTopTopics(response.resumeTopTopics, response.jobTopTopics);
+            },
+            error: function(response) {
+                console.log('error in analyzeIfReady()', response);
+            }
+        });
     }
 
     var resumeFiles = $('#resume-file')[0].files;
