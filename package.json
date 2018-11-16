@@ -2,7 +2,7 @@
   "name": "resume-assistant",
   "description": "Given a resume and a job description, highlights parts of the resume which are not a good match.",
   "version": "1.0.0",
-  "engines": {
+   "engines": {
     "node": "8.1.3"
   },
   "main": "server/Server.js",
@@ -23,13 +23,12 @@
   "dependencies": {
     "body-parser": "^1.18.3",
     "express": "^4.16.3",
-    "heroku-ssl-redirect": "0.0.4",
     "jszip": "^3.0.0",
     "multer": "^1.3.1",
     "pdf-to-text": "0.0.7",
     "pug": "^2.0.3",
     "xmldom": "^0.1.22",
-    "zerorpc": "^0.9.7",
-    "zmq": "^2.15.3"
+    "zmq": "^2.15.3",
+    "zerorpc": "^0.9.7"
   }
 }

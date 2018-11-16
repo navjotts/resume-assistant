@@ -3,7 +3,6 @@ const path = require('path');
 const express = require('express');
 const bodyParser = require('body-parser');
 const multer = require('multer');
-const sslRedirect = require('heroku-ssl-redirect');
 
 const PythonConnector = require('./PythonConnector.js');
 const DocxParser = require('./DocxParser.js');
@@ -19,7 +18,6 @@ var storage = multer.diskStorage({
 var upload = multer({ storage: storage }, { limits: { files: 1 } }).single('userFile');
 
 var app = express();
-app.use(sslRedirect());
 
 app.set('views', path.join(__dirname, '..', 'client', 'views'));
 app.set('view engine', 'pug');
