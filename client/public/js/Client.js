@@ -62,6 +62,8 @@ function analyzeFiles() {
     function analyzeIfReady() {
         if (resumeFileName && jobFileName) {
             $('#analyze-button').text('ANALYZING...');
+            $('#document').html('');
+            $('#topic_visualization').html('');
             var files = {resume: resumeFileName, job: jobFileName};
             $.ajax({
                 url: `${HOSTURL}/analyze/${resumeFileName}/${jobFileName}`,
