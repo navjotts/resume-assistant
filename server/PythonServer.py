@@ -13,7 +13,12 @@ from py_files.models.LSA.LSAModel import LSAModel
 from py_files.models.Embeddings.Embeddings import Embeddings
 from py_files.models.SentenceEmbeddings.SentenceEmbeddings import SentenceEmbeddings
 
+PORT = 4242
+
 class PythonServer(object):
+    def listen(self):
+        print(f'Python Server started listening on {PORT} ...')
+
     def sentences(self, text, drop_stop=False, drop_punct=False):
         return Spacy.sentences(self, text, drop_stop, drop_punct)
 
@@ -82,7 +87,7 @@ class PythonServer(object):
 
 try:
     s = zerorpc.Server(PythonServer())
-    s.bind('tcp://0.0.0.0:4242')
+    s.bind(f'tcp://0.0.0.0:{PORT}')
     s.run()
     print('PythonServer running...')
 except Exception as e:
