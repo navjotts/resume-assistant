@@ -81,7 +81,7 @@ function analyzeFiles() {
                         output += "<div class=\"sentence\"><div class=\"left-child\" >" + resumeScores[i].sentence + "</div>" + scoreDiv + "</div>";
                     }
                     $('#document').html(output);
-                    visualizeTopTopics(response.resumeTopTopics, response.jobTopTopics);
+                    analyzeTopics();
                     $('#analyze-button').text('START ANALYZING');
                 },
                 error: function(response) {
@@ -89,6 +89,18 @@ function analyzeFiles() {
                 }
             });
         }
+    }
+
+    function analyzeTopics() {
+        $.ajax({
+            url: `${HOSTURL}/analyzetopics/${resumeFileName}/${jobFileName}`,
+            success: function(response) {
+                visualizeTopTopics(response.resumeTopTopics, response.jobTopTopics);
+            },
+            error: function(response) {
+                console.log('error in analyzeIfReady()', response);
+            }
+        });
     }
 
     var resumeFiles = $('#resume-file')[0].files;
@@ -353,7 +365,7 @@ function visualizeTopTopics(resumeTopics, jobTopics) {
     $.ajax({
         url: `${HOSTURL}/training/embeddings/visualize/${dimension}`,
         success: function(response) {
-            var output = "<div id=\"topics_plot\" style=\"margin:20px;\"></div>";
+            var output = "<div id=\"topics_plot\" style=\"display:table; margin:0 auto;\"></div>";
             $('#topic_visualization').html(output);
 
             var words = [];
@@ -466,7 +478,7 @@ function visualize2dEmbeddings() {
     $.ajax({
         url: `${HOSTURL}/training/embeddings/visualize/${dimension}`,
         success: function(response) {
-            var output = "<div id=\"embeddings_plot\" style=\"margin:20px;\"></div>";
+            var output = "<div id=\"embeddings_plot\" style=\"display:table; margin:0 auto;\"></div>";
             $('#embeddings_visualization').html(output);
 
             var words = [];
@@ -524,7 +536,7 @@ function visualize3dEmbeddings() {
     $.ajax({
         url: `${HOSTURL}/training/embeddings/visualize/${dimension}`,
         success: function(response) {
-            var output = "<div id=\"embeddings_plot\" style=\"margin:20px;\"></div>";
+            var output = "<div id=\"embeddings_plot\" style=\"display:table; margin:0 auto;\"></div>";
             $('#embeddings_visualization').html(output);
 
             Plotly.d3.csv('https://raw.githubusercontent.com/plotly/datasets/master/3d-scatter.csv', function(err, rows) {
