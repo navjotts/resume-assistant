@@ -18,6 +18,7 @@ function fetchResumes() {
         },
         error: function(response) {
             console.log('error in fetchResumes()', response);
+            reloadOnError();
         }
     });
 }
@@ -34,6 +35,7 @@ function fetchJobs() {
         },
         error: function(response) {
             console.log('error in fetchJobs()', response);
+            reloadOnError();
         }
     });
 }
@@ -86,6 +88,7 @@ function analyzeFiles() {
                 },
                 error: function(response) {
                     console.log('error in analyzeIfReady()', response);
+                    reloadOnError();
                 }
             });
         }
@@ -98,7 +101,7 @@ function analyzeFiles() {
                 visualizeTopTopics(response.resumeTopTopics, response.jobTopTopics);
             },
             error: function(response) {
-                console.log('error in analyzeIfReady()', response);
+                console.log('error in analyzeTopics()', response);
             }
         });
     }
@@ -120,10 +123,13 @@ function analyzeFiles() {
         processData: false,
         contentType: false,
         success: function(response) {
-            // TODO need error handling here
             console.log('analyzeFiles()', response);
             resumeFileName = resumeFiles[0].name;
             analyzeIfReady();
+        },
+        error: function(response) {
+            console.log('error in upload()', response);
+            reloadOnError();
         }
     });
 
@@ -136,10 +142,13 @@ function analyzeFiles() {
         processData: false,
         contentType: false,
         success: function(response) {
-            // TODO need error handling here
             console.log('analyzeFiles()', response);
             jobFileName = jobFiles[0].name;
             analyzeIfReady();
+        },
+        error: function(response) {
+            console.log('error in upload()', response);
+            reloadOnError();
         }
     });
 }
@@ -223,6 +232,7 @@ function showTrainTestSummary(modelName) {
         },
         error: function(response) {
             console.log('error in showTrainTestSummary()', response);
+            reloadOnError();
         }
     });
 }
@@ -289,6 +299,7 @@ function fireTrainingOrTesting(trainOrTest, modelName) {
         },
         error: function(response) {
             console.log('error in fireTrainingOrTesting()', response);
+            reloadOnError();
         }
     });
 }
@@ -356,6 +367,7 @@ function trainEmbeddings() {
         },
         error: function(response) {
             console.log('error in trainEmbeddings()', response);
+            reloadOnError();
         }
     });
 }
@@ -527,6 +539,7 @@ function visualize2dEmbeddings() {
         },
         error: function(response) {
             console.log('error in visualize2dEmbeddings()', response);
+            reloadOnError();
         }
     });
 }
@@ -612,6 +625,7 @@ function visualize3dEmbeddings() {
         },
         error: function(response) {
             console.log('error in visualize3dEmbeddings()', response);
+            reloadOnError();
         }
     });
 }
@@ -627,6 +641,7 @@ function generateEmbeddingsCoordinates() {
         },
         error: function(response) {
             console.log('error in generateEmbeddingsCoordinates()', response);
+            reloadOnError();
         }
     });
 }
@@ -635,4 +650,9 @@ function colorFromScore(score) {
     score = Math.max(0.25, score < 0.5 ? score * (2 - score/0.5) : score); // restrict lower color boundary to start from a softer shade of red
     var hue = (score * 120).toString(10);
     return ['hsl(', hue, ', 100%, 50%)'].join('');
+}
+
+function reloadOnError() {
+    alert('Something bad happened!');
+    loc.reload();
 }
