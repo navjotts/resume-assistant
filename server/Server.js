@@ -128,13 +128,11 @@ app.post('/training/:parent/:docId/sentences/:sentenceId/edit', function (req, r
     res.json(docData.content[sentenceId]);
 });
 
-
-// TODO need error handling
 app.post('/upload', function (req, res, next) {
     console.log(req.url);
     upload(req, res, function (err) {
         if (err) {
-            res.end("Error uploading file");
+            res.send(404);
         }
         else {
             res.end("File upload success");

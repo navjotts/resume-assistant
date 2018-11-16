@@ -93,7 +93,7 @@ class SentenceEmbeddings(object):
         for group in groups_of_sents:
             fromsent = group['from']
             tosents = group['to']
-            if len(tosents) == 0:
+            if tosents is None or len(tosents) == 0:
                 scores.append(-1.0) # if nothing to compare to
             else:
                 group_scores = []
