@@ -80,11 +80,6 @@ class PythonServer(object):
         lsa = LSAModel(model_name)
         return lsa.top_topics(doc, num_topics, words_per_topic)
 
-# Embeddings('resumes', 100).vectors('glove') # for testing other classes directly (comment out the below zerorpc server if you do this)
-# print(SentenceEmbeddings('resumes_jobs', 100).similarity_score(('Full', 'Stack', 'Internship', '·', 'July', '2017', 'to', 'Oct.', '2017'), ('5', 'years', 'of', 'experience', 'in', 'technical', 'leadership', 'and', 'people', 'management', '.'), 'gensim'))
-# print(SentenceEmbeddings('resumes_jobs', 100).similarity_score(('5', 'years', 'of', 'experience', 'in', 'technical', 'leadership', 'and', 'people', 'management', '.'), ('Full', 'Stack', 'Internship', '·', 'July', '2017', 'to', 'Oct.', '2017'), 'gensim'))
-# print(SentenceEmbeddings('resumes_jobs', 100).similarity_score(('10', 'years', 'of', 'relevant', 'industry', 'experience', '.'), ('Software', 'Engineer', '·', 'Nov.', '2017', 'to', 'Current'), 'gensim')) # todo this where sentence comparison with the current embeddings is completely failing
-
 try:
     s = zerorpc.Server(PythonServer())
     s.bind('tcp://0.0.0.0:4242')
