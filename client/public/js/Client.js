@@ -95,6 +95,7 @@ function analyzeFiles() {
     }
 
     function analyzeTopics() {
+        $('#topic_visualization').html('ANALYZING TOP TOPICS...');
         $.ajax({
             url: `${HOSTURL}/analyzetopics/${resumeFileName}/${jobFileName}`,
             success: function(response) {
