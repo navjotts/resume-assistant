@@ -15,7 +15,7 @@ class Embeddings(object):
         self.dimension = dimension
         self.path = os.path.join(os.path.dirname(os.path.abspath(__file__)), 'trained', name + str(dimension) + 'd.txt')
         self.model = None
-        self.seed = 42
+        self.seed = 12
 
     def train(self, sentences):
         model = w2v.Word2Vec(min_count=1,
@@ -118,7 +118,7 @@ class Embeddings(object):
     # for visualization purposes
     def reduce_dimensionality(self, dimension):
         self.load()
-        tsne = sklearn.manifold.TSNE(n_components=dimension, random_state=42)
+        tsne = sklearn.manifold.TSNE(n_components=dimension, random_state=self.seed)
         word_vectors_reduced = tsne.fit_transform(self.model.wv.syn0)
         return word_vectors_reduced
 
