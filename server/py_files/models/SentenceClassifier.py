@@ -1,7 +1,5 @@
 import os
-
 import numpy as np
-
 from py_files.AccuracyAnalysis import AccuracyAnalysis
 
 class SentenceClassifier(object):

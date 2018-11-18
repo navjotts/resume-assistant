@@ -1,5 +1,4 @@
 import re
-
 import spacy
 import en_core_web_sm
 nlp = en_core_web_sm.load()
@@ -10,10 +9,7 @@ class Spacy(object):
         if t.like_email:
             return t.shape_
 
-        # todo we need a better way - this is also hiding some tools names which we need in our analysis (eg: Docker, Jenkins etc)
-        # if t.ent_type_ == 'PERSON':
-        #     return t.shape_
-
+        # todo we need a way to detect t.ent_type_ == 'PERSON' - this will also hide some tools names which we need in our analysis (eg: Docker, Jenkins etc)
         return t.text
 
     # todo: case to check Cc @Antonio - how does the search function behaves if there are more than 1 matches (what happens if there are 2 phone numbers in 1 sentence)

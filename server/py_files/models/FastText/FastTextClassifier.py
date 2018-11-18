@@ -1,7 +1,6 @@
 import os
 import tempfile
 import fastText
-
 from py_files.models.SentenceClassifier import SentenceClassifier
 
 class FastTextClassifier(SentenceClassifier):
@@ -23,9 +22,8 @@ class FastTextClassifier(SentenceClassifier):
             self.model.quantize()
 
             result = self.model.test(labelPath)
-            result = {'precision': result[1],  'recall': result[2], 'examples': result[0]}
-            print('Precision:', result['precision'])
-            print('Recall:', result['recall'])
+            result = f'precision: {result[1]}, recall: {result[2]}'
+            print(result)
         finally:
             os.remove(labelPath)
 

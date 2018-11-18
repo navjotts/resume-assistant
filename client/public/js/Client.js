@@ -175,7 +175,7 @@ function showTrainTestSummary(modelName) {
             var plots = [];
             var barColors = ['#F7CE85', '#F78F88', '#FAEF87'];
             var scoresData = response[modelName];
-            var stages = Object.keys(scoresData);
+            var stages = ['Testing', 'Training'];
             stages.forEach(stage => {
                 var divId = modelName + '_' + stage + '_summary_plot';
                 output += "<div id=\"" + divId + "\" style=\"margin:60px 20px 20px 20px;\"></div>";

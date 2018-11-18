@@ -1,12 +1,10 @@
 import os
 import multiprocessing
 import numpy as np
-
+import pandas as pd
+import sklearn.manifold
 import gensim.models.word2vec as w2v
 from gensim.models import KeyedVectors
-import sklearn.manifold
-import pandas as pd
-import keras
 
 import logging
 logging.basicConfig(format='%(asctime)s : %(levelname)s : %(message)s', level=logging.INFO)

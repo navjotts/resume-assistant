@@ -1,7 +1,5 @@
 import os
-
 from sklearn.linear_model import LogisticRegression
-
 from py_files.models.SklearnSentenceClassifier import SklearnSentenceClassifier
 
 class LogRegClassifier(SklearnSentenceClassifier):

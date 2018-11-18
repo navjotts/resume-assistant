@@ -1,7 +1,5 @@
 import os
-
 from sklearn.ensemble import RandomForestClassifier
-
 from py_files.models.SklearnSentenceClassifier import SklearnSentenceClassifier
 
 class RandForestClassifier(SklearnSentenceClassifier):

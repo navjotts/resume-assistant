@@ -2,7 +2,6 @@ import os
 import numpy as np
 import math
 import multiprocessing
-
 import gensim.models.doc2vec as d2v
 
 import logging
