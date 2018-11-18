@@ -1,7 +1,6 @@
 import os
 import tempfile
 import fastText
-
 from py_files.models.SentenceClassifier import SentenceClassifier
 
 class FastTextClassifier(SentenceClassifier):

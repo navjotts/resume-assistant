@@ -1,6 +1,5 @@
 import os
 import sys
-
 import numpy as np
 from keras.models import Sequential
 from keras.optimizers import adam
@@ -9,7 +8,6 @@ from keras.models import Model
 from keras.preprocessing.sequence import pad_sequences
 from keras.utils import to_categorical
 from sklearn.utils import class_weight
-
 from py_files.models.Embeddings.Embeddings import Embeddings
 from py_files.models.SentenceLabelEncoder import SentenceLabelEncoder
 from py_files.models.KerasSentenceClassifier import KerasSentenceClassifier

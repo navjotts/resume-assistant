@@ -1,7 +1,5 @@
 import os
-
 from sklearn.svm import LinearSVC
-
 from py_files.models.SklearnSentenceClassifier import SklearnSentenceClassifier
 
 class SVMClassifier(SklearnSentenceClassifier):

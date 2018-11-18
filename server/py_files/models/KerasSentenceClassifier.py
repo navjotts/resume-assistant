@@ -1,11 +1,9 @@
 import os
-
 import numpy as np
 import keras
 from keras.models import load_model
 from keras.layers import Embedding
 from keras.preprocessing.sequence import pad_sequences
-
 from py_files.models.Vectorizer.Vectorizer import Vectorizer
 from py_files.models.Embeddings.Embeddings import Embeddings
 from py_files.models.SentenceLabelEncoder import SentenceLabelEncoder
