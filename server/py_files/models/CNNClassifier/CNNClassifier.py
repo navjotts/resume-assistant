@@ -24,7 +24,7 @@ class CNNClassifier(KerasSentenceClassifier):
         features = self.choose_features(samples, True)
 
         # self.train_experimental_CNN(features=features, labels=labels, trainable_embeddings=True)
-        # self.train_vanilla_CNN(features=features, labels=labels, trainable_embeddings=False) # f1 0.849 with frozen word_embeddings on test (similar cross_val)
+        # self.train_vanilla_CNN(features=features, labels=labels, trainable_embeddings=False) # f1 0.85 cross_valwith frozen word_embeddings on cross_val
         self.train_common_baseline_CNN(features=features, labels=labels, trainable_embeddings=False)
 
         return super().train(samples, labels)
@@ -68,6 +68,10 @@ class CNNClassifier(KerasSentenceClassifier):
         y_train = SentenceLabelEncoder().encode_categorical(labels)
 
         self.model.fit(x_train, y_train, validation_split=0.2, epochs=15, batch_size=128,
+                        verbose=2, shuffle=True, class_weight=class_weights)
+        print('##########################\n\n\t Cross Validation completed \n\n\t##########################')
+
+        self.model.fit(x_train, y_train, epochs=15, batch_size=128,
                         verbose=2, shuffle=True, class_weight=class_weights)
         loss, accuracy = self.model.evaluate(x_train, y_train)
         print('loss, accuracy:', loss, accuracy)
@@ -114,6 +118,10 @@ class CNNClassifier(KerasSentenceClassifier):
 
         self.model.fit(x_train, y_train, validation_split=0.2, epochs=20, batch_size=128,
                         verbose=2, shuffle=True, class_weight=class_weights)
+        print('##########################\n\n\t Cross Validation completed \n\n\t##########################')
+
+        self.model.fit(x_train, y_train, epochs=20, batch_size=128,
+                        verbose=2, shuffle=True, class_weight=class_weights)
         loss, accuracy = self.model.evaluate(x_train, y_train)
         print('loss, accuracy:', loss, accuracy)
 
@@ -152,6 +160,10 @@ class CNNClassifier(KerasSentenceClassifier):
         y_train = SentenceLabelEncoder().encode_categorical(labels)
 
         self.model.fit(x_train, y_train, validation_split=0.2, epochs=30, batch_size=128,
+                        verbose=2, shuffle=True, class_weight=class_weights)
+        print('##########################\n\n\t Cross Validation completed \n\n\t##########################')
+
+        self.model.fit(x_train, y_train, epochs=30, batch_size=128,
                         verbose=2, shuffle=True, class_weight=class_weights)
         loss, accuracy = self.model.evaluate(x_train, y_train)
         print('loss, accuracy:', loss, accuracy)

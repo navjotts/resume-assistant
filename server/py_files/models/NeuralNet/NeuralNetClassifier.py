@@ -61,6 +61,10 @@ class NeuralNetClassifier(KerasSentenceClassifier):
 
         self.model.fit(x_train, y_train, validation_split=0.2, epochs=10, batch_size=32,
                         verbose=2, shuffle=True, class_weight=class_weights)
+        print('##########################\n\n\t Cross Validation completed \n\n\t##########################')
+
+        self.model.fit(x_train, y_train, epochs=10, batch_size=32,
+                        verbose=2, shuffle=True, class_weight=class_weights)
         loss, accuracy = self.model.evaluate(x_train, y_train)
         print('loss, accuracy:', loss, accuracy)
 
@@ -97,7 +101,11 @@ class NeuralNetClassifier(KerasSentenceClassifier):
         class_weights = class_weight.compute_class_weight('balanced', np.unique(numeric_labels), numeric_labels)
         y_train = SentenceLabelEncoder().encode_categorical(labels)
 
-        self.model.fit(x_train, y_train, validation_split=0.2, epochs=10, batch_size=2,
+        self.model.fit(x_train, y_train, validation_split=0.2, epochs=5, batch_size=2,
+                        verbose=2, shuffle=True, class_weight=class_weights)
+        print('##########################\n\n\t Cross Validation completed \n\n\t##########################')
+
+        self.model.fit(x_train, y_train, epochs=5, batch_size=2,
                         verbose=2, shuffle=True, class_weight=class_weights)
         loss, accuracy = self.model.evaluate(x_train, y_train)
         print('loss, accuracy:', loss, accuracy)

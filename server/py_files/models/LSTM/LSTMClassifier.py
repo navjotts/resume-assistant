@@ -51,6 +51,10 @@ class LSTMClassifier(KerasSentenceClassifier):
 
         self.model.fit(x_train, y_train, validation_split=0.2, epochs=10, batch_size=32,
                         verbose=2, shuffle=True, class_weight=class_weights)
+        print('##########################\n\n\t Cross Validation completed \n\n\t##########################')
+
+        self.model.fit(x_train, y_train, epochs=10, batch_size=32,
+                        verbose=2, shuffle=True, class_weight=class_weights)
         loss, accuracy = self.model.evaluate(x_train, y_train)
         print('loss, accuracy:', loss, accuracy)
 
