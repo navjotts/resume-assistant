@@ -3,7 +3,6 @@ import numpy as np
 from keras.models import Sequential
 from keras.layers import Dense, Dropout, Flatten, Embedding
 from keras.preprocessing.sequence import pad_sequences
-from keras.optimizers import adam
 from sklearn.utils import class_weight
 from py_files.models.Embeddings.Embeddings import Embeddings
 from py_files.models.SentenceLabelEncoder import SentenceLabelEncoder

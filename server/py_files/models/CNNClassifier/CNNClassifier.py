@@ -2,7 +2,6 @@ import os
 import sys
 import numpy as np
 from keras.models import Sequential
-from keras.optimizers import adam
 from keras.layers import LSTM, Dense, Dropout, Embedding, Conv1D, MaxPool1D, Flatten, Input, concatenate
 from keras.models import Model
 from keras.preprocessing.sequence import pad_sequences
