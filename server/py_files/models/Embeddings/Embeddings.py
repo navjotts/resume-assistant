@@ -32,7 +32,7 @@ class Embeddings(object):
                     total_examples=len(sentences),
                     epochs=100)
 
-        model.wv.save_word2vec_format(self.path, binary = False)
+        model.wv.save_word2vec_format(self.path, binary=False)
         print('Saved model to disk...')
 
         self.model = model
@@ -40,25 +40,25 @@ class Embeddings(object):
     # loads the model from local (if needed)
     def load(self):
         if not self.model:
-            self.model = KeyedVectors.load_word2vec_format(self.path, binary = False)
+            self.model = KeyedVectors.load_word2vec_format(self.path, binary=False)
 
         if not self.model:
             print('Embeddings: error: unable to load model')
 
     # for integration into other ML/DL models
-    def vectors(self, model_name='resumes_jobs'): # todo this will change to 'resumes_jobs' once we include jobs data also
+    def vectors(self, model_name='resumes_jobs'):
         self.load()
 
         dimension = 100 # we are only using 100 dimensional embeddings for now
 
         if model_name == 'glove':
             embeddings_dict = dict()
-            f = open(os.path.join(os.path.dirname(os.path.abspath(__file__)), 'trained', 'glove.6B.' + str(dimension) + 'd.txt'), encoding ='utf-8' )
+            f = open(os.path.join(os.path.dirname(os.path.abspath(__file__)), 'trained', 'glove.6B.' + str(dimension) + 'd.txt'), encoding ='utf-8')
             print('using glove model')
             for line in f:
                 values = line.split()
                 word = values[0]
-                if self.word_to_index(word):
+                if self.word_to_index(word): # todo: for pre-trained glove, why are we only limiting to words seen in the from-scratch-trained embeddings?
                     embedding_vec = np.array(values[1:])
                     embeddings_dict[word] = embedding_vec
             f.close()
