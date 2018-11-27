@@ -8,5 +8,5 @@ class SVMClassifier(SklearnSentenceClassifier):
         self.path = os.path.join(os.path.dirname(os.path.abspath(__file__)), 'trained', name + '_' + feature_type + '.pkl')
 
     def train(self, samples, labels):
-        self.model = LinearSVC(random_state=self.seed, class_weight='balanced', tol=.00001, max_iter=5000) # todo Cross Valdiation
+        self.model = LinearSVC(random_state=self.seed, class_weight='balanced', tol=.00001, max_iter=5000) # todo HyperParam tuning
         return super().train(samples, labels)

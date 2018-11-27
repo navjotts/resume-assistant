@@ -8,5 +8,5 @@ class RandForestClassifier(SklearnSentenceClassifier):
         self.path = os.path.join(os.path.dirname(os.path.abspath(__file__)), 'trained', name + '_' + feature_type + '.pkl')
 
     def train(self, samples, labels):
-        self.model = RandomForestClassifier(random_state=self.seed, max_depth=110, n_estimators=150) # todo Cross Valdiation
+        self.model = RandomForestClassifier(random_state=self.seed, max_depth=110, n_estimators=150) # todo HyperParam tuning
         return super().train(samples, labels)

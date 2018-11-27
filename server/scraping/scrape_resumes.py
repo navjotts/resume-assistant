@@ -4,10 +4,9 @@ import time
 from selenium import webdriver
 from selenium.webdriver.common.keys import Keys
 
-# create a new fireforx session
+# create a new Firefox session
 driver = webdriver.Firefox()
 driver.implicitly_wait(30)
-# Open browser in with this site
 driver.get('https://resumes.indeed.com')
 
 # Read the resume links from the text file
@@ -16,7 +15,6 @@ with open(os.path.join(os.path.dirname(os.path.abspath(__file__)), 'scraped_resu
     for link in resume_links:
         resumes_url.append(link)
 resumes_url.pop(0)
-
 
 # Create the resumes
 for url in resumes_url:
@@ -35,5 +33,5 @@ for url in resumes_url:
         for element in resume_body:
             write_resume.write(element.text)
 
-    # Wait 10 seconds before going to the next resume
+    # Wait 10 seconds before going to the next resume, to not get blocked
     time.sleep(10)

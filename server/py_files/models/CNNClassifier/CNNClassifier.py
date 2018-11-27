@@ -124,7 +124,6 @@ class CNNClassifier(KerasSentenceClassifier):
 
         self.labels_pred = SentenceLabelEncoder().decode(self.model.predict_classes(x_train))
 
-    # https://machinelearningmastery.com/best-practices-document-classification-deep-learning/
     # todo either convert this to use Keras' non-functional API, or update other functions
     def train_common_baseline_CNN(self, features, labels, trainable_embeddings):
         embedding_size = 100

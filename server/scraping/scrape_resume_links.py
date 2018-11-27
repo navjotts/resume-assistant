@@ -7,7 +7,7 @@ import time
 # Initial web page link, each page holds 50 resumes, 0-49 page one, 50-99, page2, etc
 base_url = 'https://resumes.indeed.com/search?q=software+engineer+web+developer&l=&searchFields=jt%2Cskills&start='
 
-# create a new fireforx session
+# create a new Firefox session
 driver = webdriver.Firefox()
 driver.implicitly_wait(30)
 driver.get('https://resumes.indeed.com/search?q=software+engineer+web+developer&l=&searchFields=jt%2Cskills')
